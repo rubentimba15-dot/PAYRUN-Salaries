@@ -1812,7 +1812,7 @@ function rAF(){
       </div>
       <div class="af-desc">${a.desc}</div>
       ${a.nota?`<div class="af-nota">📌 ${a.nota}</div>`:''}
-      <div style="font-size:.66rem;color:var(--tx3);margin-top:.3rem">Registado em ${a.data} · <span style="color:${a.confirmado?'var(--vd)':'var(--am)';}">${a.confirmado?'✓ Confirmado':'⏳ Pendente de confirmação'}</span></div>
+      <div style="font-size:.66rem;color:var(--tx3);margin-top:.3rem">Registado em ${a.data} · <span style="color:var(--tx3)">${a.confirmado?'Confirmado':'Pendente'}</span></div>
       <div class="af-actions">
         ${!a.confirmado?`<button class="btn btn-s btn-xs" onclick="confAF(${a.id})">✓ Confirmar</button>`:''}
         <button class="btn btn-o btn-xs" onclick="delAF(${a.id})">✕ Remover</button>
