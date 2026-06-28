@@ -52,7 +52,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);overflo
 .btn-sm{padding:.28rem .65rem;font-size:.7rem}
 .btn-xs{padding:.14rem .42rem;font-size:.63rem}
 .ct{padding:1.55rem 1.75rem;flex:1;overflow-y:auto;max-height:calc(100vh - 62px)}
-.ps{display:none}.ps.active{display:block}
+.pag{display:none}.pag.active{display:block}
 .kg{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-bottom:1.45rem}
 .kg5{display:grid;grid-template-columns:repeat(5,1fr);gap:.85rem;margin-bottom:1.45rem}
 .kc{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:.95rem;box-shadow:0 1px 2px rgba(0,0,0,.03)}
@@ -152,7 +152,7 @@ select.fi option{background:var(--sf)}
 .relt tr:last-child td{border-bottom:none}
 .relt tr.tr td{background:var(--bzb);font-weight:700;color:var(--czdd);border-top:2px solid var(--bz)}
 .relt .mn{font-family:'IBM Plex Mono',monospace}
-.relt .ng{color:var(--vm)}.relt .ps{color:var(--vd)}
+.relt .ng{color:var(--vm)}.relt .pos{color:var(--vd)}
 .mo{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem}
 .mo.open{display:flex}
 .md{background:var(--sf);border:1px solid var(--bd);border-radius:8px;width:100%;max-width:660px;max-height:91vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.14)}
@@ -264,7 +264,7 @@ select.fi option{background:var(--sf)}
 </div>
 <div class="ct">
 <!-- DASHBOARD -->
-<div class="ps active" id="ps-dashboard">
+<div class="pag active" id="ps-dashboard">
   <div class="kg">
     <div class="kc kgb"><div class="kl">Funcionários</div><div class="kv" id="k-nf">0</div><div class="ks">Quadro activo</div></div>
     <div class="kc kab"><div class="kl">Massa Salarial Bruta</div><div class="kv" id="k-br">MZN 0</div><div class="ks">Base + subsídios</div></div>
@@ -297,7 +297,7 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- FUNCIONÁRIOS: FICHA COM PESQUISA E SETAS -->
-<div class="ps" id="ps-funcionarios">
+<div class="pag" id="ps-funcionarios">
   <div class="ficha-search">
     <div style="flex:1;display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
       <input class="fi" style="width:160px;flex:none" type="text" id="srch-id" placeholder="Código EMP-XXXX" oninput="srchFunc()">
@@ -382,7 +382,7 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- FOLHA -->
-<div class="ps" id="ps-folha">
+<div class="pag" id="ps-folha">
   <div class="al abz">⚖️ <strong>Lei n.º 11/2025:</strong> IRPS calculado pela tabela art. 65-A. INSS incide apenas sobre salário base + bónus de antiguidade.</div>
   <div class="kg">
     <div class="kc"><div class="kl">Funcionários</div><div class="kv" id="f-nf">0</div></div>
@@ -398,13 +398,13 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- HISTÓRICO -->
-<div class="ps" id="ps-historico">
+<div class="pag" id="ps-historico">
   <div class="al ai">ℹ️ Registo de todas as folhas confirmadas. Clique para ver detalhes.</div>
   <div id="h-lista"><div class="em"><div class="ei">🗂️</div><div class="et">Sem histórico</div><div class="ed">As folhas confirmadas aparecem aqui.</div></div></div>
 </div>
 
 <!-- RECIBOS -->
-<div class="ps" id="ps-recibo">
+<div class="pag" id="ps-recibo">
   <div style="display:grid;grid-template-columns:285px 1fr;gap:1.3rem;align-items:start">
     <div class="fs" style="margin:0"><div class="fst">🧾 Parâmetros</div>
       <div class="fgp"><label class="fl">Funcionário</label><select class="fi" id="rc-f" onchange="gr()"><option value="">Seleccionar...</option></select></div>
@@ -419,7 +419,7 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- SUBSÍDIOS -->
-<div class="ps" id="ps-subsidios">
+<div class="pag" id="ps-subsidios">
   <div class="al ai">ℹ️ Sub. de Alimentação: isento de IRPS até ao salário mínimo do sector. Excedente sujeito. 13.º, 14.º e sub. férias tributados separadamente — não englobados na remuneração do mês.</div>
   <div class="tw"><div class="th"><div class="tht">Subsídios e adicionais</div><button class="btn btn-bz btn-sm" onclick="am('ms')">+ Novo</button></div>
   <table><thead><tr><th>Designação</th><th>Tipo</th><th>Valor / %</th><th>IRPS</th><th>INSS</th><th>Frequência</th><th>Nota legal</th><th></th></tr></thead>
@@ -435,7 +435,7 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- ADIANTAMENTOS -->
-<div class="ps" id="ps-adiantamentos">
+<div class="pag" id="ps-adiantamentos">
   <div class="al av">⚠️ Adiantamentos e empréstimos descontados automaticamente na folha do mês correspondente.</div>
   <div class="kg"><div class="kc kyb"><div class="kl">Total Adiantamentos</div><div class="kv" id="k-ad">MZN 0</div><div class="ks">Pendentes</div></div><div class="kc kab"><div class="kl">Empréstimos</div><div class="kv" id="k-em">0</div><div class="ks">Em amortização</div></div></div>
   <div class="tabs"><div class="tab active" onclick="sw(this,'ta1')">Adiantamentos</div><div class="tab" onclick="sw(this,'ta2')">Empréstimos</div><div class="tab" onclick="sw(this,'ta3')">Histórico</div></div>
@@ -451,7 +451,7 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- FALTAS -->
-<div class="ps" id="ps-faltas">
+<div class="pag" id="ps-faltas">
   <div class="tabs"><div class="tab active" onclick="sw(this,'tfl1')">Faltas</div><div class="tab" onclick="sw(this,'tfl2')">Férias</div><div class="tab" onclick="sw(this,'tfl3')">Licenças</div></div>
   <div class="tc active" id="tfl1"><div class="al av">⚠️ Faltas injustificadas: desconto = salário base ÷ 22 dias.</div>
   <div class="tw"><div class="th"><div class="tht">Faltas</div><button class="btn btn-bz btn-sm" onclick="am('mflt')">+ Registar</button></div>
@@ -467,7 +467,7 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- HORAS EXTRA -->
-<div class="ps" id="ps-horasextra">
+<div class="pag" id="ps-horasextra">
   <div class="al ai">ℹ️ Lei n.º 23/2007: até 2h/dia = 150% · Além de 2h = 200% · Descanso/feriado = 200%</div>
   <div class="tw"><div class="th"><div class="tht">Trabalho suplementar</div><button class="btn btn-bz btn-sm" onclick="am('mhx')">+ Registar</button></div>
   <table><thead><tr><th>Funcionário</th><th>Data</th><th>Horas</th><th>Tipo</th><th>Valor/Hora</th><th>Acréscimo</th><th>Total (MZN)</th></tr></thead>
@@ -475,7 +475,7 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- ALTERAÇÕES FUTURAS (ex-Memorandos) -->
-<div class="ps" id="ps-alteracoesfuturas">
+<div class="pag" id="ps-alteracoesfuturas">
   <div class="al abz">🔔 <strong>Alterações Futuras</strong> — registe alterações a aplicar em meses futuros. Cada alteração requer confirmação individual ou colectiva antes de ser efectivada no processamento.</div>
   <div style="display:grid;grid-template-columns:340px 1fr;gap:1.1rem;align-items:start">
     <div class="fs" style="margin:0">
@@ -523,7 +523,7 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- IRPS -->
-<div class="ps" id="ps-irps">
+<div class="pag" id="ps-irps">
   <div class="al ao">✓ <strong>Lei n.º 11/2025, de 29 Dezembro</strong> — Tabela art. 65-A actualizada. Vigência: 1 Janeiro 2026.</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.05rem">
     <div class="fs" style="margin:0">
@@ -563,7 +563,7 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- INSS -->
-<div class="ps" id="ps-inss">
+<div class="pag" id="ps-inss">
   <div class="al ao">✓ Taxas vigentes: 3% trabalhador + 4% entidade = 7% total. Base: <strong>salário base + bónus de antiguidade apenas</strong>.</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.05rem">
     <div class="fs" style="margin:0"><div class="fst">🛡️ Base de Incidência INSS</div>
@@ -590,7 +590,7 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- RELATÓRIOS EM CAIXAS -->
-<div class="ps" id="ps-relatorios">
+<div class="pag" id="ps-relatorios">
   <div style="font-size:.77rem;font-weight:700;color:var(--czdd);margin-bottom:.75rem">📊 Salarial e Fiscal</div>
   <div class="rel-grid">
     <div class="rel-card" onclick="sw(document.getElementById('rt-tab1'),null);nv('relatorios',null);setTimeout(()=>showRelTab('rtp1'),50)">
@@ -715,7 +715,7 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- EXPORTAR -->
-<div class="ps" id="ps-exportar">
+<div class="pag" id="ps-exportar">
   <div class="al ai">ℹ️ Exporte dados para Excel (CSV) ou gere PDFs para arquivo.</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.05rem">
     <div class="fs" style="margin:0"><div class="fst">📊 Exportar CSV / Excel</div>
@@ -730,7 +730,7 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- CONTRATOS -->
-<div class="ps" id="ps-contratos">
+<div class="pag" id="ps-contratos">
   <div class="kg"><div class="kc kvb"><div class="kl">Activos</div><div class="kv" id="kc-at">0</div></div><div class="kc kyb"><div class="kl">A Vencer 30d</div><div class="kv" id="kc-vc">0</div></div><div class="kc kab"><div class="kl">Indeterminado</div><div class="kv" id="kc-id">0</div></div><div class="kc krb"><div class="kl">Expirados</div><div class="kv" id="kc-ex">0</div></div></div>
   <div class="tw"><div class="th"><div class="tht">Contratos de trabalho</div><div class="ta"><input class="si" type="text" placeholder="Pesquisar..."><button class="btn btn-bz btn-sm" onclick="am('mct')">+ Novo</button></div></div>
   <table><thead><tr><th>Funcionário</th><th>Tipo</th><th>Início</th><th>Fim</th><th>Cargo</th><th>Salário</th><th>Estado</th><th></th></tr></thead>
@@ -738,7 +738,7 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- DESEMPENHO -->
-<div class="ps" id="ps-desempenho">
+<div class="pag" id="ps-desempenho">
   <div class="kg"><div class="kc kvb"><div class="kl">Concluídas</div><div class="kv" id="kd-ok">0</div></div><div class="kc kyb"><div class="kl">Pendentes</div><div class="kv" id="kd-pend">0</div></div><div class="kc kab"><div class="kl">Média Geral</div><div class="kv" id="kd-med">—</div></div><div class="kc kpb"><div class="kl">Período</div><div class="kv" style="font-size:.85rem">2025 S1</div></div></div>
   <div class="tw"><div class="th"><div class="tht">Avaliações de desempenho</div><button class="btn btn-bz btn-sm" onclick="am('mv')">+ Nova</button></div>
   <table><thead><tr><th>Funcionário</th><th>Período</th><th>Produtividade</th><th>Assiduidade</th><th>Atitude</th><th>Iniciativa</th><th>Média</th><th>Estado</th><th></th></tr></thead>
@@ -746,7 +746,7 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- FORMAÇÃO -->
-<div class="ps" id="ps-formacao">
+<div class="pag" id="ps-formacao">
   <div class="kg"><div class="kc kab"><div class="kl">Acções</div><div class="kv" id="kf-t">0</div></div><div class="kc kvb"><div class="kl">Formados</div><div class="kv" id="kf-f">0</div></div><div class="kc kyb"><div class="kl">Horas</div><div class="kv" id="kf-h">0h</div></div><div class="kc kpb"><div class="kl">Custo (MZN)</div><div class="kv" id="kf-c">0</div></div></div>
   <div class="tabs"><div class="tab active" onclick="sw(this,'tf1')">Plano</div><div class="tab" onclick="sw(this,'tf2')">Histórico</div><div class="tab" onclick="sw(this,'tf3')">Certificados</div></div>
   <div class="tc active" id="tf1"><div class="tw"><div class="th"><div class="tht">Plano de formação</div><button class="btn btn-bz btn-sm" onclick="am('mfo')">+ Nova</button></div>
@@ -757,7 +757,7 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- EMPRESA -->
-<div class="ps" id="ps-empresa">
+<div class="pag" id="ps-empresa">
   <div class="fs"><div class="fst">🏢 Dados da entidade empregadora</div>
   <div class="fg">
     <div class="fgp"><label class="fl">Denominação social *</label><input class="fi" id="en-nome" value="Empresa Demo, Lda."></div>
@@ -774,7 +774,7 @@ select.fi option{background:var(--sf)}
 </div>
 
 <!-- CONFIGURAÇÕES AVANÇADAS -->
-<div class="ps" id="ps-configuracoes">
+<div class="pag" id="ps-configuracoes">
   <div class="tabs">
     <div class="tab active" onclick="sw(this,'cfg1')">⚙️ Parâmetros Gerais</div>
     <div class="tab" onclick="sw(this,'cfg2')">🧮 Fórmulas de Cálculo</div>
@@ -1178,7 +1178,7 @@ const S={dashboard:'Resumo do período actual',folha:'Processamento salarial —
 
 // ===== NAVEGAÇÃO =====
 function nv(sec,el){
-  document.querySelectorAll('.ps').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.pag').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
   const s=document.getElementById('ps-'+sec);if(s)s.classList.add('active');
   if(el)el.classList.add('active');
@@ -1908,7 +1908,7 @@ function gerarRelPersonalizado(idx){
       const ip=cI(br,f.dep,f.subA);
       const inn=baseI*0.03;
       const liq=br-ip-inn;
-      return `<tr><td><span class="fid">${f.id}</span></td><td style="font-weight:600">${f.nome}</td><td class="mn">${fmt(f.salario)}</td><td class="mn">${fmt(br)}</td><td class="mn ng">-${fmt(ip)}</td><td class="mn ng">-${fmt(inn)}</td><td class="mn ps">${fmt(liq)}</td></tr>`;
+      return `<tr><td><span class="fid">${f.id}</span></td><td style="font-weight:600">${f.nome}</td><td class="mn">${fmt(f.salario)}</td><td class="mn">${fmt(br)}</td><td class="mn ng">-${fmt(ip)}</td><td class="mn ng">-${fmt(inn)}</td><td class="mn pos">${fmt(liq)}</td></tr>`;
     }).join('')
   }</tbody></table></div>`;
   out.scrollIntoView({behavior:'smooth'});
@@ -1932,9 +1932,9 @@ function showRelTab(id){
       const inn=f.metodN==='nao'?0:baseI*0.03;
       const liq=br-ip-inn;
       tB+=br;tI+=ip;tN+=inn;tL+=liq;
-      return `<tr><td><span class="fid">${f.id}</span></td><td style="font-weight:600">${f.nome}</td><td>${f.cargo}</td><td>${f.dept}</td><td class="mn">${fmt(f.salario)}</td><td class="mn">${fmt(sub)}</td><td class="mn">${fmt(br)}</td><td class="mn ng">-${fmt(ip)}</td><td class="mn ng">-${fmt(inn)}</td><td class="mn ps">${fmt(liq)}</td></tr>`;
+      return `<tr><td><span class="fid">${f.id}</span></td><td style="font-weight:600">${f.nome}</td><td>${f.cargo}</td><td>${f.dept}</td><td class="mn">${fmt(f.salario)}</td><td class="mn">${fmt(sub)}</td><td class="mn">${fmt(br)}</td><td class="mn ng">-${fmt(ip)}</td><td class="mn ng">-${fmt(inn)}</td><td class="mn pos">${fmt(liq)}</td></tr>`;
     }).join('');
-    body.innerHTML=`<div class="tw"><table class="relt"><thead><tr><th>ID</th><th>Nome</th><th>Cargo</th><th>Dep.</th><th>Sal. Base</th><th>Subsídios</th><th>Bruto</th><th>IRPS</th><th>INSS 3%</th><th>Líquido</th></tr></thead><tbody>${rows}<tr class="tr"><td colspan="4"><strong>TOTAL</strong></td><td></td><td></td><td class="mn"><strong>${fmt(tB)}</strong></td><td class="mn ng"><strong>-${fmt(tI)}</strong></td><td class="mn ng"><strong>-${fmt(tN)}</strong></td><td class="mn ps"><strong>${fmt(tL)}</strong></td></tr></tbody></table></div>`;
+    body.innerHTML=`<div class="tw"><table class="relt"><thead><tr><th>ID</th><th>Nome</th><th>Cargo</th><th>Dep.</th><th>Sal. Base</th><th>Subsídios</th><th>Bruto</th><th>IRPS</th><th>INSS 3%</th><th>Líquido</th></tr></thead><tbody>${rows}<tr class="tr"><td colspan="4"><strong>TOTAL</strong></td><td></td><td></td><td class="mn"><strong>${fmt(tB)}</strong></td><td class="mn ng"><strong>-${fmt(tI)}</strong></td><td class="mn ng"><strong>-${fmt(tN)}</strong></td><td class="mn pos"><strong>${fmt(tL)}</strong></td></tr></tbody></table></div>`;
   } else if(id==='rtp3'){
     let tT=0,tE=0;
     const rows=F.map(f=>{
