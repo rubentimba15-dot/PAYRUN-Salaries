@@ -229,8 +229,7 @@ select.fi option{background:var(--sf)}
   <div class="ns">Principal</div>
   <div class="ni active" onclick="nv('dashboard',this)"><div class="ico">📊</div>Dashboard</div>
   <div class="ni" onclick="nv('folha',this)"><div class="ico">📋</div>Folha de Salários<div class="nb" id="b-folha">0</div></div>
-  <div class="ni" onclick="nv('historico',this)"><div class="ico">🗂️</div>Histórico</div>
-  <div class="ni" onclick="nv('recibo',this)"><div class="ico">🧾</div>Recibos</div>
+
   <div class="ns">Gestão de Pessoal</div>
   <div class="ni" onclick="nv('funcionarios',this)"><div class="ico">👥</div>Funcionários</div>
   <div class="ni" onclick="nv('subsidios',this)"><div class="ico">💰</div>Subsídios</div>
@@ -275,10 +274,11 @@ select.fi option{background:var(--sf)}
     <div class="fs" style="margin:0"><div class="fst">⚡ Acções rápidas</div>
       <div style="display:flex;flex-direction:column;gap:.38rem">
         <button class="btn btn-bz" style="text-align:left;width:100%" onclick="nv('folha',null)">📋 Processar folha salarial</button>
+        <button class="btn btn-o" style="text-align:left;width:100%" onclick="nv('funcionarios',null);setTimeout(()=>{if(F.length)selFunc(0)},80)">🔍 Ver ficha do funcionário</button>
         <button class="btn btn-o" style="text-align:left;width:100%" onclick="am('mf')">👤 Adicionar funcionário</button>
         <button class="btn btn-o" style="text-align:left;width:100%" onclick="nv('relatorios',null)">📄 Gerar relatórios</button>
         <button class="btn btn-o" style="text-align:left;width:100%" onclick="nv('alteracoesfuturas',null)">🔔 Alterações futuras</button>
-        <button class="btn btn-o" style="text-align:left;width:100%" onclick="nv('historico',null)">🗂️ Ver histórico</button>
+        <button class="btn btn-o" style="text-align:left;width:100%" onclick="nv('folha',null);setTimeout(()=>{const tabs=document.querySelectorAll('#ps-folha .tab');const tcs=document.querySelectorAll('#ps-folha .tc');tabs.forEach(t=>t.classList.remove('active'));tcs.forEach(c=>c.classList.remove('active'));if(tabs[1])tabs[1].classList.add('active');if(tcs[1])tcs[1].classList.add('active');},80)">🗂️ Ver histórico</button>
       </div>
     </div>
     <div class="fs" style="margin:0"><div class="fst">📅 Calendário fiscal</div>
@@ -296,7 +296,7 @@ select.fi option{background:var(--sf)}
   <tbody id="db-tb"><tr><td colspan="8"><div class="em"><div class="ei">📋</div><div class="et">Sem folha processada</div><div class="ed">Adicione funcionários e processe a primeira folha.</div></div></td></tr></tbody></table></div>
 </div>
 
-<!-- FUNCIONÁRIOS: FICHA COM PESQUISA E SETAS -->
+<!-- FUNCIONÁRIOS: LISTA + PESQUISA -->
 <div class="pag" id="ps-funcionarios">
   <div class="ficha-search">
     <div style="flex:1;display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
@@ -306,117 +306,70 @@ select.fi option{background:var(--sf)}
         <option value="">Todos os deptos.</option>
       </select>
     </div>
-    <div class="ficha-nav-arrows">
-      <button class="arrow-btn" onclick="navFunc(-1)" title="Funcionário anterior">◀</button>
-      <span style="font-size:.72rem;color:var(--tx3);padding:.4rem .3rem" id="nav-pos">—</span>
-      <button class="arrow-btn" onclick="navFunc(1)" title="Funcionário seguinte">▶</button>
-    </div>
     <button class="btn btn-bz btn-sm" onclick="am('mf')">+ Novo</button>
   </div>
-
-  <!-- Ficha do funcionário seleccionado -->
-  <div id="fich-detalhe" style="display:none">
-    <div class="fich-header">
-      <div>
-        <div class="fich-id" id="fich-id-show">EMP-0000</div>
-        <div class="fich-nome" id="fich-nome-show">—</div>
-        <div class="fich-cargo" id="fich-cargo-show">—</div>
-      </div>
-      <div class="fich-nav">
-        <button class="btn btn-o btn-xs" onclick="editFunc()" style="color:#C9A84C;border-color:rgba(201,168,76,.4)">✏️ Editar</button>
-        <button class="btn btn-o btn-xs" onclick="nv('recibo',null)" style="color:#C9A84C;border-color:rgba(201,168,76,.4)">🧾 Recibo</button>
-      </div>
-    </div>
-    <div class="tabs">
-      <div class="tab active" onclick="sw(this,'fdt1')">👤 Dados Pessoais</div>
-      <div class="tab" onclick="sw(this,'fdt2')">💰 Remunerações</div>
-      <div class="tab" onclick="sw(this,'fdt3')">➖ Deduções</div>
-      <div class="tab" onclick="sw(this,'fdt4')">⚙️ Benefícios</div>
-    </div>
-    <div class="tc active" id="fdt1">
-      <div class="fs"><div class="fg">
-        <div class="fgp"><label class="fl">NUIT</label><div class="fi" id="vw-nuit" style="background:var(--sf2);color:var(--tx2)">—</div></div>
-        <div class="fgp"><label class="fl">Bilhete de Identidade</label><div class="fi" id="vw-bi" style="background:var(--sf2);color:var(--tx2)">—</div></div>
-        <div class="fgp"><label class="fl">Data de Nascimento</label><div class="fi" id="vw-nasc" style="background:var(--sf2);color:var(--tx2)">—</div></div>
-        <div class="fgp"><label class="fl">Género</label><div class="fi" id="vw-gen" style="background:var(--sf2);color:var(--tx2)">—</div></div>
-        <div class="fgp"><label class="fl">Telefone</label><div class="fi" id="vw-tel" style="background:var(--sf2);color:var(--tx2)">—</div></div>
-        <div class="fgp"><label class="fl">Email</label><div class="fi" id="vw-email" style="background:var(--sf2);color:var(--tx2)">—</div></div>
-        <div class="fgp"><label class="fl">Departamento</label><div class="fi" id="vw-dept" style="background:var(--sf2);color:var(--tx2)">—</div></div>
-        <div class="fgp"><label class="fl">Data de Admissão</label><div class="fi" id="vw-adm" style="background:var(--sf2);color:var(--tx2)">—</div></div>
-        <div class="fgp"><label class="fl">Tipo de Contrato</label><div class="fi" id="vw-cont" style="background:var(--sf2);color:var(--tx2)">—</div></div>
-        <div class="fgp"><label class="fl">N.º INSS</label><div class="fi" id="vw-inss" style="background:var(--sf2);color:var(--tx2)">—</div></div>
-      </div></div>
-    </div>
-    <div class="tc" id="fdt2">
-      <div class="fs"><div class="fg">
-        <div class="fgp"><label class="fl">Salário Base (MZN)</label><div class="fi mn" id="vw-sal" style="background:var(--sf2);color:var(--czdd);font-weight:700">—</div></div>
-        <div class="fgp"><label class="fl">N.º Dependentes</label><div class="fi" id="vw-dep" style="background:var(--sf2)">—</div></div>
-        <div class="fgp"><label class="fl">Sub. Transporte (MZN)</label><div class="fi mn" id="vw-subt" style="background:var(--sf2)">—</div></div>
-        <div class="fgp"><label class="fl">Sub. Alimentação (MZN)</label><div class="fi mn" id="vw-suba" style="background:var(--sf2)">—</div></div>
-        <div class="fgp"><label class="fl">Outros Subsídios (MZN)</label><div class="fi mn" id="vw-subo" style="background:var(--sf2)">—</div></div>
-        <div class="fgp"><label class="fl">Banco</label><div class="fi" id="vw-banco" style="background:var(--sf2)">—</div></div>
-        <div class="fgp"><label class="fl">N.º Conta / IBAN</label><div class="fi mn" id="vw-conta" style="background:var(--sf2)">—</div></div>
-      </div></div>
-    </div>
-    <div class="tc" id="fdt3">
-      <div class="fs"><div class="fg">
-        <div class="fgp"><label class="fl">Método IRPS</label><div class="fi" id="vw-irpsm" style="background:var(--sf2)">—</div></div>
-        <div class="fgp"><label class="fl">Sujeito a INSS?</label><div class="fi" id="vw-inssm" style="background:var(--sf2)">—</div></div>
-        <div class="fgp"><label class="fl">Adiantamento Fixo Mensal (MZN)</label><div class="fi mn" id="vw-afixo" style="background:var(--sf2)">—</div></div>
-        <div class="fgp"><label class="fl">Prestação Empréstimo (MZN)</label><div class="fi mn" id="vw-efixo" style="background:var(--sf2)">—</div></div>
-      </div></div>
-    </div>
-    <div class="tc" id="fdt4">
-      <div class="fs"><div class="fg">
-        <div class="fgp"><label class="fl">Seguro de Saúde (MZN/mês)</label><div class="fi mn" id="vw-seg" style="background:var(--sf2)">—</div></div>
-        <div class="fgp"><label class="fl">Sub. Educação Filhos (MZN/mês)</label><div class="fi mn" id="vw-edu" style="background:var(--sf2)">—</div></div>
-        <div class="fgp"><label class="fl">Fundo Pensão (MZN/mês)</label><div class="fi mn" id="vw-pens" style="background:var(--sf2)">—</div></div>
-      </div></div>
-    </div>
+  <div class="tw" id="tb-f-wrap">
+    <div class="th"><div class="tht">Quadro de pessoal</div><div class="ta"><span id="f-count" style="font-size:.72rem;color:var(--tx3)"></span></div></div>
+    <table><thead><tr><th>ID</th><th>Nome</th><th>Cargo</th><th>Dep.</th><th>Sal. Base</th><th>Admissão</th><th>Contrato — Validade</th><th>Estado</th><th></th></tr></thead>
+    <tbody id="tb-f"><tr><td colspan="9"><div class="em"><div class="ei">👥</div><div class="et">Sem funcionários</div><div class="ed">Clique em "+ Novo".</div></div></td></tr></tbody></table>
   </div>
-
-  <!-- Tabela de todos os funcionários -->
-  <div class="tw" id="tb-f-wrap"><div class="th"><div class="tht">Quadro de pessoal</div><div class="ta"><span id="f-count" style="font-size:.72rem;color:var(--tx3)"></span></div></div>
-  <table><thead><tr><th>ID</th><th>Nome</th><th>Cargo</th><th>Dep.</th><th>Sal. Base</th><th>Admissão</th><th>Estado</th><th></th></tr></thead>
-  <tbody id="tb-f"><tr><td colspan="8"><div class="em"><div class="ei">👥</div><div class="et">Sem funcionários</div><div class="ed">Clique em "+ Novo funcionário".</div></div></td></tr></tbody></table></div>
 </div>
 
 <!-- FOLHA -->
 <div class="pag" id="ps-folha">
-  <div class="al abz">⚖️ <strong>Lei n.º 11/2025:</strong> IRPS calculado pela tabela art. 65-A. INSS incide apenas sobre salário base + bónus de antiguidade.</div>
-  <div class="kg">
-    <div class="kc"><div class="kl">Funcionários</div><div class="kv" id="f-nf">0</div></div>
-    <div class="kc"><div class="kl">Total Bruto</div><div class="kv" id="f-br">MZN 0</div></div>
-    <div class="kc"><div class="kl">Total Deduções</div><div class="kv" id="f-ded">MZN 0</div></div>
-    <div class="kc"><div class="kl">Total Líquido</div><div class="kv" id="f-liq">MZN 0</div></div>
+  <div class="tabs" style="margin-bottom:1rem">
+    <div class="tab active" onclick="sw(this,'tfl-proc')">📋 Processamento</div>
+    <div class="tab" onclick="sw(this,'tfl-hist')">🗂️ Histórico</div>
+    <div class="tab" onclick="sw(this,'tfl-recib')">🧾 Recibos</div>
   </div>
-  <div class="tw"><div class="th"><div class="tht">Folha salarial — Junho 2025</div>
-    <div class="ta"><button class="btn btn-o btn-sm" onclick="cf()">🔄 Recalcular</button><button class="btn btn-s btn-sm" onclick="confF()">✓ Confirmar</button></div>
-  </div>
-  <table><thead><tr><th>ID</th><th>Funcionário</th><th>Dep.</th><th>Sal. Base</th><th>Sub.</th><th>H.Extra</th><th>Adiant.</th><th>Bruto</th><th>IRPS</th><th>INSS 3%</th><th>Líquido</th><th></th></tr></thead>
-  <tbody id="tb-folha"><tr><td colspan="12"><div class="em"><div class="ei">📋</div><div class="et">Adicione funcionários</div></div></td></tr></tbody></table></div>
-</div>
-
-<!-- HISTÓRICO -->
-<div class="pag" id="ps-historico">
-  <div class="al ai">ℹ️ Registo de todas as folhas confirmadas. Clique para ver detalhes.</div>
-  <div id="h-lista"><div class="em"><div class="ei">🗂️</div><div class="et">Sem histórico</div><div class="ed">As folhas confirmadas aparecem aqui.</div></div></div>
-</div>
-
-<!-- RECIBOS -->
-<div class="pag" id="ps-recibo">
-  <div style="display:grid;grid-template-columns:285px 1fr;gap:1.3rem;align-items:start">
-    <div class="fs" style="margin:0"><div class="fst">🧾 Parâmetros</div>
-      <div class="fgp"><label class="fl">Funcionário</label><select class="fi" id="rc-f" onchange="gr()"><option value="">Seleccionar...</option></select></div>
-      <div class="fgp"><label class="fl">Mês / Ano</label><input class="fi" type="month" id="rc-m" value="2025-06" onchange="gr()"></div>
-      <div style="display:flex;gap:.42rem;margin-top:.18rem">
-        <button class="btn btn-bz btn-sm" style="flex:1" onclick="window.print()">🖨️ Imprimir</button>
-        <button class="btn btn-o btn-sm" style="flex:1" onclick="st('Enviado por email','ok')">📧 Email</button>
-      </div>
+  <!-- ABA PROCESSAMENTO -->
+  <div class="tc active" id="tfl-proc">
+    <div class="al abz">⚖️ <strong>Lei n.º 11/2025:</strong> IRPS calculado pela tabela art. 65-A. INSS incide apenas sobre salário base + bónus de antiguidade.</div>
+    <div class="kg">
+      <div class="kc"><div class="kl">Funcionários</div><div class="kv" id="f-nf">0</div></div>
+      <div class="kc"><div class="kl">Total Bruto</div><div class="kv" id="f-br">MZN 0</div></div>
+      <div class="kc"><div class="kl">Total Deduções</div><div class="kv" id="f-ded">MZN 0</div></div>
+      <div class="kc"><div class="kl">Total Líquido</div><div class="kv" id="f-liq">MZN 0</div></div>
     </div>
-    <div id="rc-out"><div class="em"><div class="ei">🧾</div><div class="et">Seleccione um funcionário</div></div></div>
+    <div class="tw"><div class="th"><div class="tht">Folha salarial — Junho 2025</div>
+      <div class="ta"><button class="btn btn-o btn-sm" onclick="cf()">🔄 Recalcular</button><button class="btn btn-s btn-sm" onclick="confF()">✓ Confirmar</button></div>
+    </div>
+    <table><thead><tr><th>ID</th><th>Funcionário</th><th>Dep.</th><th>Sal. Base</th><th>Sub.</th><th>H.Extra</th><th>Adiant.</th><th>Bruto</th><th>IRPS</th><th>INSS 3%</th><th>Líquido</th><th></th></tr></thead>
+    <tbody id="tb-folha"><tr><td colspan="12"><div class="em"><div class="ei">📋</div><div class="et">Adicione funcionários</div></div></td></tr></tbody></table></div>
+  </div>
+  <!-- ABA HISTÓRICO -->
+  <div class="tc" id="tfl-hist">
+    <div style="display:flex;gap:.65rem;flex-wrap:wrap;align-items:center;background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:.75rem 1rem;margin-bottom:1rem">
+      <input class="fi" style="width:130px;flex:none" type="text" id="hist-nome" placeholder="Nome funcionário" oninput="filtHist()">
+      <input class="fi" style="width:130px;flex:none" type="text" id="hist-id" placeholder="N.º EMP-XXXX" oninput="filtHist()">
+      <input class="fi" style="width:110px;flex:none" type="month" id="hist-mes" onchange="filtHist()">
+      <select class="fi" style="width:100px;flex:none" id="hist-ano" onchange="filtHist()">
+        <option value="">Ano</option>
+        <option>2025</option><option>2026</option><option>2027</option>
+      </select>
+      <button class="btn btn-o btn-sm" onclick="limpaFiltHist()">Limpar</button>
+    </div>
+    <div id="h-lista"><div class="em"><div class="ei">🗂️</div><div class="et">Sem histórico</div><div class="ed">As folhas confirmadas aparecem aqui.</div></div></div>
+  </div>
+  <!-- ABA RECIBOS -->
+  <div class="tc" id="tfl-recib">
+    <div style="display:grid;grid-template-columns:285px 1fr;gap:1.3rem;align-items:start">
+      <div class="fs" style="margin:0"><div class="fst">🧾 Parâmetros</div>
+        <div class="fgp"><label class="fl">Funcionário</label><select class="fi" id="rc-f" onchange="gr()"><option value="">Seleccionar...</option></select></div>
+        <div class="fgp"><label class="fl">Nome</label><input class="fi" type="text" id="rc-nome" placeholder="Pesquisar por nome..." oninput="filtRecibF()"></div>
+        <div class="fgp"><label class="fl">N.º Funcionário</label><input class="fi" type="text" id="rc-nf" placeholder="EMP-XXXX" oninput="filtRecibF()"></div>
+        <div class="fgp"><label class="fl">Mês / Ano</label><input class="fi" type="month" id="rc-m" value="2025-06" onchange="gr()"></div>
+        <div style="display:flex;gap:.42rem;margin-top:.18rem">
+          <button class="btn btn-bz btn-sm" style="flex:1" onclick="window.print()">🖨️ Imprimir</button>
+          <button class="btn btn-o btn-sm" style="flex:1" onclick="st('Enviado por email','ok')">📧 Email</button>
+        </div>
+      </div>
+      <div id="rc-out"><div class="em"><div class="ei">🧾</div><div class="et">Seleccione um funcionário</div></div></div>
+    </div>
   </div>
 </div>
+
+<!-- Histórico e Recibos movidos para dentro da Folha de Salários -->
 
 <!-- SUBSÍDIOS -->
 <div class="pag" id="ps-subsidios">
@@ -927,14 +880,20 @@ select.fi option{background:var(--sf)}
         <div class="mdt" id="mf-title">Novo funcionário</div>
         <div id="mf-id" style="font-size:.66rem;color:var(--bz);margin-top:.13rem;font-family:'IBM Plex Mono',monospace;font-weight:700"></div>
       </div>
-      <button class="mdc" onclick="fm('mf')">✕</button>
+      <div style="display:flex;align-items:center;gap:.5rem">
+        <button class="arrow-btn" onclick="navFuncModal(-1)" title="Anterior" id="btn-nav-prev" style="display:none">◀</button>
+        <span id="nav-pos-modal" style="font-size:.72rem;color:var(--tx3);display:none">—</span>
+        <button class="arrow-btn" onclick="navFuncModal(1)" title="Seguinte" id="btn-nav-next" style="display:none">▶</button>
+        <button class="mdc" onclick="fm('mf')">✕</button>
+      </div>
     </div>
     <div class="mdb">
       <div class="fnt">
         <div class="fntb active" onclick="sft(this,'fp1')">👤 Dados Pessoais</div>
         <div class="fntb" onclick="sft(this,'fp2')">💰 Remunerações</div>
         <div class="fntb" onclick="sft(this,'fp3')">➖ Deduções</div>
-        <div class="fntb" onclick="sft(this,'fp4')">⚙️ Benefícios</div>
+        <div class="fntb" onclick="sft(this,'fp4')">📁 RH</div>
+        <div class="fntb" onclick="sft(this,'fp5')">🔗 Ligar a Métodos</div>
       </div>
       <!-- Tab 1 -->
       <div class="fntc active" id="fp1">
@@ -951,6 +910,8 @@ select.fi option{background:var(--sf)}
           <div class="fgp"><label class="fl">Departamento</label><input class="fi" id="fde" placeholder="Ex: Financeiro"></div>
           <div class="fgp"><label class="fl">Data de admissão</label><input class="fi" id="fad" type="date"></div>
           <div class="fgp"><label class="fl">Tipo de contrato</label><select class="fi" id="fco"><option>Prazo indeterminado</option><option>Prazo determinado</option><option>Prestação de serviços</option></select></div>
+          <div class="fgp"><label class="fl">Início do contrato</label><input class="fi" id="fci" type="date"></div>
+          <div class="fgp"><label class="fl">Validade do contrato</label><input class="fi" id="fcv" type="date" placeholder="Deixar vazio se indeterminado"></div>
         </div>
       </div>
       <!-- Tab 2 -->
@@ -981,36 +942,86 @@ select.fi option{background:var(--sf)}
       </div>
       <!-- Tab 3 -->
       <div class="fntc" id="fp3">
-        <div class="al av">⚠️ Deduções fixas aplicam-se mensalmente. Variáveis (adiantamentos, faltas) registam-se nos módulos próprios.</div>
+        <div class="al av">⚠️ Deduções fixas mensais + registo de faltas e horas extra deste funcionário.</div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--czdd);margin-bottom:.5rem">Deduções fixas mensais</div>
         <div class="fg">
           <div class="fgp"><label class="fl">N.º INSS</label><input class="fi" id="fins" placeholder="N.º beneficiário INSS"></div>
           <div class="fgp"><label class="fl">Adiantamento mensal fixo (MZN)</label><input class="fi" id="faf" type="number" value="0"></div>
           <div class="fgp"><label class="fl">Prestação empréstimo mensal (MZN)</label><input class="fi" id="fef" type="number" value="0"></div>
           <div class="fgp"><label class="fl">Outras deduções fixas (MZN)</label><input class="fi" id="fdf" type="number" value="0"></div>
         </div>
-        <div style="font-size:.77rem;color:var(--tx2);background:var(--sf2);padding:.72rem;border-radius:4px;border:1px solid var(--bd)">
-          <strong>Deduções automáticas calculadas:</strong><br>
-          • IRPS: tabela art. 65-A — Lei n.º 11/2025<br>
-          • INSS trabalhador: 3% sobre <strong>salário base + bónus de antiguidade</strong><br>
-          • Sub. alimentação: excedente ao sal. mínimo do sector sujeito a IRPS
+        <div style="font-size:.77rem;color:var(--tx2);background:var(--sf2);padding:.6rem .72rem;border-radius:4px;border:1px solid var(--bd);margin-bottom:.8rem">
+          <strong>Deduções automáticas calculadas:</strong> IRPS (Lei 11/2025 art. 65-A) · INSS 3% sobre base+antiguidade · Sub. alimentação: excedente ao sal. mín. sector
         </div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--czdd);margin-bottom:.5rem">Faltas — mês actual</div>
+        <div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap">
+          <input class="fi" style="width:130px;flex:none" type="date" id="flt-data">
+          <select class="fi" style="flex:1;min-width:130px" id="flt-tipo">
+            <option>Injustificada</option><option>Justificada</option><option>Atestado médico</option><option>Licença parental</option>
+          </select>
+          <button class="btn btn-bz btn-sm" onclick="addFltFunc()">+ Registar falta</button>
+        </div>
+        <div id="fp3-faltas-lista" style="max-height:100px;overflow-y:auto;font-size:.74rem;color:var(--tx2);background:var(--sf2);padding:.5rem;border-radius:4px;border:1px solid var(--bd);margin-bottom:.8rem">Sem faltas registadas.</div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--czdd);margin-bottom:.5rem">Horas Extra — mês actual</div>
+        <div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap">
+          <input class="fi" style="width:130px;flex:none" type="date" id="hx-data">
+          <input class="fi" style="width:80px;flex:none" type="number" id="hx-horas" placeholder="Horas" step="0.5" min="0.5">
+          <select class="fi" style="flex:1;min-width:150px" id="hx-tipo">
+            <option>Dia útil — até 2h (150%)</option>
+            <option>Dia útil — além 2h (200%)</option>
+            <option>Descanso/feriado (200%)</option>
+          </select>
+          <button class="btn btn-bz btn-sm" onclick="addHxFunc()">+ Registar h.extra</button>
+        </div>
+        <div id="fp3-hx-lista" style="max-height:100px;overflow-y:auto;font-size:.74rem;color:var(--tx2);background:var(--sf2);padding:.5rem;border-radius:4px;border:1px solid var(--bd)">Sem horas extra registadas.</div>
       </div>
-      <!-- Tab 4 -->
+      <!-- Tab 4 — RH -->
       <div class="fntc" id="fp4">
-        <div class="al abz">⚙️ Método de cálculo e benefícios adicionais.</div>
+        <div class="al ai">ℹ️ Informação de RH: contrato, férias gozadas e a gozar.</div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--czdd);margin-bottom:.5rem">Contrato de trabalho</div>
         <div class="fg">
-          <div class="fgp"><label class="fl">Método de cálculo IRPS</label>
-            <select class="fi" id="fmi"><option value="tabela">Tabela de retenção — Lei 11/2025 (art. 65-A)</option><option value="isento">Isento de IRPS (com justificação)</option><option value="liberatoria">Taxa liberatória fixa</option></select>
-          </div>
-          <div class="fgp"><label class="fl">Sujeito a INSS?</label>
-            <select class="fi" id="fmn"><option value="sim">Sim — Taxa normal (3% + 4%)</option><option value="nao">Não sujeito (com justificação)</option></select>
-          </div>
+          <div class="fgp"><label class="fl">Tipo de contrato</label><select class="fi" id="fco2"><option>Prazo indeterminado</option><option>Prazo determinado</option><option>Prestação de serviços</option><option>Estágio profissional</option></select></div>
+          <div class="fgp"><label class="fl">Início do contrato</label><input class="fi" id="fci2" type="date"></div>
+          <div class="fgp"><label class="fl">Validade / Fim do contrato</label><input class="fi" id="fcv2" type="date" placeholder="Vazio = indeterminado"></div>
+          <div class="fgp"><label class="fl">Período de experiência</label><select class="fi"><option>Não aplicável</option><option>30 dias</option><option>60 dias</option><option>90 dias</option></select></div>
+        </div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--czdd);margin:.7rem 0 .5rem">Férias</div>
+        <div class="fg">
+          <div class="fgp"><label class="fl">Dias de direito / ano</label><input class="fi" id="fer-dir" type="number" value="30" oninput="const d=parseInt(this.value)||30;const g=parseInt(document.getElementById('fer-goz').value)||0;document.getElementById('fer-saldo').value=Math.max(0,d-g);"></div>
+          <div class="fgp"><label class="fl">Dias já gozados (ano actual)</label><input class="fi" id="fer-goz" type="number" value="0" oninput="const d=parseInt(document.getElementById('fer-dir').value)||30;const g=parseInt(this.value)||0;document.getElementById('fer-saldo').value=Math.max(0,d-g);"></div>
+          <div class="fgp"><label class="fl">Dias a gozar (saldo)</label><input class="fi" id="fer-saldo" readonly style="background:var(--bzb);color:var(--bz);font-weight:700;font-family:'IBM Plex Mono',monospace" value="30"></div>
+          <div class="fgp"><label class="fl">Data prevista das férias</label><input class="fi" id="fer-data" type="date"></div>
+        </div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--czdd);margin:.7rem 0 .5rem">Benefícios adicionais</div>
+        <div class="fg">
           <div class="fgp"><label class="fl">Seguro de saúde (MZN/mês)</label><input class="fi" id="fbs" type="number" value="0"></div>
           <div class="fgp"><label class="fl">Sub. educação filhos (MZN/mês)</label><input class="fi" id="fbe" type="number" value="0"></div>
           <div class="fgp"><label class="fl">Fundo de reforma/pensão (MZN/mês)</label><input class="fi" id="fbp" type="number" value="0"></div>
-          <div class="fgp"><label class="fl">Viatura de serviço</label><select class="fi"><option value="nao">Não</option><option value="sim">Sim — incluída no pacote</option></select></div>
+          <div class="fgp"><label class="fl">Viatura de serviço</label><select class="fi"><option value="nao">Não</option><option value="sim">Sim</option></select></div>
         </div>
-        <div class="fgp"><label class="fl">Notas sobre benefícios e cálculo</label><textarea class="fi" rows="2" placeholder="Isenções, condições especiais..."></textarea></div>
+        <div class="fgp"><label class="fl">Notas RH</label><textarea class="fi" rows="2" placeholder="Observações, cláusulas especiais..."></textarea></div>
+      </div>
+      <!-- Tab 5 — Ligar a Métodos de Cálculo -->
+      <div class="fntc" id="fp5">
+        <div class="al abz">🔗 Ligue este funcionário aos métodos de cálculo activos. Só as ligações activas são aplicadas automaticamente na folha.</div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--czdd);margin-bottom:.6rem">Método de cálculo IRPS</div>
+        <div class="fg" style="margin-bottom:.8rem">
+          <div class="fgp"><label class="fl">Método activo</label>
+            <select class="fi" id="fmi"><option value="tabela">Tabela de retenção — Lei 11/2025 (art. 65-A)</option><option value="isento">Isento de IRPS (justificação obrigatória)</option><option value="liberatoria">Taxa liberatória fixa</option></select>
+          </div>
+          <div class="fgp"><label class="fl">Sujeito a INSS?</label>
+            <select class="fi" id="fmn"><option value="sim">Sim — 3% (trab.) + 4% (entid.)</option><option value="nao">Não sujeito (justificação)</option></select>
+          </div>
+        </div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--czdd);margin-bottom:.5rem">Ligações activas — fórmulas configuradas</div>
+        <div style="display:flex;flex-direction:column;gap:.4rem">
+          <div class="ligar-item"><div><div class="ligar-nome">IRPS — Tabela Art. 65-A (Lei 11/2025)</div><div class="ligar-formula">Activa por omissão</div></div><label class="toggle-sw"><input type="checkbox" id="lk-irps" checked><span class="toggle-slider"></span></label></div>
+          <div class="ligar-item"><div><div class="ligar-nome">INSS Trabalhador — 3% (base+antiguidade)</div><div class="ligar-formula">Lei n.º 7/2023</div></div><label class="toggle-sw"><input type="checkbox" id="lk-inss" checked><span class="toggle-slider"></span></label></div>
+          <div class="ligar-item"><div><div class="ligar-nome">Sub. Alimentação — excedente sal. mín. sector</div><div class="ligar-formula">IRPS sobre excedente</div></div><label class="toggle-sw"><input type="checkbox" id="lk-salim"><span class="toggle-slider"></span></label></div>
+          <div class="ligar-item"><div><div class="ligar-nome">13.º Mês — tributação autónoma</div><div class="ligar-formula">Não englobado no mês</div></div><label class="toggle-sw"><input type="checkbox" id="lk-13" checked><span class="toggle-slider"></span></label></div>
+          <div class="ligar-item"><div><div class="ligar-nome">Subsídio de Férias — tributação autónoma</div><div class="ligar-formula">Não englobado no mês</div></div><label class="toggle-sw"><input type="checkbox" id="lk-fer" checked><span class="toggle-slider"></span></label></div>
+        </div>
+        <div class="fgp" style="margin-top:.8rem"><label class="fl">Justificação / Notas (isenções, condições especiais)</label><textarea class="fi" rows="2" placeholder="Obrigatório se isento de IRPS ou INSS..."></textarea></div>
       </div>
     </div>
     <div class="mdf"><button class="btn btn-o" onclick="fm('mf')">Cancelar</button><button class="btn btn-bz" onclick="addF()">💾 Guardar funcionário</button></div>
@@ -1173,7 +1184,7 @@ let F=[],AD=[],CT=[],AV=[],FO=[],HX=[],HIST=[],AF=[],FORMULAS=[],RELPERS=[];
 let IDC=1000,funcIdx=0;
 const SALMIN_SECTOR=5447;
 
-const T={dashboard:'Dashboard',folha:'Folha de Salários',historico:'Histórico',recibo:'Recibos',funcionarios:'Funcionários',subsidios:'Subsídios',adiantamentos:'Adiantamentos',faltas:'Faltas e Férias',horasextra:'Horas Extra',alteracoesfuturas:'Alterações Futuras',irps:'Tabela IRPS — Lei 11/2025',inss:'INSS',relatorios:'Relatórios',exportar:'Exportar',contratos:'Contratos',desempenho:'Desempenho',formacao:'Formação',empresa:'Empresa',configuracoes:'Configurações'};
+const T={dashboard:'Dashboard',folha:'Folha de Salários',historico:'Histórico',recibo:'Recibos — dentro da Folha',funcionarios:'Funcionários',subsidios:'Subsídios',adiantamentos:'Adiantamentos',faltas:'Faltas e Férias',horasextra:'Horas Extra',alteracoesfuturas:'Alterações Futuras',irps:'Tabela IRPS — Lei 11/2025',inss:'INSS',relatorios:'Relatórios',exportar:'Exportar',contratos:'Contratos',desempenho:'Desempenho',formacao:'Formação',empresa:'Empresa',configuracoes:'Configurações'};
 const S={dashboard:'Resumo do período actual',folha:'Processamento salarial — Junho 2025',historico:'Arquivo de folhas confirmadas',recibo:'Emissão de recibos de vencimento',funcionarios:'Gestão do quadro de pessoal',subsidios:'Configuração de subsídios e base de incidência',adiantamentos:'Adiantamentos e empréstimos',faltas:'Faltas, férias e licenças',horasextra:'Trabalho suplementar — Lei n.º 23/2007',alteracoesfuturas:'Registe e confirme alterações a aplicar em meses futuros',irps:'Tabela actualizada — vigência 1 Jan 2026',inss:'Contribuições INSS — base: salário base + bónus de antiguidade',relatorios:'Mapas, diferenças e relatórios fiscais',exportar:'Exportação para Excel e PDF',contratos:'Contratos de trabalho',desempenho:'Avaliação de desempenho',formacao:'Formação profissional',empresa:'Dados da entidade empregadora',configuracoes:'Fórmulas de cálculo, ligações e parâmetros'};
 
 // ===== NAVEGAÇÃO =====
@@ -1343,6 +1354,8 @@ function addF(){
     inssNum:document.getElementById('fins').value||'—',
     admissao:document.getElementById('fad').value||'—',
     contrato:document.getElementById('fco').value,
+    cini:document.getElementById('fci').value||'',
+    cval:document.getElementById('fcv').value||'',
     salario:sal,dep:parseInt(document.getElementById('fdep').value)||0,
     subT:parseFloat(document.getElementById('fst').value)||0,
     subA:parseFloat(document.getElementById('fsa').value)||0,
@@ -1354,9 +1367,14 @@ function addF(){
     metodN:document.getElementById('fmn').value,
     afixo:parseFloat(document.getElementById('faf').value)||0,
     efixo:parseFloat(document.getElementById('fef').value)||0,
+    dfix:parseFloat(document.getElementById('fdf').value)||0,
     seg:parseFloat(document.getElementById('fbs').value)||0,
     edu:parseFloat(document.getElementById('fbe').value)||0,
-    pens:parseFloat(document.getElementById('fbp').value)||0
+    pens:parseFloat(document.getElementById('fbp').value)||0,
+    ferDir:parseInt(document.getElementById('fer-dir').value)||30,
+    ferGoz:parseInt(document.getElementById('fer-goz').value)||0,
+    ferData:document.getElementById('fer-data').value||'',
+    faltas:[],hxs:[]
   });
   fm('mf');limpF();att();st(nome+' ('+id+') adicionado','ok');
 }
@@ -1382,12 +1400,10 @@ function rF(){
   if(!F.length){
     tb.innerHTML='<tr><td colspan="8"><div class="em"><div class="ei">👥</div><div class="et">Sem funcionários</div><div class="ed">Clique em "+ Novo funcionário".</div></div></td></tr>';
     if(cnt)cnt.textContent='';
-    document.getElementById('fich-detalhe').style.display='none';
-    document.getElementById('nav-pos').textContent='—';
     return;
   }
   if(cnt)cnt.textContent=F.length+' colaborador'+(F.length!==1?'es':'');
-  tb.innerHTML=F.map((f,i)=>`<tr style="cursor:pointer" onclick="selFunc(${i})">
+  tb.innerHTML=F.map((f,i)=>`<tr style="cursor:pointer" onclick="editarFunc(${i})">
     <td><span class="fid">${f.id}</span></td>
     <td><div style="font-weight:600;color:var(--czdd)">${f.nome}</div><div style="font-size:.67rem;color:var(--tx3)">${f.email}</div></td>
     <td>${f.cargo}</td><td>${f.dept}</td>
@@ -1406,52 +1422,13 @@ function rF(){
 
 function selFunc(i){
   funcIdx=i;
-  mostrarFicha(F[i]);
-  document.getElementById('nav-pos').textContent=(i+1)+' / '+F.length;
+  am('mf');
+  setTimeout(()=>abrirFuncNoModal(i),50);
 }
 
-function mostrarFicha(f){
-  if(!f)return;
-  const d=document.getElementById('fich-detalhe');
-  d.style.display='block';
-  document.getElementById('fich-id-show').textContent=f.id;
-  document.getElementById('fich-nome-show').textContent=f.nome;
-  document.getElementById('fich-cargo-show').textContent=f.cargo+' · '+f.dept;
-  // Dados pessoais
-  document.getElementById('vw-nuit').textContent=f.nuit;
-  document.getElementById('vw-bi').textContent=f.bi;
-  document.getElementById('vw-nasc').textContent=f.nasc;
-  document.getElementById('vw-gen').textContent=f.gen==='M'?'Masculino':'Feminino';
-  document.getElementById('vw-tel').textContent=f.tel;
-  document.getElementById('vw-email').textContent=f.email;
-  document.getElementById('vw-dept').textContent=f.dept;
-  document.getElementById('vw-adm').textContent=f.admissao;
-  document.getElementById('vw-cont').textContent=f.contrato;
-  document.getElementById('vw-inss').textContent=f.inssNum;
-  // Remunerações
-  document.getElementById('vw-sal').textContent=fmt(f.salario)+' MZN';
-  document.getElementById('vw-dep').textContent=f.dep+' dependente'+(f.dep!==1?'s':'');
-  document.getElementById('vw-subt').textContent=fmt(f.subT)+' MZN';
-  document.getElementById('vw-suba').textContent=fmt(f.subA)+' MZN';
-  document.getElementById('vw-subo').textContent=fmt(f.subO)+' MZN';
-  document.getElementById('vw-banco').textContent=f.banco;
-  document.getElementById('vw-conta').textContent=f.conta;
-  // Deduções
-  document.getElementById('vw-irpsm').textContent=f.metodI==='tabela'?'Tabela Lei 11/2025':f.metodI==='isento'?'Isento':'Taxa liberatória';
-  document.getElementById('vw-inssm').textContent=f.metodN==='sim'?'Sim (3%+4%)':'Não sujeito';
-  document.getElementById('vw-afixo').textContent=fmt(f.afixo)+' MZN';
-  document.getElementById('vw-efixo').textContent=fmt(f.efixo)+' MZN';
-  // Benefícios
-  document.getElementById('vw-seg').textContent=fmt(f.seg||0)+' MZN';
-  document.getElementById('vw-edu').textContent=fmt(f.edu||0)+' MZN';
-  document.getElementById('vw-pens').textContent=fmt(f.pens||0)+' MZN';
-}
+// mostrarFicha() substituída por abrirFuncNoModal()
 
-function navFunc(dir){
-  if(!F.length)return;
-  funcIdx=(funcIdx+dir+F.length)%F.length;
-  selFunc(funcIdx);
-}
+// navFunc() substituída por navFuncModal() no modal
 
 function srchFunc(){
   const qId=(document.getElementById('srch-id').value||'').toLowerCase();
@@ -1466,29 +1443,138 @@ function srchFunc(){
 
 function editFunc(){
   if(!F[funcIdx])return;
-  const f=F[funcIdx];
   am('mf');
-  setTimeout(()=>{
-    document.getElementById('fn').value=f.nome;
-    document.getElementById('fn2').value=f.nuit;
-    document.getElementById('fbi').value=f.bi;
-    document.getElementById('fca').value=f.cargo;
-    document.getElementById('fde').value=f.dept;
-    document.getElementById('fad').value=f.admissao;
-    document.getElementById('fsal').value=f.salario;
-    document.getElementById('fst').value=f.subT;
-    document.getElementById('fsa').value=f.subA;
-    document.getElementById('fant').value=f.ant||0;
-    document.getElementById('fso').value=f.subO;
-    document.getElementById('fdep').value=f.dep;
-    document.getElementById('fid').value=f.id;
-    document.getElementById('mf-id').textContent=f.id;
-    document.getElementById('mf-title').textContent='Editar — '+f.nome;
-    pc();
-  },50);
+  setTimeout(()=>abrirFuncNoModal(funcIdx),50);
+}
+
+function editarFunc(i){
+  funcIdx=i;
+  am('mf');
+  setTimeout(()=>abrirFuncNoModal(i),50);
 }
 
 function delF(i){const n=F[i].nome;F.splice(i,1);if(funcIdx>=F.length)funcIdx=Math.max(0,F.length-1);att();st(n+' removido','ok');}
+
+// Navegação no modal
+function navFuncModal(dir){
+  if(!F.length)return;
+  // Guardar dados actuais antes de navegar
+  funcIdx=(funcIdx+dir+F.length)%F.length;
+  abrirFuncNoModal(funcIdx);
+}
+
+function abrirFuncNoModal(i){
+  const f=F[i];if(!f)return;
+  funcIdx=i;
+  // Preencher campos
+  document.getElementById('fn').value=f.nome||'';
+  document.getElementById('fn2').value=f.nuit||'';
+  document.getElementById('fbi').value=f.bi||'';
+  document.getElementById('fca').value=f.cargo||'';
+  document.getElementById('fde').value=f.dept||'';
+  document.getElementById('fad').value=f.admissao||'';
+  document.getElementById('fdn').value=f.nasc||'';
+  document.getElementById('fge').value=f.gen||'M';
+  document.getElementById('ftel').value=f.tel||'';
+  document.getElementById('femail').value=f.email||'';
+  document.getElementById('fco').value=f.contrato||'Prazo indeterminado';
+  document.getElementById('fci').value=f.cini||'';
+  document.getElementById('fcv').value=f.cval||'';
+  document.getElementById('fsal').value=f.salario||0;
+  document.getElementById('fdep').value=f.dep||0;
+  document.getElementById('fst').value=f.subT||0;
+  document.getElementById('fsa').value=f.subA||0;
+  document.getElementById('fant').value=f.ant||0;
+  document.getElementById('fso').value=f.subO||0;
+  document.getElementById('fbco').value=f.banco||'BCI';
+  document.getElementById('fcta').value=f.conta||'';
+  document.getElementById('fins').value=f.inssNum||'';
+  document.getElementById('faf').value=f.afixo||0;
+  document.getElementById('fef').value=f.efixo||0;
+  document.getElementById('fdf').value=f.dfix||0;
+  document.getElementById('fmi').value=f.metodI||'tabela';
+  document.getElementById('fmn').value=f.metodN||'sim';
+  document.getElementById('fbs').value=f.seg||0;
+  document.getElementById('fbe').value=f.edu||0;
+  document.getElementById('fbp').value=f.pens||0;
+  document.getElementById('fid').value=f.id;
+  // RH
+  const ferGoz=f.ferGoz||0;
+  const ferDir=f.ferDir||30;
+  document.getElementById('fer-dir').value=ferDir;
+  document.getElementById('fer-goz').value=ferGoz;
+  document.getElementById('fer-saldo').value=ferDir-ferGoz;
+  document.getElementById('fer-data').value=f.ferData||'';
+  // Nav
+  document.getElementById('mf-title').textContent='Ficha: '+f.nome;
+  document.getElementById('mf-id').textContent=f.id;
+  document.getElementById('nav-pos-modal').textContent=(i+1)+' / '+F.length;
+  document.getElementById('nav-pos-modal').style.display='inline';
+  document.getElementById('btn-nav-prev').style.display='inline-block';
+  document.getElementById('btn-nav-next').style.display='inline-block';
+  // Faltas e HX deste func
+  const faltas=F[i].faltas||[];
+  const fp3f=document.getElementById('fp3-faltas-lista');
+  fp3f.innerHTML=faltas.length?faltas.map(x=>`<div style="padding:.15rem 0;border-bottom:1px solid var(--bd)">${x.data} — ${x.tipo}</div>`).join(''):' Sem faltas registadas.';
+  const hxs=F[i].hxs||[];
+  const fp3h=document.getElementById('fp3-hx-lista');
+  fp3h.innerHTML=hxs.length?hxs.map(x=>`<div style="padding:.15rem 0;border-bottom:1px solid var(--bd)">${x.data} — ${x.horas}h — ${x.tipo}</div>`).join(''):'Sem horas extra registadas.';
+  pc();
+}
+
+function addFltFunc(){
+  const data=document.getElementById('flt-data').value;
+  const tipo=document.getElementById('flt-tipo').value;
+  if(!data){st('Seleccione a data da falta','er');return;}
+  if(!F[funcIdx])return;
+  if(!F[funcIdx].faltas)F[funcIdx].faltas=[];
+  F[funcIdx].faltas.push({data,tipo});
+  const fp3f=document.getElementById('fp3-faltas-lista');
+  fp3f.innerHTML=F[funcIdx].faltas.map(x=>`<div style="padding:.15rem 0;border-bottom:1px solid var(--bd)">${x.data} — ${x.tipo}</div>`).join('');
+  document.getElementById('flt-data').value='';
+  st('Falta registada','ok');
+}
+
+function addHxFunc(){
+  const data=document.getElementById('hx-data').value;
+  const horas=parseFloat(document.getElementById('hx-horas').value)||0;
+  const tipo=document.getElementById('hx-tipo').value;
+  if(!data||!horas){st('Preencha data e horas','er');return;}
+  if(!F[funcIdx])return;
+  if(!F[funcIdx].hxs)F[funcIdx].hxs=[];
+  F[funcIdx].hxs.push({data,horas,tipo});
+  const fp3h=document.getElementById('fp3-hx-lista');
+  fp3h.innerHTML=F[funcIdx].hxs.map(x=>`<div style="padding:.15rem 0;border-bottom:1px solid var(--bd)">${x.data} — ${x.horas}h — ${x.tipo}</div>`).join('');
+  document.getElementById('hx-data').value='';
+  document.getElementById('hx-horas').value='';
+  st('Horas extra registadas','ok');
+}
+
+function filtHist(){
+  const nome=(document.getElementById('hist-nome').value||'').toLowerCase();
+  const id=(document.getElementById('hist-id').value||'').toLowerCase();
+  const mes=document.getElementById('hist-mes').value||'';
+  const ano=document.getElementById('hist-ano').value||'';
+  // Re-renderizar histórico com filtros
+  rH(nome,id,mes,ano);
+}
+
+function limpaFiltHist(){
+  ['hist-nome','hist-id','hist-mes','hist-ano'].forEach(x=>{const e=document.getElementById(x);if(e)e.value='';});
+  rH();
+}
+
+function filtRecibF(){
+  const nome=(document.getElementById('rc-nome').value||'').toLowerCase();
+  const nf=(document.getElementById('rc-nf').value||'').toLowerCase();
+  const sel=document.getElementById('rc-f');
+  if(!sel)return;
+  const opts=F.filter(f=>
+    (!nome||f.nome.toLowerCase().includes(nome))&&
+    (!nf||f.id.toLowerCase().includes(nf))
+  );
+  sel.innerHTML='<option value="">Seleccionar...</option>'+opts.map(f=>`<option value="${f.nome}">${f.nome} (${f.id})</option>`).join('');
+}
 
 // ===== FOLHA =====
 function cf(){
@@ -1542,7 +1628,7 @@ function confF(){
     m.aplicado=true;
   });
   rAF();
-  HIST.unshift({id:Date.now(),periodo:'Junho 2025',data:new Date().toLocaleDateString('pt-MZ'),nf:F.length,
+  HIST.unshift({id:Date.now(),periodo:'Junho 2025',mes:'2025-06',ano:'2025',data:new Date().toLocaleDateString('pt-MZ'),nf:F.length,
     br:F.reduce((s,f)=>s+(f.salario+f.subT+f.subA+(f.ant||0)+f.subO),0),
     liq:F.reduce((s,f)=>{
       const b=f.salario+f.subT+f.subA+(f.ant||0)+f.subO;
@@ -1555,18 +1641,46 @@ function confF(){
 }
 
 // ===== HISTÓRICO =====
-function rH(){
+function rH(fNome,fId,fMes,fAno){
   const div=document.getElementById('h-lista');
+  if(!div)return;
   if(!HIST.length){div.innerHTML='<div class="em"><div class="ei">🗂️</div><div class="et">Sem histórico</div><div class="ed">As folhas confirmadas aparecem aqui.</div></div>';return;}
-  div.innerHTML=HIST.map(h=>`
+  let lista=HIST;
+  if(fNome||fId||fMes||fAno){
+    lista=HIST.filter(h=>{
+      const snap=h.snap||[];
+      const temFunc=!fNome&&!fId||snap.some(f=>
+        (fNome?f.nome.toLowerCase().includes(fNome):true)&&
+        (fId?f.id.toLowerCase().includes(fId):true)
+      );
+      const temMes=!fMes||h.mes===fMes;
+      const temAno=!fAno||h.ano===fAno;
+      return temFunc&&temMes&&temAno;
+    });
+  }
+  if(!lista.length){div.innerHTML='<div class="al ai">ℹ️ Nenhuma folha encontrada com os filtros aplicados.</div>';return;}
+  div.innerHTML=lista.map(h=>`
     <div class="hc">
       <div><div class="hm">${h.periodo}</div><div class="hmt">Processada em ${h.data} · ${h.nf} funcionários</div></div>
       <div><div class="hb">Bruto: MZN ${fmt(h.br)}</div><div class="hl">Líquido: MZN ${fmt(h.liq)}</div></div>
       <div style="display:flex;gap:.38rem;margin-left:1rem">
         <button class="btn btn-o btn-xs" onclick="st('Relatório de ${h.periodo} gerado','ok')">📄</button>
-        <button class="btn btn-o btn-xs" onclick="nv('recibo',null)">🧾</button>
+        <button class="btn btn-o btn-xs" onclick="verRecibHist('${h.periodo}')">🧾</button>
       </div>
     </div>`).join('');
+}
+
+function verRecibHist(periodo){
+  // Ir para aba recibos dentro da folha
+  nv('folha',null);
+  setTimeout(()=>{
+    document.querySelectorAll('#ps-folha .tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('#ps-folha .tc').forEach(c=>c.classList.remove('active'));
+    const tabs=document.querySelectorAll('#ps-folha .tab');
+    if(tabs[2])tabs[2].classList.add('active');
+    const tcs=document.querySelectorAll('#ps-folha .tc');
+    if(tcs[2])tcs[2].classList.add('active');
+  },80);
 }
 
 // ===== RECIBOS =====
@@ -1616,11 +1730,18 @@ function gr(){
 }
 
 function grN(nome){
-  nv('recibo',null);
+  nv('folha',null);
   setTimeout(()=>{
+    // Activar aba recibos dentro da folha
+    const tabs=document.querySelectorAll('#ps-folha .tab');
+    const tcs=document.querySelectorAll('#ps-folha .tc');
+    tabs.forEach(t=>t.classList.remove('active'));
+    tcs.forEach(c=>c.classList.remove('active'));
+    if(tabs[2])tabs[2].classList.add('active');
+    if(tcs[2])tcs[2].classList.add('active');
     const s=document.getElementById('rc-f');
     if(s){s.value=nome;gr();}
-  },80);
+  },100);
 }
 
 // ===== DASHBOARD =====
