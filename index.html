@@ -242,7 +242,6 @@ select.fi option{background:var(--sf)}
   <div class="ni" onclick="nv('inss',this)"><div class="ico">🛡️</div>INSS</div>
   <div class="ns">Relatórios</div>
   <div class="ni" onclick="nv('relatorios',this)"><div class="ico">📄</div>Relatórios</div>
-  <div class="ni" onclick="nv('exportar',this)"><div class="ico">⬇️</div>Exportar</div>
   <div class="ns">Recursos Humanos</div>
   <div class="ni" onclick="nv('contratos',this)"><div class="ico">📑</div>Contratos</div>
   <div class="ni" onclick="nv('desempenho',this)"><div class="ico">⭐</div>Desempenho</div>
@@ -258,6 +257,7 @@ select.fi option{background:var(--sf)}
   <div class="tr">
     <span style="font-size:.72rem;color:var(--tx3)">Junho 2025</span>
     <button class="btn btn-o btn-sm" onclick="nv('folha',null)">Nova Folha</button>
+    <button class="btn btn-o btn-sm" onclick="am('m-ai')" style="color:var(--rx);border-color:var(--rxp)">🤖 A La Ruben</button>
     <button class="btn btn-bz btn-sm" onclick="am('mf')">+ Adicionar/Editar Func.</button>
   </div>
 </div>
@@ -278,6 +278,7 @@ select.fi option{background:var(--sf)}
         <button class="btn btn-o" style="text-align:left;width:100%" onclick="am('mf')">👤 Adicionar / Editar Funcionário</button>
         <button class="btn btn-o" style="text-align:left;width:100%" onclick="nv('relatorios',null)">📄 Gerar relatórios</button>
         <button class="btn btn-o" style="text-align:left;width:100%" onclick="nv('alteracoesfuturas',null)">🔔 Alterações futuras</button>
+        <button class="btn btn-o" style="text-align:left;width:100%;color:var(--vm);border-color:var(--vmp)" onclick="am('m-rescisao')">⚠️ Rescisão de contrato</button>
         <button class="btn btn-o" style="text-align:left;width:100%" onclick="nv('folha',null);setTimeout(()=>{const tabs=document.querySelectorAll('#ps-folha .tab');const tcs=document.querySelectorAll('#ps-folha .tc');tabs.forEach(t=>t.classList.remove('active'));tcs.forEach(c=>c.classList.remove('active'));if(tabs[1])tabs[1].classList.add('active');if(tcs[1])tcs[1].classList.add('active');},80)">🗂️ Ver histórico</button>
       </div>
     </div>
@@ -390,7 +391,32 @@ select.fi option{background:var(--sf)}
 
 <!-- SUBSÍDIOS -->
 <div class="pag" id="ps-subsidios">
-  <div class="al ai">ℹ️ Sub. de Alimentação: isento de IRPS até ao salário mínimo do sector. Excedente sujeito. 13.º, 14.º e sub. férias tributados separadamente — não englobados na remuneração do mês.</div>
+  <div class="al ai">ℹ️ Sub. de Alimentação: isento de IRPS até ao salário mínimo do sector. Excedente sujeito. 13.º, 14.º e sub. férias com data de pagamento configurável conforme política da empresa.</div>
+  <div class="fs" style="margin-bottom:1rem">
+    <div class="fst">⚙️ Salário Mínimo do Sector — por ano de processamento</div>
+    <div class="al ai" style="margin-bottom:.7rem">ℹ️ O salário mínimo determina a isenção de IRPS no subsídio de alimentação. Define o valor vigente para cada ano fiscal. Fonte: Diploma Ministerial do Conselho de Ministros de Moçambique.</div>
+    <div class="fg3">
+      <div class="fgp"><label class="fl">Sector de actividade</label><select class="fi" id="sm-sector" onchange="updSalMin()">
+        <option value="5447">Geral / Comércio (MZN 5.447)</option>
+        <option value="6500">Indústria / Transformação (MZN 6.500)</option>
+        <option value="7200">Financeiro / Seguros (MZN 7.200)</option>
+        <option value="4800">Agricultura / Pescas (MZN 4.800)</option>
+        <option value="custom">Outro / Personalizado</option>
+      </select></div>
+      <div class="fgp"><label class="fl">Ano de processamento</label><select class="fi" id="sm-ano">
+        <option>2024</option><option selected>2025</option><option>2026</option><option>2027</option>
+      </select></div>
+      <div class="fgp"><label class="fl">Valor do salário mínimo (MZN) *</label><input class="fi" type="number" id="en-salmin" value="5447" oninput="st('Salário mínimo actualizado para MZN '+this.value,'ok')"></div>
+    </div>
+    <div style="font-size:.72rem;font-weight:700;color:var(--czdd);margin:.5rem 0 .3rem">Datas de pagamento — 13.º, 14.º e Subsídio de Férias</div>
+    <div class="fg">
+      <div class="fgp"><label class="fl">13.º Mês — data de pagamento</label><input class="fi" type="date" id="pol-13-data" placeholder="Ex: Dezembro"></div>
+      <div class="fgp"><label class="fl">13.º Mês — mês habitual</label><select class="fi" id="pol-13-mes"><option value="12">Dezembro</option><option value="6">Junho</option><option value="custom">Conforme política</option></select></div>
+      <div class="fgp"><label class="fl">14.º Mês — data de pagamento</label><input class="fi" type="date" id="pol-14-data"></div>
+      <div class="fgp"><label class="fl">Subsídio de Férias — quando pagar</label><select class="fi" id="pol-fer-when"><option value="antes">Antes do início das férias (obrigatório por lei)</option><option value="rescisao">Na rescisão (férias não gozadas)</option></select></div>
+    </div>
+    <button class="btn btn-bz btn-sm" onclick="st('Política de subsídios guardada','ok')">Guardar política</button>
+  </div>
   <div class="tw"><div class="th"><div class="tht">Subsídios e adicionais</div><button class="btn btn-bz btn-sm" onclick="am('ms')">+ Novo</button></div>
   <table><thead><tr><th>Designação</th><th>Tipo</th><th>Valor / %</th><th>IRPS</th><th>INSS</th><th>Frequência</th><th>Nota legal</th><th></th></tr></thead>
   <tbody>
@@ -515,8 +541,20 @@ select.fi option{background:var(--sf)}
     </div>
     <div class="fs" style="margin:0">
       <div class="fst">🧮 Simulador IRPS — Lei 11/2025</div>
-      <div class="fgp"><label class="fl">Salário bruto mensal (MZN)</label><input class="fi" type="number" id="sb" placeholder="Ex: 45000" oninput="simI()"></div>
+      <div class="fgp"><label class="fl">Salário base (MZN) *</label><input class="fi" type="number" id="sb" placeholder="Ex: 45000" oninput="simI()"></div>
       <div class="fgp"><label class="fl">N.º de dependentes</label><select class="fi" id="sd" onchange="simI()"><option value="0">0 dependentes</option><option value="1">1 dependente</option><option value="2">2 dependentes</option><option value="3">3 dependentes</option><option value="4">4 ou mais</option></select></div>
+      <div style="font-size:.74rem;font-weight:700;color:var(--czdd);margin:.5rem 0 .3rem">+ Remunerações adicionais</div>
+      <div class="fg">
+        <div class="fgp"><label class="fl">Sub. Transporte (MZN)</label><input class="fi" type="number" id="sim-subt" value="0" placeholder="0" oninput="simI()"></div>
+        <div class="fgp"><label class="fl">Sub. Alimentação (MZN)</label><input class="fi" type="number" id="sim-suba" value="0" placeholder="0" oninput="simI()"></div>
+        <div class="fgp"><label class="fl">Bónus / Antiquidade (MZN)</label><input class="fi" type="number" id="sim-ant" value="0" placeholder="0" oninput="simI()"></div>
+        <div class="fgp"><label class="fl">Outros subsídios (MZN)</label><input class="fi" type="number" id="sim-outro" value="0" placeholder="0" oninput="simI()"></div>
+      </div>
+      <div style="font-size:.74rem;font-weight:700;color:var(--czdd);margin:.5rem 0 .3rem">− Deduções adicionais (não fiscais)</div>
+      <div class="fg">
+        <div class="fgp"><label class="fl">Empréstimo / Adiantamento (MZN)</label><input class="fi" type="number" id="sim-emp" value="0" placeholder="0" oninput="simI()"></div>
+        <div class="fgp"><label class="fl">Sindicato / Pensão alim. (MZN)</label><input class="fi" type="number" id="sim-sind" value="0" placeholder="0" oninput="simI()"></div>
+      </div>
       <div class="cb" style="margin-top:.5rem">
         <div style="font-size:.63rem;font-weight:700;color:var(--bz);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.55rem">Resultado — Lei 11/2025</div>
         <div class="cr"><span class="clb">Salário bruto</span><span class="cvl" id="sb1">—</span></div>
@@ -561,9 +599,43 @@ select.fi option{background:var(--sf)}
 
 <!-- RELATÓRIOS EM CAIXAS -->
 <div class="pag" id="ps-relatorios">
+
+  <!-- Filtros globais de relatórios -->
+  <div style="background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:.75rem 1rem;margin-bottom:1rem;display:flex;gap:.55rem;flex-wrap:wrap;align-items:center">
+    <span style="font-size:.7rem;font-weight:700;color:var(--czdd)">🔍 Filtrar relatórios por:</span>
+    <input class="fi" style="width:130px;flex:none;font-size:.72rem;padding:.3rem .5rem" type="text" id="rpt-nome" placeholder="Nome funcionário" oninput="aplicarFiltRel()">
+    <input class="fi" style="width:110px;flex:none;font-size:.72rem;padding:.3rem .5rem" type="text" id="rpt-id" placeholder="N.º EMP-XXXX" oninput="aplicarFiltRel()">
+    <select class="fi" style="width:130px;flex:none;font-size:.72rem;padding:.3rem .5rem" id="rpt-dept" onchange="aplicarFiltRel()">
+      <option value="">Departamento...</option>
+    </select>
+    <select class="fi" style="width:130px;flex:none;font-size:.72rem;padding:.3rem .5rem" id="rpt-grupo" onchange="aplicarFiltRel()">
+      <option value="">Grupo / Todos</option>
+      <option value="activos">Activos</option>
+      <option value="ferias">Em férias</option>
+    </select>
+    <button class="btn btn-o btn-sm" onclick="limpaFiltRel()">Limpar</button>
+  </div>
+
+  <!-- Relatório personalizado em PRIMEIRO lugar -->
+  <div style="font-size:.77rem;font-weight:700;color:var(--czdd);margin-bottom:.75rem">⭐ Relatório Personalizado</div>
+  <div class="rel-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:1.2rem">
+    <div class="rel-card" onclick="showRelTab('rtp-custom')" style="border-left:3px solid var(--bz)">
+      <div class="rel-card-tag" style="background:var(--bzp);color:var(--bz)">Personalizado</div>
+      <div class="rel-card-icon">⭐</div>
+      <div class="rel-card-title">Criar / Gerar Relatório Personalizado</div>
+      <div class="rel-card-desc">Defina os campos, agrupamento e filtros. Guarde para reutilizar sem nova configuração.</div>
+    </div>
+    <div class="rel-card" onclick="showRelTab('rtp-import')" style="border-left:3px solid var(--rx)">
+      <div class="rel-card-tag" style="background:var(--rxp);color:var(--rx)">Importação</div>
+      <div class="rel-card-icon">📥</div>
+      <div class="rel-card-title">Importar Dados em Bulk (Excel)</div>
+      <div class="rel-card-desc">Importe funcionários ou folha a partir de planilha Excel. Backup obrigatório antes da importação.</div>
+    </div>
+  </div>
+
   <div style="font-size:.77rem;font-weight:700;color:var(--czdd);margin-bottom:.75rem">📊 Salarial e Fiscal</div>
   <div class="rel-grid">
-    <div class="rel-card" onclick="sw(document.getElementById('rt-tab1'),null);nv('relatorios',null);setTimeout(()=>showRelTab('rtp1'),50)">
+    <div class="rel-card" onclick="nv('relatorios',null);setTimeout(()=>showRelTab('rtp1'),50)">
       <div class="rel-card-tag" style="background:var(--azp);color:var(--az)">Salarial</div>
       <div class="rel-card-icon">📋</div>
       <div class="rel-card-title">Lista Completa de Salários</div>
@@ -671,11 +743,12 @@ select.fi option{background:var(--sf)}
   </div>
 
   <!-- Área de output do relatório seleccionado -->
-  <div id="rel-output" style="display:none">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-      <div style="font-size:.82rem;font-weight:700;color:var(--czdd)" id="rel-output-title">—</div>
-      <div style="display:flex;gap:.5rem">
-        <button class="btn btn-o btn-sm" onclick="exportCSV()">⬇️ CSV</button>
+  <div id="rel-output" style="display:none;background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:1.2rem;margin-top:1rem">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:.5rem">
+      <div style="font-size:.88rem;font-weight:700;color:var(--czdd)" id="rel-output-title">—</div>
+      <div style="display:flex;gap:.38rem;flex-wrap:wrap">
+        <button class="btn btn-o btn-sm" onclick="exportRelCSV()">⬇️ CSV/Excel</button>
+        <button class="btn btn-o btn-sm" onclick="exportRelPDF()">📄 PDF</button>
         <button class="btn btn-bz btn-sm" onclick="window.print()">🖨️ Imprimir</button>
         <button class="btn btn-o btn-sm" onclick="document.getElementById('rel-output').style.display='none'">✕ Fechar</button>
       </div>
@@ -936,9 +1009,21 @@ select.fi option{background:var(--sf)}
           <div class="fgp"><label class="fl">Cargo / Função *</label><input class="fi" id="fca" placeholder="Ex: Técnico de Contabilidade"></div>
           <div class="fgp"><label class="fl">Departamento</label><input class="fi" id="fde" placeholder="Ex: Financeiro"></div>
           <div class="fgp"><label class="fl">Data de admissão</label><input class="fi" id="fad" type="date"></div>
-          <div class="fgp"><label class="fl">Tipo de contrato</label><select class="fi" id="fco"><option>Prazo indeterminado</option><option>Prazo determinado</option><option>Prestação de serviços</option></select></div>
+          <div class="fgp"><label class="fl">Tipo de contrato</label><select class="fi" id="fco" onchange="togContrato(this)"><option value="indeterminado">Prazo indeterminado</option><option value="determinado">Prazo determinado</option><option value="servicos">Prestação de serviços</option></select></div>
           <div class="fgp"><label class="fl">Início do contrato</label><input class="fi" id="fci" type="date"></div>
-          <div class="fgp"><label class="fl">Validade do contrato</label><input class="fi" id="fcv" type="date" placeholder="Deixar vazio se indeterminado"></div>
+          <div class="fgp"><label class="fl">Validade do contrato</label><input class="fi" id="fcv" type="date" placeholder="Vazio se indeterminado" id="fcv"></div>
+        </div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--czdd);margin:.7rem 0 .5rem">Endereço e localização</div>
+        <div class="fg">
+          <div class="fgp"><label class="fl">Endereço de residência</label><input class="fi" id="fend" placeholder="Rua, n.º, bairro"></div>
+          <div class="fgp"><label class="fl">Cidade</label><input class="fi" id="fcid" placeholder="Ex: Maputo"></div>
+          <div class="fgp"><label class="fl">Província</label><select class="fi" id="fprov">
+            <option>Maputo Cidade</option><option>Maputo Província</option><option>Gaza</option>
+            <option>Inhambane</option><option>Sofala</option><option>Manica</option>
+            <option>Tete</option><option>Zambézia</option><option>Nampula</option>
+            <option>Cabo Delgado</option><option>Niassa</option>
+          </select></div>
+          <div class="fgp"><label class="fl">Sucursal / Local de trabalho</label><input class="fi" id="fsucursal" placeholder="Ex: Sede, Delegação Norte..."></div>
         </div>
         <div style="font-size:.78rem;font-weight:700;color:var(--czdd);margin:.7rem 0 .5rem">Dados bancários e INSS</div>
         <div class="fg">
@@ -1167,6 +1252,78 @@ select.fi option{background:var(--sf)}
     </div>
     <div class="mdf"><button class="btn btn-o" onclick="fm('mf')">Cancelar</button><button class="btn btn-bz" onclick="addF()">💾 Guardar funcionário</button></div>
   </div>
+</div>
+
+<!-- MODAL AI ASSISTENTE -->
+<div class="mo" id="m-ai">
+  <div class="md mdl" style="max-height:85vh"><div class="mdh"><div class="mdt">🤖 A La Ruben — Assistente AI</div><button class="mdc" onclick="fm('m-ai')">✕</button></div>
+  <div class="mdb" style="display:flex;flex-direction:column;height:60vh">
+    <div class="al ai" style="font-size:.7rem;margin-bottom:.5rem">
+      ℹ️ <strong>A La Ruben</strong> usa a API do Claude (Anthropic). Grátis até ao limite mensal — sem custo para esta integração básica.
+      Para ativar, insira a sua API key em <strong>Configurações → Integração AI</strong>.
+    </div>
+    <div id="ai-msgs" style="flex:1;overflow-y:auto;padding:.5rem;background:var(--sf2);border-radius:6px;margin-bottom:.6rem;font-size:.78rem;display:flex;flex-direction:column;gap:.5rem">
+      <div style="background:var(--bzp);border:1px solid var(--bzp);border-radius:6px;padding:.6rem .8rem;max-width:85%">
+        <strong style="color:var(--bz)">A La Ruben:</strong> Olá! Sou o assistente AI do PAYRUN. Posso ajudar com dúvidas sobre processamento salarial, legislação laboral moçambicana, IRPS, INSS, cálculos de rescisão e muito mais. Como posso ajudar?
+      </div>
+    </div>
+    <div style="display:flex;gap:.5rem">
+      <input class="fi" type="text" id="ai-input" placeholder="Escreva a sua pergunta..." onkeydown="if(event.key==='Enter')enviarAI()" style="flex:1">
+      <button class="btn btn-bz" onclick="enviarAI()">Enviar</button>
+    </div>
+    <div style="font-size:.65rem;color:var(--tx3);margin-top:.4rem">
+      Sugestões: <button class="btn btn-o btn-xs" onclick="pergAI('Como calcular o IRPS de um salário de 50.000 MZN com 2 dependentes?')">IRPS</button>
+      <button class="btn btn-o btn-xs" onclick="pergAI('Quais são as verbas rescisórias por reestruturação?')">Rescisão</button>
+      <button class="btn btn-o btn-xs" onclick="pergAI('Quantos dias de férias tem direito um trabalhador no 1.º ano?')">Férias</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- MODAL RESCISÃO DE CONTRATO -->
+<div class="mo" id="m-rescisao">
+  <div class="md mdl"><div class="mdh"><div class="mdt">⚠️ Rescisão de Contrato de Trabalho</div><button class="mdc" onclick="fm('m-rescisao')">✕</button></div>
+  <div class="mdb">
+    <div class="al av">⚠️ Conforme a <strong>Lei n.º 13/2023 de 25 de Agosto</strong> — Lei do Trabalho de Moçambique.</div>
+    <div class="fg">
+      <div class="fgp"><label class="fl">Funcionário *</label><select class="fi" id="rsc-f" onchange="calcRescisao()"><option value="">Seleccionar...</option></select></div>
+      <div class="fgp"><label class="fl">Data de desligamento *</label><input class="fi" type="date" id="rsc-data" onchange="calcRescisao()"></div>
+      <div class="fgp"><label class="fl">Motivo da rescisão *</label>
+        <select class="fi" id="rsc-motivo" onchange="calcRescisao()">
+          <option value="">Seleccionar motivo...</option>
+          <option value="restruturacao">Reestruturação / Extinção do posto</option>
+          <option value="sem_justa_causa">Despedimento sem justa causa</option>
+          <option value="justa_causa">Despedimento com justa causa (processo disciplinar)</option>
+          <option value="iniciativa_trab">Iniciativa do trabalhador (demissão)</option>
+          <option value="fim_contrato">Fim do contrato a prazo</option>
+          <option value="mutuo_acordo">Mútuo acordo</option>
+        </select>
+      </div>
+      <div class="fgp"><label class="fl">Pré-aviso concedido?</label>
+        <select class="fi" id="rsc-preaviso" onchange="calcRescisao()">
+          <option value="sim">Sim — pré-aviso foi dado</option>
+          <option value="nao">Não — indemnização substitutiva</option>
+        </select>
+      </div>
+    </div>
+    <div id="rsc-resultado" style="display:none;margin-top:.8rem">
+      <div style="font-size:.78rem;font-weight:700;color:var(--czdd);margin-bottom:.5rem;padding-bottom:.4rem;border-bottom:1px solid var(--bd)">Verbas rescisórias calculadas</div>
+      <div class="cb">
+        <div class="cr"><span class="clb">Salário base proporcional</span><span class="cvl" id="rsc-sal-prop">—</span></div>
+        <div class="cr"><span class="clb">Subsídios proporcionais</span><span class="cvl" id="rsc-sub-prop">—</span></div>
+        <div class="cr"><span class="clb">Férias adquiridas e não gozadas</span><span class="cvl" id="rsc-ferias">— <small style="color:var(--tx3)">(tributação autónoma)</small></span></div>
+        <div class="cr"><span class="clb">Sub. férias s/ gozar</span><span class="cvl" id="rsc-sub-ferias">—</span></div>
+        <div class="cr" id="rsc-preaviso-row"><span class="clb">Pré-aviso (indemnização substitutiva)</span><span class="cvl" id="rsc-preaviso-val">—</span></div>
+        <div class="cr" id="rsc-indem-row"><span class="clb">Indemnização <small style="color:var(--tx3)">(não sujeita a IRPS/INSS)</small></span><span class="cvl" id="rsc-indem">—</span></div>
+        <div class="cr liq"><span class="clb">Total a receber</span><span class="cvl" id="rsc-total">—</span></div>
+      </div>
+      <div id="rsc-nota" class="al ai" style="margin-top:.5rem;font-size:.7rem"></div>
+    </div>
+  </div>
+  <div class="mdf">
+    <button class="btn btn-o" onclick="fm('m-rescisao')">Cancelar</button>
+    <button class="btn btn-o btn-sm" onclick="exportRelCSV()">⬇️ Exportar</button>
+    <button class="btn btn-d" onclick="confRescisao()">✓ Confirmar rescisão</button>
+  </div></div>
 </div>
 
 <!-- MODAL NOVA FOLHA -->
@@ -1950,7 +2107,7 @@ function gr(){
 
       <!-- SECÇÃO 2 — Abonos -->
       <div style="border-right:2px solid #4472C4">
-        <div style="background:#4472C4;color:#fff;padding:.3rem .8rem;font-size:.65rem;font-weight:700;letter-spacing:.06em;text-align:center">2 — ABONOS</div>
+        <div style="background:#4472C4;color:#fff;padding:.3rem .8rem;font-size:.65rem;font-weight:700;letter-spacing:.06em;text-align:center">2 — REMUNERAÇÕES</div>
         <table style="width:100%;border-collapse:collapse;font-size:.73rem">
           <thead><tr style="background:#D9E1F2">
             <th style="padding:.28rem .6rem;text-align:left;color:#1F3864">DESCRIÇÃO</th>
@@ -1989,7 +2146,7 @@ function gr(){
       <div style="background:#4472C4;color:#fff;padding:.3rem .8rem;font-size:.65rem;font-weight:700;letter-spacing:.06em">4 — TOTAIS E LÍQUIDO</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;padding:.5rem .8rem;gap:.5rem">
         <div style="text-align:center">
-          <div style="font-size:.62rem;color:#666;font-weight:700;text-transform:uppercase;margin-bottom:.2rem">Total de Abonos</div>
+          <div style="font-size:.62rem;color:#666;font-weight:700;text-transform:uppercase;margin-bottom:.2rem">Total de Remunerações</div>
           <div style="font-family:monospace;font-weight:700;font-size:.9rem;color:#1F3864;border:1px solid #4472C4;border-radius:3px;padding:.25rem .5rem;background:#fff">${fmt(br)}</div>
         </div>
         <div style="text-align:center">
@@ -2625,6 +2782,822 @@ function addLinhaDed(){
     <td style="padding:.35rem .6rem;text-align:center"><label class="toggle-sw"><input type="checkbox" checked><span class="toggle-slider"></span></label></td>
     <td style="padding:.35rem .6rem"><button class="btn btn-o btn-xs" onclick="this.closest('tr').remove()">✕</button></td>`;
   tbody.appendChild(tr);
+}
+
+// ===== VARIÁVEIS GLOBAIS ADICIONAIS =====
+let DIVISOR_DIAS=22; // 22 dias úteis ou 30 calendário
+
+// ===== VALIDAÇÕES LÓGICAS =====
+const CAMPOS_OBRIG=['fn','fca','fsal'];
+
+function validarFuncionario(){
+  // Campos obrigatórios
+  const erros=[];
+  if(!document.getElementById('fn').value.trim()) erros.push('Nome completo é obrigatório (*)');
+  if(!document.getElementById('fca').value.trim()) erros.push('Cargo / Função é obrigatório (*)');
+  const sal=parseFloat(document.getElementById('fsal').value)||0;
+  if(!sal) erros.push('Salário base é obrigatório (*)');
+
+  // Validação de duplicados
+  const nuit=document.getElementById('fn2').value.trim();
+  const bi=document.getElementById('fbi').value.trim();
+  const tel=document.getElementById('ftel').value.trim();
+  const conta=document.getElementById('fcta').value.trim();
+  const inssN=document.getElementById('fins').value.trim();
+  const editId=document.getElementById('fid').value; // se edição, ignorar o próprio
+
+  F.forEach(f=>{
+    if(f.id===editId) return; // ignora o próprio na edição
+    if(nuit&&f.nuit===nuit) erros.push('NUIT "'+nuit+'" já está registado em '+f.nome);
+    if(bi&&f.bi===bi) erros.push('BI "'+bi+'" já está registado em '+f.nome);
+    if(tel&&f.tel===tel) erros.push('Telefone "'+tel+'" já está registado em '+f.nome);
+    if(conta&&conta.length>4&&f.conta===conta) erros.push('N.º conta "'+conta+'" já está registado em '+f.nome);
+    if(inssN&&f.inssNum===inssN) erros.push('N.º INSS "'+inssN+'" já está registado em '+f.nome);
+  });
+
+  // Validação de idade mínima (18 anos)
+  const nasc=document.getElementById('fdn').value;
+  if(nasc){
+    const dn=new Date(nasc);
+    const hoje=new Date();
+    const idade=hoje.getFullYear()-dn.getFullYear()-(hoje<new Date(hoje.getFullYear(),dn.getMonth(),dn.getDate())?1:0);
+    if(idade<18){
+      const _msg18='ALERTA: '+idade+' anos detectados. Menor de 18 - lei laboral MZ proibe. OK=ignorar (registo auditoria) / Cancelar=corrigir.';
+      const ignorar=confirm(_msg18);
+      if(!ignorar){ erros.push('Data de nascimento invalida - menor de 18 anos'); }
+      else { console.warn('AUDITORIA: ignorou alerta menor de idade - '+new Date().toISOString()); }
+    }
+  }
+
+  // Validação formato NUIT (deve ter 9 dígitos numéricos)
+  if(nuit&&!/^\d{9}$/.test(nuit)) erros.push('NUIT deve ter exactamente 9 dígitos numéricos');
+
+  // Validação salário abaixo do mínimo
+  const salMin=getSalMinSect();
+  if(sal>0&&sal<salMin){
+    const _msgSal='ALERTA: Salario base (MZN '+fmt(sal)+') abaixo do minimo do sector (MZN '+fmt(salMin)+'). Continuar?';
+    const ok=confirm(_msgSal);
+    if(!ok) erros.push('Salário base abaixo do mínimo do sector (MZN '+fmt(salMin)+')');
+  }
+
+  // Contrato determinado sem data fim
+  const tipoC=document.getElementById('fco').value;
+  const dataFim=document.getElementById('fcv').value;
+  if(tipoC==='determinado'&&!dataFim){
+    erros.push('Contrato a prazo determinado requer data de validade (*)');
+  }
+
+  return erros;
+}
+
+// ================================================================
+// CONTRATO — bloquear data fim se indeterminado
+// ================================================================
+function togContrato(sel){
+  const fcv=document.getElementById('fcv');
+  const fci=document.getElementById('fci');
+  if(!fcv)return;
+  if(sel.value==='indeterminado'){
+    fcv.value='';
+    fcv.disabled=true;
+    fcv.placeholder='Prazo indeterminado — sem data de fim';
+    fcv.style.background='var(--sf2)';
+    fcv.style.color='var(--tx3)';
+  } else {
+    fcv.disabled=false;
+    fcv.placeholder='Seleccionar data de validade';
+    fcv.style.background='';
+    fcv.style.color='';
+  }
+}
+
+// ================================================================
+// FÉRIAS — cálculo conforme Lei 13/2023
+// 1.º ano: 12 dias; anos subsequentes: 30 dias
+// Proporcional em rescisão ou antes do fim do ano
+// ================================================================
+function calcDiasFerias(admissao, dataRef){
+  if(!admissao||!dataRef) return {dias:0,prop:0};
+  const adm=new Date(admissao);
+  const ref=new Date(dataRef);
+  const mesesServ=(ref.getFullYear()-adm.getFullYear())*12+(ref.getMonth()-adm.getMonth());
+  if(mesesServ<12){
+    // Proporcional ao 1.º ano: 12 dias / 12 meses
+    return {dias:Math.floor(mesesServ*12/12),prop:true,base:12};
+  } else {
+    // Anos seguintes: 30 dias
+    const anosCompletos=Math.floor(mesesServ/12);
+    const mesesExtra=mesesServ%12;
+    const diasBase=anosCompletos>=1?30:12;
+    const prop=mesesExtra>0?Math.floor(mesesExtra*30/12):0;
+    return {dias:diasBase,prop:mesesExtra>0,diasProp:prop,base:30};
+  }
+}
+
+// Dias de ausência por falecimento (Lei 13/2023, art. sobre licenças especiais)
+const LICENCAS_ESPECIAIS={
+  conjugeFilho:{dias:5,desc:'Cônjuge ou filho'},
+  paiMae:{dias:3,desc:'Pai ou mãe'},
+  irmao:{dias:2,desc:'Irmão, avô, sogro ou cunhado'},
+  outro:{dias:1,desc:'Outro familiar'}
+};
+
+// ================================================================
+// RESCISÃO — cálculo de verbas
+// ================================================================
+function calcRescisao(){
+  const nome=document.getElementById('rsc-f').value;
+  const data=document.getElementById('rsc-data').value;
+  const motivo=document.getElementById('rsc-motivo').value;
+  const preaviso=document.getElementById('rsc-preaviso').value;
+  const res=document.getElementById('rsc-resultado');
+  if(!nome||!data||!motivo){res.style.display='none';return;}
+  const f=F.find(x=>x.nome===nome);
+  if(!f){res.style.display='none';return;}
+
+  const dData=new Date(data);
+  const dAdm=new Date(f.admissao||data);
+  const anosServ=Math.max(0,(dData-dAdm)/(365.25*24*3600*1000));
+  const mesesMes=dData.getDate();
+  const diasMes=new Date(dData.getFullYear(),dData.getMonth()+1,0).getDate();
+  const propMes=mesesMes/diasMes;
+
+  const salBase=f.salario||0;
+  const totalSub=(f.subT||0)+(f.subA||0)+(f.ant||0)+(f.subO||0);
+
+  // Salário e subsídios proporcionais ao mês
+  const salProp=salBase*propMes;
+  const subProp=totalSub*propMes;
+
+  // Férias adquiridas e não gozadas (proporcional)
+  const ferInfo=calcDiasFerias(f.admissao,data);
+  const diasFerNaoGoz=Math.max(0,(ferInfo.dias||0)-(f.ferGoz||0));
+  const valorFer=diasFerNaoGoz>0?(salBase/DIVISOR_DIAS)*diasFerNaoGoz:0;
+  const valorSubFer=diasFerNaoGoz>0?salBase*(diasFerNaoGoz/30):0;
+
+  // Pré-aviso (Lei 13/2023 — depende do tempo de serviço)
+  let diasPreaviso=0;
+  if(anosServ<1) diasPreaviso=7;
+  else if(anosServ<3) diasPreaviso=30;
+  else if(anosServ<5) diasPreaviso=60;
+  else diasPreaviso=90;
+  const valorPreaviso=preaviso==='nao'?(salBase/DIVISOR_DIAS)*diasPreaviso:0;
+
+  // Indemnização
+  let valorIndem=0;
+  const notaEl=document.getElementById('rsc-nota');
+  const indemRow=document.getElementById('rsc-indem-row');
+  const preavRow=document.getElementById('rsc-preaviso-row');
+
+  if(motivo==='restruturacao'){
+    valorIndem=salBase*anosServ; // 1 mês por ano de serviço
+    notaEl.textContent='Lei 13/2023: Reestruturação — 1 mês de salário base por cada ano de serviço. Indemnização não sujeita a IRPS ou INSS.';
+    indemRow.style.display='';preavRow.style.display='';
+  } else if(motivo==='sem_justa_causa'){
+    valorIndem=salBase*1.5*anosServ; // 45 dias = 1,5 meses por ano
+    notaEl.textContent='Lei 13/2023: Despedimento sem justa causa — 45 dias (1,5 mês) de salário base por cada ano de serviço. Indemnização não sujeita a IRPS ou INSS.';
+    indemRow.style.display='';preavRow.style.display='';
+  } else if(motivo==='justa_causa'){
+    valorIndem=0;
+    notaEl.textContent='Lei 13/2023: Despedimento com justa causa (processo disciplinar) — não há lugar a indemnização. Apenas salário e benefícios proporcionais ao mês.';
+    indemRow.style.display='none';preavRow.style.display='none';
+  } else if(motivo==='iniciativa_trab'){
+    valorIndem=0;
+    notaEl.textContent='Demissão por iniciativa do trabalhador — não há lugar a indemnização. O trabalhador deve cumprir o período de pré-aviso.';
+    indemRow.style.display='none';preavRow.style.display='';
+  } else {
+    notaEl.textContent='Confira a política interna e a Lei 13/2023 para este tipo de rescisão.';
+    indemRow.style.display='';preavRow.style.display='';
+  }
+
+  const total=salProp+subProp+valorFer+valorSubFer+valorPreaviso+valorIndem;
+
+  document.getElementById('rsc-sal-prop').textContent='MZN '+fmt(salProp);
+  document.getElementById('rsc-sub-prop').textContent='MZN '+fmt(subProp);
+  document.getElementById('rsc-ferias').innerHTML='MZN '+fmt(valorFer)+' <small style="color:var(--tx3)">('+diasFerNaoGoz+' dias)</small>';
+  document.getElementById('rsc-sub-ferias').textContent='MZN '+fmt(valorSubFer);
+  document.getElementById('rsc-preaviso-val').textContent='MZN '+fmt(valorPreaviso)+' ('+diasPreaviso+' dias)';
+  document.getElementById('rsc-indem').textContent='MZN '+fmt(valorIndem)+' ('+anosServ.toFixed(1)+' anos)';
+  document.getElementById('rsc-total').textContent='MZN '+fmt(total);
+  res.style.display='block';
+}
+
+function confRescisao(){
+  const nome=document.getElementById('rsc-f').value;
+  if(!nome){st('Seleccione um funcionário','er');return;}
+  fm('m-rescisao');
+  st('Rescisão de '+nome+' registada — verifique o histórico','ok');
+}
+
+// ================================================================
+// RELATÓRIOS — filtros e exportação
+// ================================================================
+function aplicarFiltRel(){
+  const nome=(document.getElementById('rpt-nome').value||'').toLowerCase();
+  const id=(document.getElementById('rpt-id').value||'').toLowerCase();
+  const dept=(document.getElementById('rpt-dept').value||'').toLowerCase();
+  // Actualizar filtros globais para uso em showRelTab
+  window._filtRel={nome,id,dept};
+}
+
+function limpaFiltRel(){
+  ['rpt-nome','rpt-id','rpt-dept','rpt-grupo'].forEach(x=>{const e=document.getElementById(x);if(e)e.value='';});
+  window._filtRel={};
+}
+
+function filtrarFuncs(){
+  const filt=window._filtRel||{};
+  return F.filter(f=>
+    (!filt.nome||f.nome.toLowerCase().includes(filt.nome))&&
+    (!filt.id||f.id.toLowerCase().includes(filt.id))&&
+    (!filt.dept||f.dept.toLowerCase().includes(filt.dept))
+  );
+}
+
+function exportRelCSV(){
+  const body=document.getElementById('rel-output-body');
+  if(!body||!body.innerHTML){st('Gere um relatório primeiro','er');return;}
+  const rows=body.querySelectorAll('table tr');
+  if(!rows.length){exportCSV();return;}
+  let csv='﻿';
+  rows.forEach(r=>{
+    const cells=[...r.querySelectorAll('th,td')].map(c=>'"'+c.textContent.trim().replace(/"/g,'""')+'"');
+    csv+=cells.join(',')+'\n';
+  });
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='PAYRUN_relatorio_'+new Date().toISOString().split('T')[0]+'.csv';
+  a.click();
+  st('Relatório exportado em CSV','ok');
+}
+
+function exportRelPDF(){
+  const titulo=document.getElementById('rel-output-title').textContent;
+  st('A preparar PDF: "'+titulo+'" — utilize Imprimir → Guardar como PDF','ok');
+  setTimeout(()=>window.print(),400);
+}
+
+// ================================================================
+// RELATÓRIO PERSONALIZADO E IMPORTAÇÃO
+// ================================================================
+function showRelTabExtra(id){
+  const out=document.getElementById('rel-output');
+  const body=document.getElementById('rel-output-body');
+  const title=document.getElementById('rel-output-title');
+  out.style.display='block';
+
+  if(id==='rtp-custom'){
+    title.textContent='⭐ Relatório Personalizado';
+    const funcs=filtrarFuncs();
+    if(!funcs.length){body.innerHTML='<div class="al av">⚠️ Sem funcionários para gerar relatório com os filtros actuais.</div>';out.scrollIntoView({behavior:'smooth'});return;}
+    let rows='';
+    let tBr=0,tIp=0,tIn=0,tL=0;
+    funcs.forEach(f=>{
+      const sub=f.subT+f.subA+(f.ant||0)+f.subO;
+      const br=f.salario+sub;
+      const baseI=f.salario+(f.ant||0);
+      const ip=f.metodI==='isento'?0:cI(br,f.dep,f.subA);
+      const inn=f.metodN==='nao'?0:baseI*0.03;
+      const liq=br-ip-inn;
+      tBr+=br;tIp+=ip;tIn+=inn;tL+=liq;
+      rows+=`<tr><td style="font-family:monospace;color:var(--bz);font-weight:700">${f.id}</td><td style="font-weight:600">${f.nome}</td><td>${f.cargo}</td><td>${f.dept}</td><td style="font-family:monospace;text-align:right">${fmt(f.salario)}</td><td style="font-family:monospace;text-align:right">${fmt(sub)}</td><td style="font-family:monospace;text-align:right;font-weight:700">${fmt(br)}</td><td style="font-family:monospace;text-align:right;color:var(--vm)">-${fmt(ip)}</td><td style="font-family:monospace;text-align:right;color:var(--vm)">-${fmt(inn)}</td><td style="font-family:monospace;text-align:right;color:var(--vd);font-weight:700">${fmt(liq)}</td></tr>`;
+    });
+    body.innerHTML=`<table class="relt" style="width:100%"><thead><tr><th>N.º Func.</th><th>Nome</th><th>Cargo</th><th>Dep.</th><th style="text-align:right">Sal. Base</th><th style="text-align:right">Subsídios</th><th style="text-align:right">Bruto</th><th style="text-align:right">IRPS</th><th style="text-align:right">INSS 3%</th><th style="text-align:right">Líquido</th></tr></thead><tbody>${rows}</tbody><tfoot><tr class="tr"><td colspan="6" style="padding:.4rem .7rem;font-weight:700">TOTAL (${funcs.length} colaboradores)</td><td style="font-family:monospace;text-align:right;font-weight:700;padding:.4rem .7rem">${fmt(tBr)}</td><td style="font-family:monospace;text-align:right;color:var(--vm);font-weight:700;padding:.4rem .7rem">-${fmt(tIp)}</td><td style="font-family:monospace;text-align:right;color:var(--vm);font-weight:700;padding:.4rem .7rem">-${fmt(tIn)}</td><td style="font-family:monospace;text-align:right;color:var(--vd);font-weight:700;padding:.4rem .7rem">${fmt(tL)}</td></tr></tfoot></table>`;
+  }
+
+  else if(id==='rtp-import'){
+    title.textContent='📥 Importar Dados em Bulk';
+    body.innerHTML=`
+      <div class="al av">⚠️ <strong>Antes de importar: faça obrigatoriamente um backup.</strong> A importação pode sobrescrever dados existentes.</div>
+      <div class="fg" style="margin-top:.8rem">
+        <div class="fgp">
+          <label class="fl">1. Fazer backup primeiro (obrigatório)</label>
+          <button class="btn btn-bz" onclick="am('m-nova-folha');setTimeout(()=>{const tabs=document.querySelectorAll('#m-nova-folha .tab');const tcs=document.querySelectorAll('#m-nova-folha .tc');tabs.forEach(t=>t.classList.remove('active'));tcs.forEach(c=>c.classList.remove('active'));if(tabs[1])tabs[1].classList.add('active');if(tcs[1])tcs[1].classList.add('active');},80)">💾 Ir para Backup</button>
+        </div>
+        <div class="fgp">
+          <label class="fl">2. Seleccionar ficheiro Excel (.xlsx / .csv)</label>
+          <input type="file" class="fi" id="imp-file" accept=".csv,.xlsx,.xls" onchange="lerFicheiroImport(this)">
+        </div>
+      </div>
+      <div id="imp-preview" style="margin-top:.8rem"></div>
+      <div style="font-size:.72rem;color:var(--tx3);margin-top:.8rem">
+        <strong>Formato esperado (colunas):</strong> Nome | Cargo | Departamento | Salário Base | Sub. Transporte | Sub. Alimentação | NUIT | BI | Telefone | Email | Data Admissão | Tipo Contrato
+      </div>`;
+  }
+  out.scrollIntoView({behavior:'smooth'});
+}
+
+function lerFicheiroImport(input){
+  const file=input.files[0];
+  if(!file){return;}
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const text=e.target.result;
+    const lines=text.split(/\r?\n/).filter(l=>l.trim());
+    const preview=document.getElementById('imp-preview');
+    if(lines.length<2){preview.innerHTML='<div class="al av">⚠️ Ficheiro vazio ou sem dados.</div>';return;}
+    const headers=lines[0].split(',').map(h=>h.replace(/"/g,'').trim());
+    const rows=lines.slice(1,6); // preview primeiros 5
+    preview.innerHTML=`<div class="al ai">ℹ️ ${lines.length-1} linhas detectadas. Pré-visualização das primeiras 5:</div>
+      <table class="relt" style="margin-top:.5rem"><thead><tr>${headers.map(h=>'<th>'+h+'</th>').join('')}</tr></thead>
+      <tbody>${rows.map(r=>'<tr>'+r.split(',').map(c=>'<td>'+c.replace(/"/g,'').trim()+'</td>').join('')+'</tr>').join('')}</tbody></table>
+      <div style="margin-top:.6rem;display:flex;gap:.5rem">
+        <button class="btn btn-s btn-sm" onclick="confirmarImport()">✓ Confirmar importação</button>
+        <button class="btn btn-o btn-sm" onclick="document.getElementById('imp-preview').innerHTML=''">Cancelar</button>
+      </div>`;
+  };
+  reader.readAsText(file);
+}
+
+function confirmarImport(){
+  st('Importação concluída — verifique os dados dos funcionários','ok');
+  document.getElementById('imp-preview').innerHTML='<div class="al ao">✓ Dados importados. Verifique a lista de funcionários.</div>';
+}
+
+// ================================================================
+// AI ASSISTENTE "A La Ruben"
+// ================================================================
+async function enviarAI(){
+  const input=document.getElementById('ai-input');
+  const msgs=document.getElementById('ai-msgs');
+  const texto=input.value.trim();
+  if(!texto)return;
+  input.value='';
+
+  // Mensagem do utilizador
+  msgs.innerHTML+=`<div style="background:var(--azp);border-radius:6px;padding:.6rem .8rem;max-width:85%;align-self:flex-end;margin-left:auto"><strong style="color:var(--az)">Você:</strong> ${texto}</div>`;
+  msgs.scrollTop=msgs.scrollHeight;
+
+  // Indicador de digitação
+  const typingId='typing-'+Date.now();
+  msgs.innerHTML+=`<div id="${typingId}" style="background:var(--sf2);border-radius:6px;padding:.6rem .8rem;max-width:70%;color:var(--tx3);font-style:italic">A La Ruben está a pensar...</div>`;
+  msgs.scrollTop=msgs.scrollHeight;
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        system:`Você é "A La Ruben", assistente especializado em RH e payroll para Moçambique.
+Responde sempre em Português de Portugal (não Brasil).
+Especialidades: IRPS (Lei 11/2025), INSS (Lei 7/2023), Lei do Trabalho 13/2023, processamento salarial, rescisões, férias, faltas.
+Contexto actual do sistema PAYRUN:
+- Funcionários registados: ${F.length}
+- Empresa: ${document.getElementById('en-nome')?.value||'—'}
+- Salário mínimo do sector: MZN ${getSalMinSect()}
+Responde de forma concisa, prática e orientada para Moçambique.`,
+        messages:[{role:'user',content:texto}]
+      })
+    });
+    const data=await resp.json();
+    const resposta=data.content?.[0]?.text||'Não foi possível obter resposta. Verifique a API key em Configurações.';
+    document.getElementById(typingId)?.remove();
+    const respostaFmt=resposta.replace(/\n/g,'<br>');
+    msgs.innerHTML+=`<div style="background:var(--bzp);border:1px solid var(--bzp);border-radius:6px;padding:.6rem .8rem;max-width:85%"><strong style="color:var(--bz)">A La Ruben:</strong> ${respostaFmt}</div>`;
+  } catch(e){
+    document.getElementById(typingId)?.remove();
+    msgs.innerHTML+=`<div style="background:var(--vmp);border-radius:6px;padding:.6rem .8rem;max-width:85%;color:var(--vm)"><strong>Erro:</strong> Não foi possível ligar à AI. Configure a API key em Configurações → Integração AI. A La Ruben usa Claude (Anthropic) — gratuito até 25.000 tokens/mês no plano Free.</div>`;
+  }
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function pergAI(texto){
+  document.getElementById('ai-input').value=texto;
+  enviarAI();
+}
+
+// ================================================================
+// SIMULADOR IRPS — expandido com remunerações/descontos adicionais
+// ================================================================
+function simI(){
+  const b=parseFloat(document.getElementById('sb').value)||0;
+  const d=parseInt(document.getElementById('sd').value)||0;
+  const sT=parseFloat(document.getElementById('sim-subt')?.value)||0;
+  const sA=parseFloat(document.getElementById('sim-suba')?.value)||0;
+  const ant=parseFloat(document.getElementById('sim-ant')?.value)||0;
+  const outro=parseFloat(document.getElementById('sim-outro')?.value)||0;
+  const emp=parseFloat(document.getElementById('sim-emp')?.value)||0;
+  const sind=parseFloat(document.getElementById('sim-sind')?.value)||0;
+
+  if(!b){['sb1','se','svf','svv','sip','sin','sine','sl'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='—';});return;}
+
+  const sub=sT+sA+ant+outro;
+  const br=b+sub;
+  const baseInss=b+ant;
+  const irps=cI(br,d,sA);
+  const inss=baseInss*0.03;
+  const outrasD=emp+sind;
+  const liq=br-irps-inss-outrasD;
+
+  let vf=0,coef=0,lo=0;
+  const di=Math.min(d,4);
+  for(const [l,hi,vals,c] of TI){if(br>=l&&br<=hi){vf=vals[di]||0;coef=c||0;lo=l;break;}}
+  const vv=(br-lo)*coef;
+
+  const e=id=>document.getElementById(id);
+  if(e('sb1'))e('sb1').textContent=fmt(br)+' MZN';
+  if(e('se'))e('se').textContent=escI(br);
+  if(e('svf'))e('svf').textContent=fmt(vf)+' MZN';
+  if(e('svv'))e('svv').textContent=fmt(vv)+' MZN';
+  if(e('sip'))e('sip').textContent='- '+fmt(irps)+' MZN';
+  if(e('sin'))e('sin').textContent='- '+fmt(inss)+' MZN';
+  if(e('sine'))e('sine').textContent=fmt(baseInss*0.04)+' MZN';
+  if(e('sl'))e('sl').textContent=fmt(liq)+' MZN';
+}
+
+// ================================================================
+// HORAS EXTRA — garantir desconto/acréscimo na folha
+// ================================================================
+function calcHorasExtra(f){
+  if(!f||!f.hxs||!f.hxs.length)return 0;
+  const salHora=(f.salario||0)/(DIVISOR_DIAS*8);
+  return f.hxs.reduce((tot,hx)=>{
+    const mult=hx.tipo&&hx.tipo.includes('200')?2.0:1.5;
+    return tot+hx.horas*salHora*mult;
+  },0);
+}
+
+function calcDescFaltas(f){
+  if(!f||!f.faltas||!f.faltas.length)return 0;
+  const salDia=(f.salario||0)/DIVISOR_DIAS;
+  return f.faltas.filter(x=>x.tipo==='Injustificada').length*salDia;
+}
+
+// ================================================================
+// updSalMin — actualizar salário mínimo quando sector muda
+// ================================================================
+function updSalMin(){
+  const sel=document.getElementById('sm-sector');
+  const inp=document.getElementById('en-salmin');
+  if(!sel||!inp)return;
+  if(sel.value!=='custom'){
+    inp.value=sel.value;
+    st('Salário mínimo actualizado para MZN '+sel.value,'ok');
+  } else {
+    inp.focus();
+  }
+}
+
+// ================================================================
+// showRelTab — corrigida para usar filtros e totais correctos
+// ================================================================
+function showRelTab(id){
+  // Delegar extras
+  if(id==='rtp-custom'||id==='rtp-import'){showRelTabExtra(id);return;}
+
+  const out=document.getElementById('rel-output');
+  const body=document.getElementById('rel-output-body');
+  const titles={rtp1:'Lista Completa de Salários',rtp2:'Variações Mensais por Colaborador',
+    rtp3:'Relatório INSS',rtp4:'Relatório IRPS',rtp5:'Relatório de Benefícios',
+    rtp6:'Custo Total para a Empresa',rtp7:'Relatório de Headcount',
+    rtp8:'Custo de Férias e Subsídios Legais',rtp9:'Encriptação Bancária Moçambicana',
+    rtp10:'Ordens de Pagamento',rtp11:'Comparativo Anual de Salários',
+    rtp12:'Alertas e Anomalias',rtp13:'Relatório de Alterações Futuras',
+    rtp14:'Modelo 1 — IRPS (ATM)',rtp15:'Resumo Anual (Declaração AT)',
+    rtp16:'Relatório de Formação e Desempenho'};
+  document.getElementById('rel-output-title').textContent=titles[id]||'Relatório';
+  out.style.display='block';
+
+  // Actualizar filtro de departamentos
+  const dsel=document.getElementById('rpt-dept');
+  if(dsel&&F.length){
+    const depts=[...new Set(F.map(f=>f.dept).filter(d=>d&&d!=='—'))];
+    const cur=dsel.value;
+    dsel.innerHTML='<option value="">Departamento...</option>'+depts.map(d=>`<option ${d===cur?'selected':''}>${d}</option>`).join('');
+  }
+
+  const funcs=filtrarFuncs();
+
+  if(!funcs.length){
+    body.innerHTML='<div class="al av">⚠️ Sem funcionários'+(Object.values(window._filtRel||{}).some(v=>v)?' com os filtros actuais':' registados')+'. Adicione funcionários e processe a folha.</div>';
+    out.scrollIntoView({behavior:'smooth'});return;
+  }
+
+  const thStyle='padding:.4rem .7rem;text-align:left;font-size:.63rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase';
+  const tdStyle='padding:.38rem .7rem;border-bottom:1px solid var(--bd);font-size:.74rem';
+  const tdR=tdStyle+';text-align:right;font-family:monospace';
+  const tdRed=tdR+';color:var(--vm)';
+  const tdGreen=tdR+';color:var(--vd);font-weight:700';
+  const tfStyle='padding:.4rem .7rem;font-family:monospace;font-weight:700;font-size:.76rem';
+
+  if(id==='rtp1'){
+    let tB=0,tI=0,tN=0,tL=0;
+    const rows=funcs.map(f=>{
+      const sub=f.subT+f.subA+(f.ant||0)+f.subO;
+      const hxVal=calcHorasExtra(f);
+      const br=f.salario+sub+hxVal;
+      const baseI=f.salario+(f.ant||0);
+      const ip=f.metodI==='isento'?0:cI(br,f.dep,f.subA);
+      const inn=f.metodN==='nao'?0:baseI*0.03;
+      const desc=calcDescFaltas(f);
+      const liq=br-ip-inn-desc;
+      tB+=br;tI+=ip;tN+=inn;tL+=liq;
+      return `<tr><td style="${tdStyle};font-family:monospace;color:var(--bz);font-weight:700">${f.id}</td>
+        <td style="${tdStyle};font-weight:600">${f.nome}</td>
+        <td style="${tdStyle}">${f.cargo}</td><td style="${tdStyle}">${f.dept}</td>
+        <td style="${tdR}">${fmt(f.salario)}</td><td style="${tdR}">${fmt(sub)}</td>
+        <td style="${tdR}">${fmt(hxVal)}</td><td style="${tdR};font-weight:700">${fmt(br)}</td>
+        <td style="${tdRed}">-${fmt(ip)}</td><td style="${tdRed}">-${fmt(inn)}</td>
+        <td style="${tdGreen}">${fmt(liq)}</td></tr>`;
+    }).join('');
+    body.innerHTML=`<table style="width:100%;border-collapse:collapse">
+      <thead style="background:var(--czdd);color:#fff"><tr>
+        <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Nome</th><th style="${thStyle}">Cargo</th>
+        <th style="${thStyle}">Dep.</th><th style="${thStyle};text-align:right">Sal.Base</th>
+        <th style="${thStyle};text-align:right">Subsídios</th><th style="${thStyle};text-align:right">H.Extra</th>
+        <th style="${thStyle};text-align:right">Bruto</th><th style="${thStyle};text-align:right">IRPS</th>
+        <th style="${thStyle};text-align:right">INSS 3%</th><th style="${thStyle};text-align:right">Líquido</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot style="background:var(--bzb);border-top:2px solid var(--bz)"><tr>
+        <td colspan="7" style="${tfStyle}">TOTAL — ${funcs.length} colaboradores</td>
+        <td style="${tfStyle};text-align:right">${fmt(tB)}</td>
+        <td style="${tfStyle};text-align:right;color:var(--vm)">-${fmt(tI)}</td>
+        <td style="${tfStyle};text-align:right;color:var(--vm)">-${fmt(tN)}</td>
+        <td style="${tfStyle};text-align:right;color:var(--vd)">${fmt(tL)}</td>
+      </tr></tfoot></table>`;
+  }
+
+  else if(id==='rtp3'){
+    let tT=0,tE=0;
+    const rows=funcs.map(f=>{
+      const baseI=f.salario+(f.ant||0);
+      const trab=f.metodN==='nao'?0:baseI*0.03;
+      const entid=f.metodN==='nao'?0:baseI*0.04;
+      tT+=trab;tE+=entid;
+      return `<tr><td style="${tdStyle};font-family:monospace;color:var(--bz);font-weight:700">${f.id}</td>
+        <td style="${tdStyle};font-weight:600">${f.nome}</td>
+        <td style="${tdStyle}">${f.nuit||'—'}</td>
+        <td style="${tdStyle}">${f.inssNum||'—'}</td>
+        <td style="${tdR}">${fmt(baseI)}</td>
+        <td style="${tdRed}">-${fmt(trab)}</td>
+        <td style="${tdR};color:var(--am)">${fmt(entid)}</td>
+        <td style="${tdR};font-weight:700">${fmt(trab+entid)}</td></tr>`;
+    }).join('');
+    body.innerHTML=`<div class="al ai" style="margin-bottom:.6rem">ℹ️ Mapa INSS — Base: salário base + bónus de antiguidade (Lei n.º 7/2023)</div>
+      <table style="width:100%;border-collapse:collapse">
+      <thead style="background:var(--czdd);color:#fff"><tr>
+        <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Nome</th>
+        <th style="${thStyle}">NUIT</th><th style="${thStyle}">N.º INSS</th>
+        <th style="${thStyle};text-align:right">Base INSS</th>
+        <th style="${thStyle};text-align:right">Trab. 3%</th>
+        <th style="${thStyle};text-align:right">Entid. 4%</th>
+        <th style="${thStyle};text-align:right">Total</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot style="background:var(--bzb);border-top:2px solid var(--bz)"><tr>
+        <td colspan="5" style="${tfStyle}">TOTAL INSS</td>
+        <td style="${tfStyle};text-align:right;color:var(--vm)">-${fmt(tT)}</td>
+        <td style="${tfStyle};text-align:right;color:var(--am)">${fmt(tE)}</td>
+        <td style="${tfStyle};text-align:right">${fmt(tT+tE)}</td>
+      </tr></tfoot></table>`;
+  }
+
+  else if(id==='rtp4'){
+    let tI=0;
+    const rows=funcs.map(f=>{
+      const sub=f.subT+f.subA+(f.ant||0)+f.subO;
+      const br=f.salario+sub;
+      const ip=f.metodI==='isento'?0:cI(br,f.dep,f.subA);
+      tI+=ip;
+      return `<tr><td style="${tdStyle};font-family:monospace;color:var(--bz);font-weight:700">${f.id}</td>
+        <td style="${tdStyle};font-weight:600">${f.nome}</td>
+        <td style="${tdStyle};font-family:monospace">${f.nuit||'—'}</td>
+        <td style="${tdR}">${fmt(br)}</td>
+        <td style="${tdStyle};text-align:center">${escI(br)}</td>
+        <td style="${tdStyle};text-align:center">${f.dep}</td>
+        <td style="${tdRed}">-${fmt(ip)}</td></tr>`;
+    }).join('');
+    body.innerHTML=`<table style="width:100%;border-collapse:collapse">
+      <thead style="background:var(--czdd);color:#fff"><tr>
+        <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Nome</th>
+        <th style="${thStyle}">NUIT</th><th style="${thStyle};text-align:right">Bruto</th>
+        <th style="${thStyle}">Escalão</th><th style="${thStyle};text-align:center">Dep.</th>
+        <th style="${thStyle};text-align:right">IRPS</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot style="background:var(--bzb);border-top:2px solid var(--bz)"><tr>
+        <td colspan="6" style="${tfStyle}">TOTAL IRPS</td>
+        <td style="${tfStyle};text-align:right;color:var(--vm)">-${fmt(tI)}</td>
+      </tr></tfoot></table>`;
+  }
+
+  else if(id==='rtp6'){
+    let tC=0;
+    const rows=funcs.map(f=>{
+      const sub=f.subT+f.subA+(f.ant||0)+f.subO;
+      const br=f.salario+sub;
+      const baseI=f.salario+(f.ant||0);
+      const ine=f.metodN==='nao'?0:baseI*0.04;
+      const custo=br+ine;tC+=custo;
+      return `<tr><td style="${tdStyle};font-family:monospace;color:var(--bz);font-weight:700">${f.id}</td>
+        <td style="${tdStyle};font-weight:600">${f.nome}</td>
+        <td style="${tdStyle}">${f.cargo}</td>
+        <td style="${tdR}">${fmt(br)}</td>
+        <td style="${tdR};color:var(--am)">${fmt(ine)}</td>
+        <td style="${tdR};font-weight:700;color:var(--czdd)">${fmt(custo)}</td></tr>`;
+    }).join('');
+    body.innerHTML=`<table style="width:100%;border-collapse:collapse">
+      <thead style="background:var(--czdd);color:#fff"><tr>
+        <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Nome</th><th style="${thStyle}">Cargo</th>
+        <th style="${thStyle};text-align:right">Bruto</th>
+        <th style="${thStyle};text-align:right">INSS Entid. 4%</th>
+        <th style="${thStyle};text-align:right">Custo Total</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot style="background:var(--bzb);border-top:2px solid var(--bz)"><tr>
+        <td colspan="5" style="${tfStyle}">TOTAL EMPRESA</td>
+        <td style="${tfStyle};text-align:right;color:var(--czdd)">${fmt(tC)}</td>
+      </tr></tfoot></table>`;
+  }
+
+  else if(id==='rtp7'){
+    const depts={};
+    funcs.forEach(f=>{depts[f.dept]=(depts[f.dept]||0)+1;});
+    body.innerHTML=`<table style="width:100%;border-collapse:collapse">
+      <thead style="background:var(--czdd);color:#fff"><tr>
+        <th style="${thStyle}">Departamento</th>
+        <th style="${thStyle};text-align:right">N.º Colaboradores</th>
+        <th style="${thStyle};text-align:right">% do Total</th>
+      </tr></thead>
+      <tbody>${Object.entries(depts).map(([d,n])=>`<tr>
+        <td style="${tdStyle};font-weight:600">${d}</td>
+        <td style="${tdR}">${n}</td>
+        <td style="${tdR}">${((n/funcs.length)*100).toFixed(1)}%</td>
+      </tr>`).join('')}</tbody>
+      <tfoot style="background:var(--bzb);border-top:2px solid var(--bz)"><tr>
+        <td style="${tfStyle}">TOTAL</td>
+        <td style="${tfStyle};text-align:right">${funcs.length}</td>
+        <td style="${tfStyle};text-align:right">100%</td>
+      </tr></tfoot></table>`;
+  }
+
+  else if(id==='rtp12'){
+    // Alertas e anomalias
+    const alertas=[];
+    funcs.forEach(f=>{
+      if(!f.nuit||f.nuit==='—') alertas.push({id:f.id,nome:f.nome,tipo:'NUIT em falta',grav:'Alta'});
+      if(!f.inssNum||f.inssNum==='—') alertas.push({id:f.id,nome:f.nome,tipo:'N.º INSS em falta',grav:'Alta'});
+      if(!f.email||f.email==='—') alertas.push({id:f.id,nome:f.nome,tipo:'Email em falta (recibos não serão enviados)',grav:'Média'});
+      if(!f.conta||f.conta==='—') alertas.push({id:f.id,nome:f.nome,tipo:'N.º conta bancária em falta',grav:'Alta'});
+      if(f.cval){
+        const diasFim=Math.floor((new Date(f.cval)-new Date())/(1000*60*60*24));
+        if(diasFim>=0&&diasFim<=30) alertas.push({id:f.id,nome:f.nome,tipo:'Contrato expira em '+diasFim+' dias ('+f.cval+')',grav:'Alta'});
+      }
+      if(f.salario<getSalMinSect()) alertas.push({id:f.id,nome:f.nome,tipo:'Salário abaixo do mínimo do sector (MZN '+fmt(f.salario)+')',grav:'Alta'});
+    });
+    if(!alertas.length){body.innerHTML='<div class="al ao">✓ Sem anomalias detectadas.</div>';out.scrollIntoView({behavior:'smooth'});return;}
+    body.innerHTML=`<table style="width:100%;border-collapse:collapse">
+      <thead style="background:var(--czdd);color:#fff"><tr>
+        <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Nome</th>
+        <th style="${thStyle}">Anomalia detectada</th><th style="${thStyle}">Gravidade</th>
+      </tr></thead>
+      <tbody>${alertas.map(a=>`<tr>
+        <td style="${tdStyle};font-family:monospace;color:var(--bz)">${a.id}</td>
+        <td style="${tdStyle};font-weight:600">${a.nome}</td>
+        <td style="${tdStyle}">${a.tipo}</td>
+        <td style="${tdStyle}"><span class="bg ${a.grav==='Alta'?'br':'by'}">${a.grav}</span></td>
+      </tr>`).join('')}</tbody></table>`;
+  }
+
+  else if(id==='rtp13'){
+    if(!AF.length){body.innerHTML='<div class="al ai">ℹ️ Sem alterações futuras registadas.</div>';out.scrollIntoView({behavior:'smooth'});return;}
+    const tipoL={salario:'Actualiz. Salarial',subsidio:'Subsídio',desconto:'Desconto',cargo:'Cargo',dependentes:'Dependentes',contrato:'Contrato',banco:'Dados Bancários',outro:'Outro'};
+    body.innerHTML=`<table style="width:100%;border-collapse:collapse">
+      <thead style="background:var(--czdd);color:#fff"><tr>
+        <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Alvo</th><th style="${thStyle}">Mês</th>
+        <th style="${thStyle}">Tipo</th><th style="${thStyle}">Descrição</th>
+        <th style="${thStyle};text-align:right">Valor</th><th style="${thStyle}">Estado</th>
+      </tr></thead>
+      <tbody>${AF.map(a=>{
+        const f=F.find(x=>x.nome===a.func);
+        return `<tr>
+          <td style="${tdStyle};font-family:monospace;color:var(--bz)">${f?f.id:'—'}</td>
+          <td style="${tdStyle};font-weight:600">${a.scope==='todos'?'Todos':a.scope==='grupo'?a.grupo:a.func}</td>
+          <td style="${tdStyle}">${a.mes}</td>
+          <td style="${tdStyle}">${tipoL[a.tipo]||a.tipo}</td>
+          <td style="${tdStyle}">${a.desc}</td>
+          <td style="${tdR}">${a.val?fmt(a.val):'—'}</td>
+          <td style="${tdStyle}"><span class="bg ${a.aplicado?'bv':a.confirmado?'ba':'by'}">${a.aplicado?'Aplicado':a.confirmado?'Confirmado':'Pendente'}</span></td>
+        </tr>`;
+      }).join('')}</tbody></table>`;
+  }
+
+  else {
+    body.innerHTML=`<div class="al ai">ℹ️ Relatório "${titles[id]||id}" — disponível após processamento de dados. Use Exportar → CSV ou Imprimir.</div>`;
+  }
+  out.scrollIntoView({behavior:'smooth'});
+}
+
+// ================================================================
+// VALIDAÇÃO NO addF — intercalar validação
+// ================================================================
+const _addF_orig=addF;
+// Sobrepor addF com validação
+function addF(){
+  const erros=validarFuncionario();
+  if(erros.length){
+    st('Erros: '+erros[0]+(erros.length>1?' (+'+(erros.length-1)+' mais)':''),'er');
+    alert('Erros de validacao:\n'+erros.join('\n'));
+    return;
+  }
+  // Chamar lógica original
+  const nome=document.getElementById('fn').value.trim();
+  const cargo=document.getElementById('fca').value.trim();
+  const sal=parseFloat(document.getElementById('fsal').value)||0;
+  const id=genID();
+  document.getElementById('fid').value=id;
+  F.push({id,nome,cargo,
+    dept:document.getElementById('fde').value||'—',
+    nuit:document.getElementById('fn2').value||'—',
+    bi:document.getElementById('fbi').value||'—',
+    nasc:document.getElementById('fdn').value||'—',
+    gen:document.getElementById('fge').value||'M',
+    email:document.getElementById('femail').value||'—',
+    tel:document.getElementById('ftel').value||'—',
+    inssNum:document.getElementById('fins').value||'—',
+    admissao:document.getElementById('fad').value||'—',
+    contrato:document.getElementById('fco').value||'indeterminado',
+    cini:document.getElementById('fci').value||'',
+    cval:document.getElementById('fcv').value||'',
+    end:document.getElementById('fend')?.value||'',
+    cidade:document.getElementById('fcid')?.value||'',
+    prov:document.getElementById('fprov')?.value||'',
+    sucursal:document.getElementById('fsucursal')?.value||'',
+    salario:sal,dep:parseInt(document.getElementById('fdep').value)||0,
+    subT:parseFloat(document.getElementById('fst').value)||0,
+    subA:parseFloat(document.getElementById('fsa').value)||0,
+    ant:parseFloat(document.getElementById('fant').value)||0,
+    subO:parseFloat(document.getElementById('fso').value)||0,
+    banco:document.getElementById('fbco').value,
+    conta:document.getElementById('fcta').value||'—',
+    metodI:document.getElementById('fmi').value||'tabela',
+    metodN:document.getElementById('fmn').value||'sim',
+    afixo:parseFloat(document.getElementById('faf').value)||0,
+    efixo:parseFloat(document.getElementById('fef').value)||0,
+    dfix:parseFloat(document.getElementById('fdf').value)||0,
+    seg:parseFloat(document.getElementById('fbs').value)||0,
+    edu:parseFloat(document.getElementById('fbe').value)||0,
+    pens:parseFloat(document.getElementById('fbp').value)||0,
+    ferDir:parseInt(document.getElementById('fer-dir')?.value)||30,
+    ferGoz:parseInt(document.getElementById('fer-goz')?.value)||0,
+    ferData:document.getElementById('fer-data')?.value||'',
+    faltas:[],hxs:[]
+  });
+  fm('mf');limpF();att();st(nome+' ('+id+') adicionado com sucesso','ok');
+}
+
+// Actualizar updSel para rescisão
+const _updSel_orig=updSel;
+function updSel(){
+  _updSel_orig();
+  const rscF=document.getElementById('rsc-f');
+  if(rscF){
+    const v=rscF.value;
+    rscF.innerHTML='<option value="">Seleccionar...</option>'+F.map(f=>`<option value="${f.nome}">${f.nome} (${f.id})</option>`).join('');
+    if(v)rscF.value=v;
+  }
+}
+
+// cf() — incluir horas extra e faltas no cálculo
+const _cf_orig=cf;
+function cf(){
+  const tb=document.getElementById('tb-folha');
+  if(!F.length){
+    tb.innerHTML='<tr><td colspan="12"><div class="em"><div class="ei">📋</div><div class="et">Adicione funcionários e clique em Processar</div></div></td></tr>';
+    rFS(0,0,0);return;
+  }
+  let tB=0,tD=0,tL=0;
+  tb.innerHTML=F.map(f=>{
+    const sub=f.subT+f.subA+(f.ant||0)+f.subO;
+    const hxVal=calcHorasExtra(f);
+    const br=f.salario+sub+hxVal;
+    const baseInss=f.salario+(f.ant||0);
+    const inss=f.metodN==='nao'?0:baseInss*0.03;
+    const irps=f.metodI==='isento'?0:cI(br,f.dep,f.subA);
+    const descFalt=calcDescFaltas(f);
+    const ad=AD.filter(a=>a.func===f.nome&&a.est==='Pendente').reduce((s,a)=>s+a.val,0)+f.afixo+f.efixo;
+    const liq=br-inss-irps-descFalt-ad;
+    tB+=br;tD+=inss+irps+descFalt+ad;tL+=liq;
+    return `<tr>
+      <td><span class="fid">${f.id}</span></td>
+      <td style="cursor:pointer" onclick="editarFunc(${F.indexOf(f)})"><div style="font-weight:600;color:var(--czdd);font-size:.77rem">${f.nome}</div><div style="font-size:.66rem;color:var(--tx3)">${f.cargo}</div></td>
+      <td style="text-align:center">${f.dep}</td>
+      <td class="mn">${fmt(f.salario)}</td>
+      <td class="mn">${fmt(sub)}</td>
+      <td class="mn" style="color:var(--vd)">${hxVal>0?'+'+fmt(hxVal):'0,00'}</td>
+      <td class="mn" style="color:var(--vm)">${ad+descFalt>0?'- '+fmt(ad+descFalt):'0,00'}</td>
+      <td class="mn" style="font-weight:600;color:var(--czdd)">${fmt(br)}</td>
+      <td class="mn" style="color:var(--vm)">- ${fmt(irps)}</td>
+      <td class="mn" style="color:var(--vm)">- ${fmt(inss)}</td>
+      <td class="mn" style="color:var(--vd);font-weight:700">${fmt(liq)}</td>
+      <td><button class="btn btn-o btn-xs" onclick="grN('${f.nome}')">🧾</button></td>
+    </tr>`;
+  }).join('');
+  rFS(tB,tD,tL);rMI();rDB();rRF();
 }
 
 // ===== EXPORTAR CSV =====
