@@ -740,7 +740,7 @@ select.fi option{background:var(--sf2);color:var(--tx)}
     <span style="font-size:.72rem;color:var(--tx3)">Junho 2025</span>
     <button class="btn btn-o btn-sm" onclick="nv('folha',null)">Nova Folha</button>
     <button class="btn btn-ai btn-sm" onclick="am('m-ai')">🤖 A La Ruben</button>
-    <button class="btn btn-bz btn-sm" onclick="am('mf')">+ Adicionar/Editar Func.</button>
+    <button class="btn btn-bz btn-sm" onclick="novoFuncionario()">+ Novo Funcionário</button>
   </div>
 </div>
 <div class="ct">
@@ -756,8 +756,8 @@ select.fi option{background:var(--sf2);color:var(--tx)}
     <div class="fs" style="margin:0"><div class="fst">⚡ Acções rápidas</div>
       <div style="display:flex;flex-direction:column;gap:.38rem">
         <button class="btn btn-bz" style="text-align:left;width:100%" onclick="nv('folha',null)">📋 Processar folha salarial</button>
+        <button class="btn btn-o" style="text-align:left;width:100%" onclick="abrirNovaFolha()">📅 Mudar mês de processamento</button>
         <button class="btn btn-o" style="text-align:left;width:100%" onclick="nv('funcionarios',null);setTimeout(()=>{if(F.length)selFunc(0)},80)">🔍 Ver ficha do funcionário</button>
-        <button class="btn btn-o" style="text-align:left;width:100%" onclick="am('mf')">👤 Adicionar / Editar Funcionário</button>
         <button class="btn btn-o" style="text-align:left;width:100%" onclick="nv('relatorios',null)">📄 Gerar relatórios</button>
         <button class="btn btn-o" style="text-align:left;width:100%" onclick="nv('alteracoesfuturas',null)">🔔 Alterações futuras</button>
         <button class="btn btn-o" style="text-align:left;width:100%;color:var(--vm);border-color:var(--vmp)" onclick="am('m-rescisao')">⚠️ Rescisão de contrato</button>
@@ -821,7 +821,8 @@ select.fi option{background:var(--sf2);color:var(--tx)}
         <button class="btn btn-sm" id="btn-processar" style="background:var(--az);color:#fff" onclick="processarFolha()">▶ Processar</button>
         <button class="btn btn-sm" id="btn-aprovar" style="background:var(--rx);color:#fff;opacity:.45;cursor:not-allowed" disabled onclick="aprovarFolha()">✓ Aprovar</button>
         <button class="btn btn-sm" id="btn-pagar" style="background:var(--vd);color:#fff;opacity:.45;cursor:not-allowed" disabled onclick="pagarFolha()">💳 Pagar</button>
-        <button class="btn btn-sm" id="btn-enviar" style="background:var(--bz);color:#fff;opacity:.45;cursor:not-allowed" disabled onclick="enviarRecibos()">📧 Enviar Recibos</button>
+        <button class="btn btn-sm" id="btn-enviar" style="background:var(--am);color:var(--bg);opacity:.45;cursor:not-allowed" disabled onclick="enviarRecibos()">📧 Enviar Recibos</button>
+        <button class="btn btn-sm btn-d" id="btn-desaprovar" style="display:none" onclick="desaprovarFolha()">↩ Desaprovar</button>
       </div>
     </div>
     <div class="kg">
@@ -961,12 +962,19 @@ select.fi option{background:var(--sf2);color:var(--tx)}
       <div class="fgp"><label class="fl">Aplicação</label>
         <select class="fi" id="af-scope" onchange="togAfScope()">
           <option value="individual">Funcionário individual</option>
-          <option value="grupo">Grupo / Departamento</option>
+          <option value="dept">Departamento</option>
+          <option value="cargo">Por cargo</option>
+          <option value="contrato">Por tipo de contrato</option>
+          <option value="admissao">Por data de admissão (antes de)</option>
           <option value="todos">Todos os funcionários</option>
         </select>
       </div>
       <div id="af-func-wrap" class="fgp"><label class="fl">Funcionário</label><select class="fi" id="af-f"><option value="">Seleccionar...</option></select></div>
-      <div id="af-grupo-wrap" class="fgp" style="display:none"><label class="fl">Departamento / Grupo</label><input class="fi" id="af-grp" placeholder="Ex: Financeiro, Todos os Técnicos..."></div>
+      <div id="af-grupo-wrap" class="fgp" style="display:none">
+        <label class="fl">Grupo / Filtro</label>
+        <select class="fi" id="af-grp-sel" style="display:none" onchange="document.getElementById('af-grp').value=this.value"></select>
+        <input class="fi" id="af-grp" placeholder="Ex: Financeiro, Técnico...">
+      </div>
       <div class="fgp"><label class="fl">Mês de aplicação</label><input class="fi" type="month" id="af-m" value="2025-07"></div>
       <div class="fgp"><label class="fl">Tipo de alteração</label>
         <select class="fi" id="af-t">
@@ -1302,9 +1310,10 @@ select.fi option{background:var(--sf2);color:var(--tx)}
 <div class="pag" id="ps-configuracoes">
   <div class="tabs">
     <div class="tab active" onclick="sw(this,'cfg1')">⚙️ Parâmetros Gerais</div>
+    <div class="tab" onclick="sw(this,'cfg5')">👥 Utilizadores e Fluxo</div>
     <div class="tab" onclick="sw(this,'cfg2')">🧮 Fórmulas de Cálculo</div>
-    <div class="tab" onclick="sw(this,'cfg3')">🔗 Ligar a Métodos de Cálculo</div>
-    <div class="tab" onclick="sw(this,'cfg4')">📊 Relatórios Personalizados</div>
+    <div class="tab" onclick="sw(this,'cfg3')">🔗 Ligar a Métodos</div>
+    <div class="tab" onclick="sw(this,'cfg4')">📊 Relatórios Person.</div>
   </div>
 
   <div class="tc active" id="cfg1">
@@ -1323,6 +1332,73 @@ select.fi option{background:var(--sf2);color:var(--tx)}
       <div class="fgp"><label class="fl">Salário Mínimo Geral (MZN)</label><input class="fi" type="number" value="5447"></div>
     </div>
     <button class="btn btn-bz" onclick="st('Configurações guardadas','ok')">Guardar</button></div>
+  </div>
+
+  <!-- ABA UTILIZADORES E FLUXO DE APROVAÇÃO -->
+  <div class="tc" id="cfg5">
+    <div class="al ai">ℹ️ Define quem executa cada etapa do fluxo de processamento salarial. Na ausência de configuração, o Administrador executa todas as etapas. Quando configurado, o sistema envia emails automáticos entre etapas.</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+      <!-- Processador -->
+      <div class="fs" style="margin:0;border-left:3px solid var(--bl)">
+        <div class="fst">▶ Quem processa</div>
+        <div class="fgp"><label class="fl">Nome *</label><input class="fi" id="usr-proc-nome" placeholder="Nome do responsável pelo processamento"></div>
+        <div class="fgp"><label class="fl">Email *</label><input class="fi" id="usr-proc-email" type="email" placeholder="email@empresa.mz"></div>
+        <div style="font-size:.68rem;color:var(--tx3);margin-top:.3rem">Recebe notificação quando a folha é aprovada para prosseguir com pagamento.</div>
+      </div>
+      <!-- Aprovador -->
+      <div class="fs" style="margin:0;border-left:3px solid var(--pu)">
+        <div class="fst">✓ Quem aprova</div>
+        <div class="fgp"><label class="fl">Nome *</label><input class="fi" id="usr-apr-nome" placeholder="Nome do responsável pela aprovação"></div>
+        <div class="fgp"><label class="fl">Email *</label><input class="fi" id="usr-apr-email" type="email" placeholder="email@empresa.mz"></div>
+        <div style="font-size:.68rem;color:var(--tx3);margin-top:.3rem">Recebe email com link de aprovação após o processamento. Pode aprovar ou devolver.</div>
+      </div>
+      <!-- Pagador -->
+      <div class="fs" style="margin:0;border-left:3px solid var(--gn)">
+        <div class="fst">💳 Quem paga</div>
+        <div class="fgp"><label class="fl">Nome *</label><input class="fi" id="usr-pag-nome" placeholder="Nome do responsável pelo pagamento"></div>
+        <div class="fgp"><label class="fl">Email *</label><input class="fi" id="usr-pag-email" type="email" placeholder="email@empresa.mz"></div>
+        <div class="fgp"><label class="fl">Método de pagamento</label>
+          <select class="fi" id="usr-pag-metodo">
+            <option value="banco">Transferência bancária (ficheiro ao banco)</option>
+            <option value="cash">Numerário (cash)</option>
+            <option value="misto">Misto (banco + cash)</option>
+          </select>
+        </div>
+      </div>
+      <!-- Envio recibos -->
+      <div class="fs" style="margin:0;border-left:3px solid var(--am)">
+        <div class="fst">📧 Quem envia recibos</div>
+        <div class="fgp"><label class="fl">Nome *</label><input class="fi" id="usr-rec-nome" placeholder="Nome do responsável pelo envio"></div>
+        <div class="fgp"><label class="fl">Email *</label><input class="fi" id="usr-rec-email" type="email" placeholder="email@empresa.mz"></div>
+        <div style="font-size:.68rem;color:var(--tx3);margin-top:.3rem">Envia os recibos de pagamento a cada colaborador após confirmação do pagamento.</div>
+      </div>
+    </div>
+
+    <div class="fs" style="margin-bottom:1rem">
+      <div class="fst">🔗 URL de acesso ao sistema (para links nos emails)</div>
+      <div class="fgp"><label class="fl">URL público do PAYRUN *</label><input class="fi" id="cfg-url" placeholder="Ex: https://rubentimba15-dot.github.io/PAYRUN-Salaries/" value="https://rubentimba15-dot.github.io/PAYRUN-Salaries/"></div>
+      <div style="font-size:.68rem;color:var(--tx3)">Usado nos emails automáticos para que o aprovador aceda directamente ao sistema.</div>
+    </div>
+
+    <div class="fs" style="margin-bottom:1rem">
+      <div class="fst">📧 Integração de email (para envio automático)</div>
+      <div class="al av" style="margin-bottom:.7rem">⚠️ O envio automático de emails requer integração com um serviço externo. Recomendamos <strong>EmailJS</strong> (gratuito até 200 emails/mês) ou <strong>Resend</strong> (100 emails/dia gratuitos). Configure abaixo a chave de API.</div>
+      <div class="fg">
+        <div class="fgp"><label class="fl">Serviço de email</label>
+          <select class="fi" id="cfg-email-srv">
+            <option value="">— Sem envio automático (manual) —</option>
+            <option value="emailjs">EmailJS (recomendado — gratuito)</option>
+            <option value="resend">Resend</option>
+            <option value="mailto">Cliente de email local (mailto:)</option>
+          </select>
+        </div>
+        <div class="fgp"><label class="fl">Chave API / Service ID</label><input class="fi" id="cfg-email-key" placeholder="Chave do serviço de email"></div>
+      </div>
+      <div class="fgp"><label class="fl">Email remetente (De:)</label><input class="fi" id="cfg-email-from" type="email" placeholder="payrun@empresa.mz"></div>
+    </div>
+
+    <button class="btn btn-bz" onclick="guardarConfigUtilizadores()">💾 Guardar configurações de utilizadores</button>
   </div>
 
   <div class="tc" id="cfg2">
@@ -1492,7 +1568,6 @@ select.fi option{background:var(--sf2);color:var(--tx)}
           <div class="fgp"><label class="fl">Departamento</label><input class="fi" id="fde" placeholder="Ex: Financeiro"></div>
           <div class="fgp"><label class="fl">Data de admissão</label><input class="fi" id="fad" type="date"></div>
           <div class="fgp"><label class="fl">Tipo de contrato</label><select class="fi" id="fco" onchange="togContrato(this)"><option value="indeterminado">Prazo indeterminado</option><option value="determinado">Prazo determinado</option><option value="servicos">Prestação de serviços</option></select></div>
-          <div class="fgp"><label class="fl">Início do contrato</label><input class="fi" id="fci" type="date"></div>
           <div class="fgp"><label class="fl">Validade do contrato</label><input class="fi" id="fcv" type="date" placeholder="Vazio se indeterminado" id="fcv"></div>
         </div>
         <div style="font-size:.78rem;font-weight:700;color:var(--czdd);margin:.7rem 0 .5rem">Endereço e localização</div>
@@ -1579,7 +1654,6 @@ select.fi option{background:var(--sf2);color:var(--tx)}
         <div style="font-size:.78rem;font-weight:700;color:var(--czdd);margin-bottom:.5rem">Contrato de trabalho</div>
         <div class="fg">
           <div class="fgp"><label class="fl">Tipo de contrato</label><select class="fi" id="fco2"><option>Prazo indeterminado</option><option>Prazo determinado</option><option>Prestação de serviços</option><option>Estágio profissional</option></select></div>
-          <div class="fgp"><label class="fl">Início do contrato</label><input class="fi" id="fci2" type="date"></div>
           <div class="fgp"><label class="fl">Validade / Fim do contrato</label><input class="fi" id="fcv2" type="date" placeholder="Vazio = indeterminado"></div>
           <div class="fgp"><label class="fl">Período de experiência</label><select class="fi"><option>Não aplicável</option><option>30 dias</option><option>60 dias</option><option>90 dias</option></select></div>
         </div>
@@ -1690,7 +1764,7 @@ select.fi option{background:var(--sf2);color:var(--tx)}
                 <td style="padding:.35rem .6rem"><span class="bg br">Fiscal</span></td>
                 <td style="padding:.35rem .6rem"><select class="fi" style="padding:.2rem .4rem;font-size:.72rem" id="fmi" onchange="calcLkDed(this,'irps')"><option value="tabela">Tabela de retenção — Lei 11/2025</option><option value="isento">Isento (justificação obrigatória)</option><option value="liberatoria">Taxa liberatória fixa</option></select></td>
                 <td style="padding:.35rem .6rem;text-align:right;font-family:monospace;color:var(--vm);font-weight:700" id="lk-val-irps">—</td>
-                <td style="padding:.35rem .6rem;text-align:center"><label class="toggle-sw"><input type="checkbox" id="lk-irps" checked><span class="toggle-slider"></span></label></td>
+                <td style="padding:.35rem .6rem;text-align:center"><label class="toggle-sw"><input type="checkbox" id="lk-irps" checked onchange="onToggleLk('irps',this.checked)"><span class="toggle-slider"></span></label></td>
                 <td style="padding:.35rem .6rem"></td>
               </tr>
               <tr style="border-bottom:1px solid var(--bd)">
@@ -1698,7 +1772,7 @@ select.fi option{background:var(--sf2);color:var(--tx)}
                 <td style="padding:.35rem .6rem"><span class="bg br">Social</span></td>
                 <td style="padding:.35rem .6rem"><select class="fi" style="padding:.2rem .4rem;font-size:.72rem" id="fmn" onchange="calcLkDed(this,'inss')"><option value="sim">3% sobre base + antiguidade (Lei 7/2023)</option><option value="nao">Não sujeito (justificação)</option></select></td>
                 <td style="padding:.35rem .6rem;text-align:right;font-family:monospace;color:var(--vm);font-weight:700" id="lk-val-inss">—</td>
-                <td style="padding:.35rem .6rem;text-align:center"><label class="toggle-sw"><input type="checkbox" id="lk-inss" checked><span class="toggle-slider"></span></label></td>
+                <td style="padding:.35rem .6rem;text-align:center"><label class="toggle-sw"><input type="checkbox" id="lk-inss" checked onchange="onToggleLk('inss',this.checked)"><span class="toggle-slider"></span></label></td>
                 <td style="padding:.35rem .6rem"></td>
               </tr>
               <tr style="border-bottom:1px solid var(--bd)">
@@ -1805,6 +1879,45 @@ select.fi option{background:var(--sf2);color:var(--tx)}
     <button class="btn btn-o" onclick="fm('m-rescisao')">Cancelar</button>
     <button class="btn btn-o btn-sm" onclick="exportRelCSV()">⬇️ Exportar</button>
     <button class="btn btn-d" onclick="confRescisao()">✓ Confirmar rescisão</button>
+  </div></div>
+</div>
+
+<!-- MODAL CONFIRMAÇÃO DE PAGAMENTO -->
+<div class="mo" id="m-pagar">
+  <div class="md mdl"><div class="mdh">
+    <div>
+      <div class="mdt">💳 Confirmar Pagamento</div>
+      <div id="pag-periodo" style="font-size:.68rem;color:var(--tx3);margin-top:.15rem;font-family:monospace">—</div>
+    </div>
+    <button class="mdc" onclick="fm('m-pagar')">✕</button>
+  </div>
+  <div class="mdb">
+    <div class="al av" style="margin-bottom:.8rem">⚠️ Confirme antes de prosseguir. Após confirmação, o estado da folha passa a <strong>Pago</strong> e fica arquivado no histórico.</div>
+    <div style="overflow-x:auto;border:1px solid var(--bd);border-radius:8px;margin-bottom:.8rem">
+      <table style="width:100%;border-collapse:collapse;font-size:.74rem">
+        <thead><tr style="background:var(--sf2)">
+          <th style="padding:.4rem .6rem;text-align:left;color:var(--tx3);font-size:.62rem;font-weight:700;text-transform:uppercase">Colaborador</th>
+          <th style="padding:.4rem .6rem;text-align:left;color:var(--tx3);font-size:.62rem;font-weight:700;text-transform:uppercase">Banco</th>
+          <th style="padding:.4rem .6rem;text-align:left;color:var(--tx3);font-size:.62rem;font-weight:700;text-transform:uppercase">NIB / Conta</th>
+          <th style="padding:.4rem .6rem;text-align:right;color:var(--tx3);font-size:.62rem;font-weight:700;text-transform:uppercase">Líquido (MZN)</th>
+        </tr></thead>
+        <tbody id="pag-lista"></tbody>
+        <tfoot><tr style="background:var(--cyb);border-top:1px solid rgba(0,212,255,.2)">
+          <td colspan="3" style="padding:.45rem .6rem;font-weight:700;color:var(--cy);font-size:.78rem">TOTAL A PAGAR</td>
+          <td id="pag-total" style="padding:.45rem .6rem;text-align:right;font-family:monospace;font-weight:700;font-size:.9rem;color:var(--gn)">MZN 0</td>
+        </tr></tfoot>
+      </table>
+    </div>
+    <div class="fg">
+      <div class="fgp"><label class="fl">Data de pagamento</label><input class="fi" type="date" id="pag-data"></div>
+      <div class="fgp"><label class="fl">Referência bancária / N.º ordem</label><input class="fi" id="pag-ref" placeholder="Ex: OPT-2025-06-001"></div>
+    </div>
+    <div class="fgp"><label class="fl">Observações</label><input class="fi" id="pag-obs" placeholder="Opcional"></div>
+  </div>
+  <div class="mdf">
+    <button class="btn btn-o" onclick="fm('m-pagar')">Cancelar</button>
+    <button class="btn btn-o btn-sm" onclick="exportRelCSV()">⬇️ Exportar folha bancária (CSV)</button>
+    <button class="btn btn-s" onclick="confirmarPagamento()">✓ Confirmar pagamento</button>
   </div></div>
 </div>
 
@@ -2205,7 +2318,7 @@ function addF(){
     inssNum:document.getElementById('fins').value||'—',
     admissao:document.getElementById('fad').value||'—',
     contrato:document.getElementById('fco').value,
-    cini:document.getElementById('fci').value||'',
+    cini:document.getElementById('fad').value||'', // cini = admissao
     cval:document.getElementById('fcv').value||'',
     salario:sal,dep:parseInt(document.getElementById('fdep').value)||0,
     subT:parseFloat(document.getElementById('fst').value)||0,
@@ -2329,7 +2442,6 @@ function abrirFuncNoModal(i){
   document.getElementById('ftel').value=f.tel||'';
   document.getElementById('femail').value=f.email||'';
   document.getElementById('fco').value=f.contrato||'Prazo indeterminado';
-  document.getElementById('fci').value=f.cini||'';
   document.getElementById('fcv').value=f.cval||'';
   document.getElementById('fsal').value=f.salario||0;
   document.getElementById('fdep').value=f.dep||0;
@@ -2806,7 +2918,26 @@ function addFlt(){
 function togAfScope(){
   const scope=document.getElementById('af-scope').value;
   document.getElementById('af-func-wrap').style.display=scope==='individual'?'':'none';
-  document.getElementById('af-grupo-wrap').style.display=scope==='grupo'?'':'none';
+  const grpWrap=document.getElementById('af-grupo-wrap');
+  grpWrap.style.display=scope==='individual'||scope==='todos'?'none':'';
+  const grpSel=document.getElementById('af-grp-sel');
+  const grpInp=document.getElementById('af-grp');
+  if(!grpSel||!grpInp)return;
+  grpSel.innerHTML='<option value="">Seleccionar...</option>';
+  if(scope==='dept'){
+    grpSel.style.display='';grpInp.style.display='none';
+    const depts=[...new Set(F.map(f=>f.dept).filter(d=>d&&d!=='—'))];
+    depts.forEach(d=>grpSel.innerHTML+=`<option>${d}</option>`);
+  } else if(scope==='cargo'){
+    grpSel.style.display='';grpInp.style.display='none';
+    const cargos=[...new Set(F.map(f=>f.cargo).filter(c=>c))];
+    cargos.forEach(c=>grpSel.innerHTML+=`<option>${c}</option>`);
+  } else if(scope==='contrato'){
+    grpSel.style.display='';grpInp.style.display='none';
+    ['indeterminado','determinado','servicos'].forEach(c=>grpSel.innerHTML+=`<option value="${c}">${c}</option>`);
+  } else {
+    grpSel.style.display='none';grpInp.style.display='';
+  }
 }
 
 function addAF(){
@@ -3040,58 +3171,261 @@ function relDif(){
 // ===== FLUXO DE PROCESSAMENTO DA FOLHA =====
 let folhaEstado='rascunho'; // rascunho > processado > aprovado > pago > enviado
 
+// ===== CONFIG UTILIZADORES (em memória) =====
+let CFG_USERS={
+  proc:{nome:'Administrador',email:''},
+  apr:{nome:'',email:''},
+  pag:{nome:'',email:'',metodo:'banco'},
+  rec:{nome:'',email:''},
+  url:'',emailSrv:'',emailKey:'',emailFrom:''
+};
+
+function guardarConfigUtilizadores(){
+  CFG_USERS.proc.nome=document.getElementById('usr-proc-nome').value||'Administrador';
+  CFG_USERS.proc.email=document.getElementById('usr-proc-email').value||'';
+  CFG_USERS.apr.nome=document.getElementById('usr-apr-nome').value||'';
+  CFG_USERS.apr.email=document.getElementById('usr-apr-email').value||'';
+  CFG_USERS.pag.nome=document.getElementById('usr-pag-nome').value||'';
+  CFG_USERS.pag.email=document.getElementById('usr-pag-email').value||'';
+  CFG_USERS.pag.metodo=document.getElementById('usr-pag-metodo').value||'banco';
+  CFG_USERS.rec.nome=document.getElementById('usr-rec-nome').value||'';
+  CFG_USERS.rec.email=document.getElementById('usr-rec-email').value||'';
+  CFG_USERS.url=document.getElementById('cfg-url').value||'';
+  CFG_USERS.emailSrv=document.getElementById('cfg-email-srv').value||'';
+  CFG_USERS.emailKey=document.getElementById('cfg-email-key').value||'';
+  CFG_USERS.emailFrom=document.getElementById('cfg-email-from').value||'';
+  try{localStorage.setItem('payrun_cfg_users',JSON.stringify(CFG_USERS));}catch(e){}
+  st('Configurações de utilizadores guardadas','ok');
+}
+
+function carregarConfigUtilizadores(){
+  try{
+    const s=localStorage.getItem('payrun_cfg_users');
+    if(s){CFG_USERS=JSON.parse(s);}
+    const set=(id,val)=>{const e=document.getElementById(id);if(e&&val)e.value=val;};
+    set('usr-proc-nome',CFG_USERS.proc?.nome);
+    set('usr-proc-email',CFG_USERS.proc?.email);
+    set('usr-apr-nome',CFG_USERS.apr?.nome);
+    set('usr-apr-email',CFG_USERS.apr?.email);
+    set('usr-pag-nome',CFG_USERS.pag?.nome);
+    set('usr-pag-email',CFG_USERS.pag?.email);
+    set('usr-pag-metodo',CFG_USERS.pag?.metodo);
+    set('usr-rec-nome',CFG_USERS.rec?.nome);
+    set('usr-rec-email',CFG_USERS.rec?.email);
+    set('cfg-url',CFG_USERS.url);
+    set('cfg-email-srv',CFG_USERS.emailSrv);
+    set('cfg-email-from',CFG_USERS.emailFrom);
+  }catch(e){}
+}
+
+function enviarEmailFluxo(para,assunto,corpo){
+  const srv=CFG_USERS.emailSrv;
+  if(!para){return;}
+  if(srv==='mailto'){
+    window.open('mailto:'+para+'?subject='+encodeURIComponent(assunto)+'&body='+encodeURIComponent(corpo));
+  } else if(srv==='emailjs'&&CFG_USERS.emailKey){
+    // Integração EmailJS — requer script emailjs no head
+    try{
+      emailjs.send('service_payrun','template_payrun',{to_email:para,subject:assunto,message:corpo},CFG_USERS.emailKey)
+        .then(()=>st('Email enviado para '+para,'ok'))
+        .catch(()=>st('Falha no envio do email — verifique a configuração EmailJS','er'));
+    }catch(e){
+      // Fallback para mailto
+      window.open('mailto:'+para+'?subject='+encodeURIComponent(assunto)+'&body='+encodeURIComponent(corpo));
+    }
+  } else {
+    // Sem integração — abrir cliente de email local
+    window.open('mailto:'+para+'?subject='+encodeURIComponent(assunto)+'&body='+encodeURIComponent(corpo));
+  }
+}
+
 function setEstadoFolha(estado){
   folhaEstado=estado;
   const badge=document.getElementById('folha-estado-badge');
   const estados={
-    rascunho:{txt:'Em processamento',bg:'var(--sf2)',cor:'var(--cz)',bd:'1px solid var(--bd)'},
-    processado:{txt:'✓ Processado',bg:'var(--azp)',cor:'var(--az)',bd:'none'},
-    aprovado:{txt:'✓ Aprovado',bg:'var(--rxp)',cor:'var(--rx)',bd:'none'},
-    pago:{txt:'💳 Pago',bg:'var(--vdp)',cor:'var(--vd)',bd:'none'},
-    enviado:{txt:'📧 Recibos Enviados',bg:'var(--bzp)',cor:'var(--bz)',bd:'none'},
+    rascunho:{txt:'Em processamento',bg:'rgba(59,130,246,.1)',cor:'var(--bl)'},
+    processado:{txt:'✓ Processado — Aguarda aprovação',bg:'rgba(168,85,247,.1)',cor:'var(--pu)'},
+    aprovado:{txt:'✓ Aprovado — Pronto a pagar',bg:'rgba(0,255,136,.1)',cor:'var(--gn)'},
+    reprovado:{txt:'✗ Devolvido — Requer correcção',bg:'rgba(255,68,102,.1)',cor:'var(--rd)'},
+    pago:{txt:'💳 Pago',bg:'rgba(0,212,255,.1)',cor:'var(--cy)'},
+    enviado:{txt:'📧 Recibos Enviados',bg:'rgba(255,184,0,.1)',cor:'var(--am)'},
   };
   const e=estados[estado]||estados.rascunho;
-  if(badge){badge.textContent=e.txt;badge.style.background=e.bg;badge.style.color=e.cor;badge.style.border=e.bd;}
-  // Activar/desactivar botões em cascata
+  if(badge){badge.textContent=e.txt;badge.style.background=e.bg;badge.style.color=e.cor;badge.style.border='1px solid currentColor';}
+
+  // Botões — activar em cascata EXCEPTO se aprovado (bloqueia edição)
+  const bProc=document.getElementById('btn-processar');
   const bApr=document.getElementById('btn-aprovar');
+  const bDesapr=document.getElementById('btn-desaprovar');
   const bPag=document.getElementById('btn-pagar');
   const bEnv=document.getElementById('btn-enviar');
-  if(bApr){bApr.disabled=estado==='rascunho';bApr.style.opacity=estado==='rascunho'?'.45':'1';bApr.style.cursor=estado==='rascunho'?'not-allowed':'pointer';}
-  if(bPag){bPag.disabled=!['aprovado','pago','enviado'].includes(estado);bPag.style.opacity=['aprovado','pago','enviado'].includes(estado)?'1':'.45';bPag.style.cursor=['aprovado','pago','enviado'].includes(estado)?'pointer':'not-allowed';}
-  if(bEnv){bEnv.disabled=!['pago','enviado'].includes(estado);bEnv.style.opacity=['pago','enviado'].includes(estado)?'1':'.45';bEnv.style.cursor=['pago','enviado'].includes(estado)?'pointer':'not-allowed';}
+
+  const bloqueado=['aprovado','pago','enviado'].includes(estado);
+
+  if(bProc){
+    bProc.disabled=bloqueado;
+    bProc.style.opacity=bloqueado?'.35':'1';
+    bProc.style.cursor=bloqueado?'not-allowed':'pointer';
+    bProc.title=bloqueado?'Folha aprovada — não é possível reprocessar sem desaprovar':'Processar folha salarial';
+  }
+
+  const podeAprovar=estado==='processado';
+  if(bApr){bApr.disabled=!podeAprovar;bApr.style.opacity=podeAprovar?'1':'.35';bApr.style.cursor=podeAprovar?'pointer':'not-allowed';}
+
+  const podeDesaprovar=['aprovado'].includes(estado);
+  if(bDesapr){bDesapr.style.display=podeDesaprovar?'inline-flex':'none';}
+
+  const podePagar=estado==='aprovado';
+  if(bPag){bPag.disabled=!podePagar;bPag.style.opacity=podePagar?'1':'.35';bPag.style.cursor=podePagar?'pointer':'not-allowed';}
+
+  const podeEnviar=['pago','enviado'].includes(estado);
+  if(bEnv){bEnv.disabled=!podeEnviar;bEnv.style.opacity=podeEnviar?'1':'.35';bEnv.style.cursor=podeEnviar?'pointer':'not-allowed';}
 }
 
 function processarFolha(){
   if(!F.length){st('Adicione funcionários antes de processar','er');return;}
   cf();
   setEstadoFolha('processado');
-  st('Folha processada com sucesso — aguarda aprovação','ok');
+
+  // Email para aprovador
+  const aprEmail=CFG_USERS.apr?.email||CFG_USERS.proc?.email;
+  const aprNome=CFG_USERS.apr?.nome||'Administrador';
+  const procNome=CFG_USERS.proc?.nome||'Administrador';
+  const periodo=document.getElementById('folha-titulo')?.textContent||'período actual';
+  const url=CFG_USERS.url||window.location.href;
+
+  const totalBr=F.reduce((s,f)=>s+(f.salario+(f.subT||0)+(f.subA||0)+(f.ant||0)+(f.subO||0)),0);
+  const totalLiq=F.reduce((s,f)=>{
+    const br=f.salario+(f.subT||0)+(f.subA||0)+(f.ant||0)+(f.subO||0);
+    const baseI=(f.salario||0)+(f.ant||0);
+    return s+br-cI(br,f.dep||0,f.subA||0)-baseI*0.03;
+  },0);
+
+  const assunto='[PAYRUN] Folha '+periodo+' aguarda a sua aprovação';
+  const corpo='Caro/a '+aprNome+'. A folha salarial de '+periodo+' foi processada por '+procNome+' e aguarda a sua aprovacao. '+
+    'Resumo: '+F.length+' colaboradores, total bruto MZN '+fmt(totalBr)+', total liquido MZN '+fmt(totalLiq)+'. '+
+    'Aceda ao sistema para aprovar ou devolver: '+url+'. '+
+    'Este e um email automatico do sistema PAYRUN. Empresa: '+(document.getElementById('en-nome')?.value||'-');
+
+  if(aprEmail){
+    enviarEmailFluxo(aprEmail,assunto,corpo);
+    st('Folha processada — email de aprovação enviado para '+aprNome,'ok');
+  } else {
+    st('Folha processada — configure o email do aprovador em Configurações → Utilizadores','ok');
+  }
 }
 
 function aprovarFolha(){
-  if(folhaEstado!=='processado'){st('Processe a folha primeiro','er');return;}
+  if(folhaEstado!=='processado'){st('A folha tem de estar processada para aprovar','er');return;}
+
+  const conf=confirm('Confirma a aprovação da folha salarial?  Após aprovação, nenhum dado pode ser alterado sem desaprovar primeiro.');
+  if(!conf)return;
+
   setEstadoFolha('aprovado');
-  st('Folha aprovada — pode agora efectuar o pagamento','ok');
+
+  // Email de confirmação para quem processou
+  const procEmail=CFG_USERS.proc?.email;
+  const aprNome=CFG_USERS.apr?.nome||'Administrador';
+  const periodo=document.getElementById('folha-titulo')?.textContent||'período actual';
+
+  const assunto='[PAYRUN] ✓ Folha '+periodo+' aprovada — pode prosseguir com o pagamento';
+  const corpo='A folha salarial de '+periodo+' foi aprovada por '+aprNome+'.  '+
+    'Pode agora prosseguir com: '+
+    '1. Pagamento (folha bancária) '+
+    '2. Envio dos recibos de pagamento  '+
+    'Aceda ao sistema: '+(CFG_USERS.url||window.location.href)+'  '+
+    'Sistema PAYRUN';
+
+  if(procEmail){
+    enviarEmailFluxo(procEmail,assunto,corpo);
+    st('Folha aprovada — confirmação enviada por email','ok');
+  } else {
+    st('Folha aprovada — pode agora efectuar o pagamento','ok');
+  }
+}
+
+function desaprovarFolha(){
+  const motivo=prompt('Motivo da devolução (obrigatório):');
+  if(!motivo||!motivo.trim()){st('É necessário indicar o motivo','er');return;}
+
+  setEstadoFolha('reprovado');
+
+  // Email para quem processou
+  const procEmail=CFG_USERS.proc?.email;
+  const aprNome=CFG_USERS.apr?.nome||'Administrador';
+  const periodo=document.getElementById('folha-titulo')?.textContent||'período actual';
+  const assunto='[PAYRUN] ✗ Folha '+periodo+' devolvida — requer correcção';
+  const corpo='A folha salarial de '+periodo+' foi devolvida por '+aprNome+'.  '+
+    'Motivo: '+motivo+'  '+
+    'Por favor corrija e reprocesse. '+
+    'Sistema PAYRUN';
+
+  if(procEmail) enviarEmailFluxo(procEmail,assunto,corpo);
+  st('Folha devolvida — '+motivo,'er');
 }
 
 function pagarFolha(){
-  if(!['aprovado'].includes(folhaEstado)){st('A folha tem de estar aprovada para pagar','er');return;}
+  if(folhaEstado!=='aprovado'){st('A folha tem de estar aprovada para efectuar pagamento','er');return;}
+
+  // Calcular totais para confirmação
+  const periodo=document.getElementById('folha-titulo')?.textContent||'período actual';
+  let totalLiq=0;
+  const linhasBanco=F.map(f=>{
+    const br=f.salario+(f.subT||0)+(f.subA||0)+(f.ant||0)+(f.subO||0);
+    const baseI=(f.salario||0)+(f.ant||0);
+    const ip=f.metodI==='isento'?0:cI(br,f.dep||0,f.subA||0);
+    const inn=f.metodN==='nao'?0:baseI*0.03;
+    const ad=(f.afixo||0)+(f.efixo||0);
+    const liq=br-ip-inn-ad;
+    totalLiq+=liq;
+    return {nome:f.nome,banco:f.banco,conta:f.conta,liq};
+  });
+
+  // Modal de confirmação de pagamento
+  am('m-pagar');
+  const tbody=document.getElementById('pag-lista');
+  if(tbody){
+    tbody.innerHTML=linhasBanco.map(l=>`
+      <tr>
+        <td style="padding:.35rem .6rem;font-weight:600;font-size:.75rem">${l.nome}</td>
+        <td style="padding:.35rem .6rem;font-size:.73rem;color:var(--tx3)">${l.banco||'—'}</td>
+        <td style="padding:.35rem .6rem;font-family:monospace;font-size:.7rem;color:var(--tx3)">${l.conta||'—'}</td>
+        <td style="padding:.35rem .6rem;text-align:right;font-family:monospace;font-weight:700;color:var(--gn)">${fmt(l.liq)}</td>
+      </tr>`).join('');
+  }
+  const totEl=document.getElementById('pag-total');
+  if(totEl) totEl.textContent='MZN '+fmt(totalLiq);
+  const perEl=document.getElementById('pag-periodo');
+  if(perEl) perEl.textContent=periodo;
+}
+
+function confirmarPagamento(){
+  fm('m-pagar');
   setEstadoFolha('pago');
   confF();
-  st('Pagamento registado — folha arquivada no histórico','ok');
+  st('Pagamento confirmado — folha arquivada','ok');
 }
 
 function enviarRecibos(){
   if(!['pago','enviado'].includes(folhaEstado)){st('Efectue o pagamento antes de enviar recibos','er');return;}
   setEstadoFolha('enviado');
-  // Simula envio — em produção integraria com serviço de email SMTP
   let count=0;
   F.forEach(f=>{if(f.email&&f.email!=='—')count++;});
+  const semEmail=F.filter(f=>!f.email||f.email==='—').length;
   if(count===0){
-    st('Nenhum funcionário tem email registado — configure emails nas fichas','er');
+    st('Nenhum colaborador tem email — configure emails nas fichas','er');
     return;
   }
-  st(`Recibos enviados para ${count} colaborador${count!==1?'es':''} (${F.filter(f=>!f.email||f.email==='—').length} sem email)`,count>0?'ok':'er');
+  // Enviar emails individuais
+  F.forEach(f=>{
+    if(!f.email||f.email==='—')return;
+    const assunto='[PAYRUN] Recibo de vencimento — '+(document.getElementById('folha-titulo')?.textContent||'');
+    const corpo='Caro/a '+f.nome+',  O seu recibo de vencimento está disponível no portal PAYRUN.  '+
+      'Para consultar: '+(CFG_USERS.url||window.location.href)+'  '+
+      'Qualquer dúvida contacte o departamento de RH.';
+    enviarEmailFluxo(f.email,assunto,corpo);
+  });
+  st('Recibos enviados: '+count+' emails'+( semEmail>0?' · '+semEmail+' sem email':'')+'.','ok');
 }
 
 function abrirNovaFolha(){
@@ -3225,13 +3559,40 @@ function calcLkDed(sel,tipo){
 
 function aplicarMetodosCalculo(){
   const f=F[funcIdx];if(!f){st('Sem funcionário seleccionado','er');return;}
-  // Ler método IRPS e INSS dos selects
   const fmi=document.getElementById('fmi');
   const fmn=document.getElementById('fmn');
   if(fmi)f.metodI=fmi.value;
   if(fmn)f.metodN=fmn.value;
+
+  // Calcular e reflectir automaticamente nos campos de remunerações/deduções
+  const sal=f.salario||0;
+  const ant=f.ant||0;
+  const baseInss=sal+ant;
+  const sub=f.subT+f.subA+ant+f.subO;
+  const br=sal+sub;
+  const irps=f.metodI==='isento'?0:cI(br,f.dep||0,f.subA||0);
+  const inss=f.metodN==='nao'?0:baseInss*0.03;
+
+  // Actualizar células de valor calculado na tabela de deduções (fp5)
+  const iIRPS=document.getElementById('lk-val-irps');
+  const iINSS=document.getElementById('lk-val-inss');
+  if(iIRPS)iIRPS.textContent=irps>0?fmt(irps)+' MZN':'Isento';
+  if(iINSS)iINSS.textContent=inss>0?fmt(inss)+' MZN':'Não sujeito';
+
+  // Actualizar previsão no tab de remunerações (fp2)
+  pc();
+
+  // Recalcular a folha em tempo real
   cf();
-  st('Métodos de cálculo aplicados e folha recalculada','ok');
+  st('Métodos aplicados — valores actualizados automaticamente','ok');
+}
+
+// Actualização em tempo real quando toggle muda em fp5
+function onToggleLk(tipo,checked){
+  const f=F[funcIdx];if(!f)return;
+  if(tipo==='irps') f.metodI=checked?'tabela':'isento';
+  if(tipo==='inss') f.metodN=checked?'sim':'nao';
+  aplicarMetodosCalculo();
 }
 
 function addLinhaRem(){
@@ -3337,7 +3698,6 @@ function validarFuncionario(){
 // ================================================================
 function togContrato(sel){
   const fcv=document.getElementById('fcv');
-  const fci=document.getElementById('fci');
   if(!fcv)return;
   if(sel.value==='indeterminado'){
     fcv.value='';
@@ -3946,26 +4306,124 @@ function showRelTab(id){
   }
 
   else if(id==='rtp13'){
-    if(!AF.length){body.innerHTML='<div class="al ai">ℹ️ Sem alterações futuras registadas.</div>';out.scrollIntoView({behavior:'smooth'});return;}
+    const hoje=new Date();
     const tipoL={salario:'Actualiz. Salarial',subsidio:'Subsídio',desconto:'Desconto',cargo:'Cargo',dependentes:'Dependentes',contrato:'Contrato',banco:'Dados Bancários',outro:'Outro'};
-    body.innerHTML=`<table style="width:100%;border-collapse:collapse">
-      <thead style="background:var(--czdd);color:#fff"><tr>
-        <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Alvo</th><th style="${thStyle}">Mês</th>
-        <th style="${thStyle}">Tipo</th><th style="${thStyle}">Descrição</th>
-        <th style="${thStyle};text-align:right">Valor</th><th style="${thStyle}">Estado</th>
-      </tr></thead>
-      <tbody>${AF.map(a=>{
-        const f=F.find(x=>x.nome===a.func);
-        return `<tr>
-          <td style="${tdStyle};font-family:monospace;color:var(--bz)">${f?f.id:'—'}</td>
-          <td style="${tdStyle};font-weight:600">${a.scope==='todos'?'Todos':a.scope==='grupo'?a.grupo:a.func}</td>
-          <td style="${tdStyle}">${a.mes}</td>
-          <td style="${tdStyle}">${tipoL[a.tipo]||a.tipo}</td>
-          <td style="${tdStyle}">${a.desc}</td>
-          <td style="${tdR}">${a.val?fmt(a.val):'—'}</td>
-          <td style="${tdStyle}"><span class="bg ${a.aplicado?'bv':a.confirmado?'ba':'by'}">${a.aplicado?'Aplicado':a.confirmado?'Confirmado':'Pendente'}</span></td>
-        </tr>`;
-      }).join('')}</tbody></table>`;
+
+    // Alterações futuras pendentes
+    const afRows=AF.length?AF.map(a=>{
+      const f=F.find(x=>x.nome===a.func);
+      return `<tr>
+        <td style="${tdStyle};font-family:monospace;color:var(--cy)">${f?f.id:'—'}</td>
+        <td style="${tdStyle};font-weight:600">${a.scope==='todos'?'Todos':a.scope==='grupo'?a.grupo:a.func}</td>
+        <td style="${tdStyle}">${a.mes}</td>
+        <td style="${tdStyle}">${tipoL[a.tipo]||a.tipo}</td>
+        <td style="${tdStyle}">${a.desc}</td>
+        <td style="${tdR}">${a.val?fmt(a.val):'—'}</td>
+        <td style="${tdStyle}"><span class="bg ${a.aplicado?'bv':a.confirmado?'ba':'by'}">${a.aplicado?'Aplicado':a.confirmado?'Confirmado':'Pendente'}</span></td>
+      </tr>`;
+    }).join(''):'<tr><td colspan="7" style="'+tdStyle+';color:var(--tx3);text-align:center">Sem alterações futuras registadas</td></tr>';
+
+    // Aniversários no próximo mês
+    const proxMes=(hoje.getMonth()+1)%12;
+    const aniversarios=F.filter(f=>{
+      if(!f.nasc||f.nasc==='—')return false;
+      const dn=new Date(f.nasc);
+      return dn.getMonth()===proxMes;
+    });
+
+    // Contratos a expirar nos próximos 60 dias
+    const contratosExp=F.filter(f=>{
+      if(!f.cval)return false;
+      const fim=new Date(f.cval);
+      const dias=Math.floor((fim-hoje)/(1000*60*60*24));
+      return dias>=0&&dias<=60;
+    }).map(f=>{
+      const dias=Math.floor((new Date(f.cval)-hoje)/(1000*60*60*24));
+      return {...f,diasFim:dias};
+    });
+
+    // Avaliações pendentes (sem avaliação nos últimos 6 meses)
+    const avalPend=F.filter(f=>!AV.some(a=>a.func===f.nome));
+
+    // Formações pendentes (sem formação registada)
+    const formPend=F.filter(f=>!FO.some(fo=>fo.est==='Concluída'&&fo.nome));
+
+    body.innerHTML=`
+      <div style="font-size:.78rem;font-weight:700;color:var(--cy);margin-bottom:.6rem;padding:.4rem .7rem;background:var(--cyb);border-radius:6px;border:1px solid rgba(0,212,255,.15)">
+        📋 Alterações Futuras Pendentes / Confirmadas
+      </div>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:1.2rem">
+        <thead style="background:var(--sf2)"><tr>
+          <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Alvo</th><th style="${thStyle}">Mês</th>
+          <th style="${thStyle}">Tipo</th><th style="${thStyle}">Descrição</th>
+          <th style="${thStyle};text-align:right">Valor</th><th style="${thStyle}">Estado</th>
+        </tr></thead>
+        <tbody>${afRows}</tbody>
+      </table>
+
+      ${aniversarios.length?`
+      <div style="font-size:.78rem;font-weight:700;color:var(--am);margin-bottom:.6rem;padding:.4rem .7rem;background:var(--amp);border-radius:6px;border:1px solid rgba(255,184,0,.15)">
+        🎂 Aniversários no mês seguinte
+      </div>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:1.2rem">
+        <thead style="background:var(--sf2)"><tr>
+          <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Nome</th>
+          <th style="${thStyle}">Data nasc.</th><th style="${thStyle}">Anos</th>
+          <th style="${thStyle}">Email</th>
+        </tr></thead>
+        <tbody>${aniversarios.map(f=>{
+          const anos=hoje.getFullYear()-new Date(f.nasc).getFullYear();
+          return `<tr>
+            <td style="${tdStyle};font-family:monospace;color:var(--cy)">${f.id}</td>
+            <td style="${tdStyle};font-weight:600">${f.nome}</td>
+            <td style="${tdStyle}">${f.nasc}</td>
+            <td style="${tdStyle}">${anos}</td>
+            <td style="${tdStyle};color:var(--tx3)">${f.email||'—'}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>`:''}
+
+      ${contratosExp.length?`
+      <div style="font-size:.78rem;font-weight:700;color:var(--rd);margin-bottom:.6rem;padding:.4rem .7rem;background:var(--rdp);border-radius:6px;border:1px solid rgba(255,68,102,.15)">
+        ⚠️ Contratos a expirar nos próximos 60 dias
+      </div>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:1.2rem">
+        <thead style="background:var(--sf2)"><tr>
+          <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Nome</th>
+          <th style="${thStyle}">Fim contrato</th><th style="${thStyle}">Dias restantes</th>
+          <th style="${thStyle}">Acção recomendada</th>
+        </tr></thead>
+        <tbody>${contratosExp.map(f=>`<tr>
+          <td style="${tdStyle};font-family:monospace;color:var(--cy)">${f.id}</td>
+          <td style="${tdStyle};font-weight:600">${f.nome}</td>
+          <td style="${tdStyle};color:var(--rd)">${f.cval}</td>
+          <td style="${tdStyle};color:${f.diasFim<15?'var(--rd)':'var(--am)'}"><strong>${f.diasFim}</strong> dias</td>
+          <td style="${tdStyle};font-size:.7rem;color:var(--tx3)">Renovar ou iniciar processo de rescisão</td>
+        </tr>`).join('')}</tbody>
+      </table>`:''}
+
+      ${avalPend.length?`
+      <div style="font-size:.78rem;font-weight:700;color:var(--pu);margin-bottom:.6rem;padding:.4rem .7rem;background:var(--pup);border-radius:6px;border:1px solid rgba(168,85,247,.15)">
+        ⭐ Colaboradores sem avaliação de desempenho
+      </div>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:1.2rem">
+        <thead style="background:var(--sf2)"><tr>
+          <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Nome</th>
+          <th style="${thStyle}">Cargo</th><th style="${thStyle}">Admissão</th>
+        </tr></thead>
+        <tbody>${avalPend.map(f=>`<tr>
+          <td style="${tdStyle};font-family:monospace;color:var(--cy)">${f.id}</td>
+          <td style="${tdStyle};font-weight:600">${f.nome}</td>
+          <td style="${tdStyle}">${f.cargo}</td>
+          <td style="${tdStyle}">${f.admissao||'—'}</td>
+        </tr>`).join('')}</tbody>
+      </table>`:''}
+
+      <div style="display:flex;gap:.5rem;margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--bd)">
+        <button class="btn btn-bz btn-sm" onclick="enviarRemindersEmail()">📧 Enviar reminders por email</button>
+        <button class="btn btn-o btn-sm" onclick="exportRelCSV()">⬇️ Exportar CSV</button>
+        <button class="btn btn-o btn-sm" onclick="window.print()">🖨️ Imprimir</button>
+      </div>`;
   }
 
   else {
@@ -4003,7 +4461,7 @@ function addF(){
     inssNum:document.getElementById('fins').value||'—',
     admissao:document.getElementById('fad').value||'—',
     contrato:document.getElementById('fco').value||'indeterminado',
-    cini:document.getElementById('fci').value||'',
+    cini:document.getElementById('fad').value||'', // cini = admissao
     cval:document.getElementById('fcv').value||'',
     end:document.getElementById('fend')?.value||'',
     cidade:document.getElementById('fcid')?.value||'',
@@ -4034,6 +4492,26 @@ function addF(){
 
 // Actualizar updSel para rescisão
 const _updSel_orig=updSel;
+function novoFuncionario(){
+  // Limpar ficha e abrir modal para novo funcionário
+  limpF();
+  const tit=document.getElementById('mf-title');
+  if(tit)tit.textContent='Novo Funcionário';
+  const mfid=document.getElementById('mf-id');
+  if(mfid)mfid.textContent='';
+  // Esconder setas de navegação
+  ['btn-nav-prev','btn-nav-next','nav-pos-modal'].forEach(id=>{
+    const e=document.getElementById(id);if(e)e.style.display='none';
+  });
+  // Limpar pesquisa
+  ['mf-srch-nome','mf-srch-id','mf-srch-dept'].forEach(id=>{
+    const e=document.getElementById(id);if(e)e.value='';
+  });
+  const res=document.getElementById('mf-srch-res');
+  if(res)res.innerHTML='';
+  am('mf');
+}
+
 function updSel(){
   _updSel_orig();
   const rscF=document.getElementById('rsc-f');
@@ -4080,6 +4558,53 @@ function cf(){
     </tr>`;
   }).join('');
   rFS(tB,tD,tL);rMI();rDB();rRF();
+}
+
+// ===== REMINDERS POR EMAIL =====
+function enviarRemindersEmail(){
+  const hoje=new Date();
+  const proxMes=(hoje.getMonth()+1)%12;
+  let enviados=0;
+
+  // Aniversários
+  F.forEach(f=>{
+    if(!f.nasc||f.nasc==='—'||!f.email||f.email==='—')return;
+    const dn=new Date(f.nasc);
+    if(dn.getMonth()===proxMes){
+      const anos=hoje.getFullYear()-dn.getFullYear();
+      enviarEmailFluxo(f.email,
+        '[PAYRUN] Feliz aniversário, '+f.nome+'!',
+        'Caro/a '+f.nome+',  A empresa deseja-lhe um feliz '+anos+'.º aniversário!  Equipa de RH');
+      enviados++;
+    }
+  });
+
+  // Contratos a expirar
+  F.forEach(f=>{
+    if(!f.cval||!f.email||f.email==='—')return;
+    const dias=Math.floor((new Date(f.cval)-hoje)/(1000*60*60*24));
+    if(dias>=0&&dias<=30){
+      enviarEmailFluxo(f.email,
+        '[PAYRUN] O seu contrato expira em '+dias+' dias',
+        'Caro/a '+f.nome+',  O seu contrato de trabalho expira em '+f.cval+' ('+dias+' dias).  Por favor contacte o departamento de RH para regularização.  Equipa de RH');
+      enviados++;
+    }
+  });
+
+  // Avaliações pendentes — email ao gestor de RH
+  const semAval=F.filter(f=>!AV.some(a=>a.func===f.nome));
+  if(semAval.length){
+    const hrEmail=CFG_USERS.rec?.email||CFG_USERS.proc?.email;
+    if(hrEmail){
+      enviarEmailFluxo(hrEmail,
+        '[PAYRUN] '+semAval.length+' colaboradores sem avaliação de desempenho',
+        'Os seguintes colaboradores não têm avaliação de desempenho registada:  '+
+        semAval.map(f=>'• '+f.nome+' ('+f.id+')').join(' ')+ '  Por favor agende as avaliações.  Sistema PAYRUN');
+      enviados++;
+    }
+  }
+
+  st('Reminders enviados: '+enviados+' emails','ok');
 }
 
 // ===== EXPORTAR CSV =====
