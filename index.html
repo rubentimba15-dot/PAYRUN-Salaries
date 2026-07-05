@@ -1592,83 +1592,102 @@ select.fi option{background:var(--sf2);color:var(--tx)}
       </div>
       <!-- Tab 2 -->
       <div class="fntc" id="fp2">
-        <div class="al ai" style="margin-bottom:.8rem">ℹ️ IRPS: tabela art. 65-A Lei 11/2025. INSS: incide apenas sobre salário base + bónus de antiguidade. Horas extra calculadas automaticamente conforme registo na aba Deduções.</div>
+        <div class="al ai" style="margin-bottom:.7rem">ℹ️ <strong>Fixo</strong> — pago todos os meses até alteração manual. <strong>Temporário</strong> — válido apenas para o mês actual; é zerado na mudança de mês, a não ser que a <em>Metodologia</em> e o <em>Nr/Valor</em> estipulem repetição. O resultado de métodos de cálculo activos reflecte-se automaticamente em <strong>Temporário</strong>. O total considerado no processamento é <strong>Fixo + Temporário</strong>.</div>
 
-        <div class="fgp" style="max-width:220px;margin-bottom:.8rem"><label class="fl">N.º dependentes (para IRPS)</label><select class="fi" id="fdep" onchange="pc()"><option value="0">0 dependentes</option><option value="1">1 dependente</option><option value="2">2 dependentes</option><option value="3">3 dependentes</option><option value="4">4 ou mais</option></select></div>
+        <div class="fgp" style="max-width:220px;margin-bottom:.7rem"><label class="fl">N.º dependentes (para IRPS)</label><select class="fi" id="fdep" onchange="pc()"><option value="0">0 dependentes</option><option value="1">1 dependente</option><option value="2">2 dependentes</option><option value="3">3 dependentes</option><option value="4">4 ou mais</option></select></div>
 
         <div style="overflow-x:auto;border:1px solid var(--bd);border-radius:8px;margin-bottom:.6rem">
-          <table style="width:100%;border-collapse:collapse;font-size:.76rem">
-            <thead><tr style="background:var(--sf2)">
-              <th style="padding:.45rem .65rem;text-align:left;color:var(--tx3);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Janela de Remunerações</th>
-              <th style="padding:.45rem .65rem;text-align:center;color:var(--tx3);font-size:.62rem;font-weight:700;text-transform:uppercase;width:120px">Fixo</th>
-              <th style="padding:.45rem .65rem;text-align:center;color:var(--tx3);font-size:.62rem;font-weight:700;text-transform:uppercase;width:120px">Temporário</th>
-              <th style="padding:.45rem .65rem;text-align:center;color:var(--tx3);font-size:.62rem;font-weight:700;text-transform:uppercase;width:110px">Frequência</th>
-            </tr></thead>
+          <table style="width:100%;border-collapse:collapse;font-size:.75rem">
+            <thead>
+              <tr style="background:var(--sf2)">
+                <th style="padding:.42rem .6rem;text-align:left;color:var(--tx3);font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em">Remunerações</th>
+                <th style="padding:.42rem .55rem;text-align:center;color:var(--tx3);font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap">Fixo</th>
+                <th style="padding:.42rem .55rem .42rem 1.1rem;text-align:center;color:var(--tx3);font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;border-left:2px solid var(--bd2)">Temporário</th>
+                <th style="padding:.42rem .55rem;text-align:center;color:var(--tx3);font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap">Metodologia</th>
+                <th style="padding:.42rem .55rem;text-align:center;color:var(--tx3);font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap">Nr meses / Valor total</th>
+              </tr>
+            </thead>
             <tbody>
+              <!-- Salário base: Fixo editável, sem Temporário -->
               <tr style="border-top:1px solid var(--bd)">
-                <td style="padding:.4rem .65rem;font-weight:600;color:var(--tx)">Salário base</td>
-                <td style="padding:.3rem .5rem"><input class="fi mono-val" id="fsal" type="number" placeholder="0,00" oninput="pc()" style="text-align:right"></td>
-                <td style="padding:.3rem .5rem;text-align:center;color:var(--tx4)">—</td>
-                <td style="padding:.3rem .5rem;text-align:center"><span class="bg ba">Mensal</span></td>
+                <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem">Salário base *</td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem" min="0" step="0.01" id="fsal" oninput="pc()" placeholder="0,00"></td>
+                <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd)"style="border-left:2px solid var(--bd);padding:.28rem .4rem;text-align:center;color:var(--tx4);font-size:.72rem">—</td>
+                <td style="padding:.28rem .4rem;text-align:center;color:var(--tx4);font-size:.72rem">—</td>
+                <td style="padding:.28rem .4rem;text-align:center;color:var(--tx4);font-size:.72rem">—</td>
               </tr>
+              <!-- Sub. Alimentação -->
               <tr style="border-top:1px solid var(--bd)">
-                <td style="padding:.4rem .65rem;font-weight:600;color:var(--tx)">Horas Extras 150%</td>
-                <td style="padding:.3rem .5rem;text-align:center;color:var(--tx4)">—</td>
-                <td style="padding:.3rem .5rem"><input class="fi mono-val" id="fhx150" readonly value="0,00" style="text-align:right"></td>
-                <td style="padding:.3rem .5rem;text-align:center"><span class="bg by">Variável</span></td>
+                <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem">Subsídio Alimentação</td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem" min="0" step="0.01" id="fsa" oninput="pc()" value="0"></td>
+                <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd)"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;background:rgba(0,212,255,.04);border-color:rgba(0,212,255,.18)" min="0" step="0.01" id="fsa-tmp" value="0" oninput="pc()"></td>
+                <td style="padding:.28rem .4rem"><select class="fi" style="font-size:.72rem;padding:.22rem .35rem" id="fsa-met" onchange="onMetChange('fsa')"><option value="">Não aplicável</option><option value="meses">Nr de meses</option><option value="total">Valor total</option></select></td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px" min="0" step="0.5" id="fsa-nm" value="" placeholder="—" oninput="onNmChange('fsa')" disabled style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px;background:var(--sf);color:var(--tx3)"></td>
               </tr>
+              <!-- Sub. Transporte -->
               <tr style="border-top:1px solid var(--bd)">
-                <td style="padding:.4rem .65rem;font-weight:600;color:var(--tx)">Horas Extras 200%</td>
-                <td style="padding:.3rem .5rem;text-align:center;color:var(--tx4)">—</td>
-                <td style="padding:.3rem .5rem"><input class="fi mono-val" id="fhx200" readonly value="0,00" style="text-align:right"></td>
-                <td style="padding:.3rem .5rem;text-align:center"><span class="bg by">Variável</span></td>
+                <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem">Subsídio Transporte</td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem" min="0" step="0.01" id="fst" oninput="pc()" value="0"></td>
+                <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd)"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;background:rgba(0,212,255,.04);border-color:rgba(0,212,255,.18)" min="0" step="0.01" id="fst-tmp" value="0" oninput="pc()"></td>
+                <td style="padding:.28rem .4rem"><select class="fi" style="font-size:.72rem;padding:.22rem .35rem" id="fst-met" onchange="onMetChange('fst')"><option value="">Não aplicável</option><option value="meses">Nr de meses</option><option value="total">Valor total</option></select></td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px" min="0" step="0.5" id="fst-nm" value="" placeholder="—" oninput="onNmChange('fst')" disabled style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px;background:var(--sf);color:var(--tx3)"></td>
               </tr>
+              <!-- Bónus Antiguidade -->
               <tr style="border-top:1px solid var(--bd)">
-                <td style="padding:.4rem .65rem;font-weight:600;color:var(--tx)">Horas Excepcionais</td>
-                <td style="padding:.3rem .5rem;text-align:center;color:var(--tx4)">—</td>
-                <td style="padding:.3rem .5rem"><input class="fi" id="fhxexc" type="number" value="0" oninput="pc()" style="text-align:right"></td>
-                <td style="padding:.3rem .5rem;text-align:center"><span class="bg by">Variável</span></td>
+                <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem">Bónus Antiguidade</td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem" min="0" step="0.01" id="fant" oninput="pc()" value="0"></td>
+                <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd)"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;background:rgba(0,212,255,.04);border-color:rgba(0,212,255,.18)" min="0" step="0.01" id="fant-tmp" value="0" oninput="pc()"></td>
+                <td style="padding:.28rem .4rem"><select class="fi" style="font-size:.72rem;padding:.22rem .35rem" id="fant-met" onchange="onMetChange('fant')"><option value="">Não aplicável</option><option value="meses">Nr de meses</option><option value="total">Valor total</option></select></td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px" min="0" step="0.5" id="fant-nm" value="" placeholder="—" oninput="onNmChange('fant')" disabled style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px;background:var(--sf);color:var(--tx3)"></td>
               </tr>
+              <!-- Horas Extras 150% — Temporário auto, Fixo bloqueado -->
               <tr style="border-top:1px solid var(--bd)">
-                <td style="padding:.4rem .65rem;font-weight:600;color:var(--tx)">Subsídio Alimentação</td>
-                <td style="padding:.3rem .5rem"><input class="fi mono-val" id="fsa" type="number" value="2500" oninput="pc()" style="text-align:right"></td>
-                <td style="padding:.3rem .5rem;text-align:center;color:var(--tx4)">—</td>
-                <td style="padding:.3rem .5rem;text-align:center"><span class="bg ba">Mensal</span></td>
+                <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem">Horas Extras 150%</td>
+                <td style="padding:.28rem .4rem"style="padding:.28rem .4rem;text-align:center;color:var(--tx4);font-size:.72rem">—</td>
+                <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd)"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;background:rgba(0,212,255,.04);border-color:rgba(0,212,255,.18)" min="0" step="0.01" id="fhx150" readonly title="Calculado automaticamente" value="0"></td>
+                <td style="padding:.28rem .4rem;text-align:center;color:var(--tx4);font-size:.72rem">Auto</td>
+                <td style="padding:.28rem .4rem;text-align:center;color:var(--tx4);font-size:.72rem">—</td>
               </tr>
+              <!-- Horas Extras 200% -->
               <tr style="border-top:1px solid var(--bd)">
-                <td style="padding:.4rem .65rem;font-weight:600;color:var(--tx)">Subsídio Transporte</td>
-                <td style="padding:.3rem .5rem"><input class="fi mono-val" id="fst" type="number" value="3000" oninput="pc()" style="text-align:right"></td>
-                <td style="padding:.3rem .5rem;text-align:center;color:var(--tx4)">—</td>
-                <td style="padding:.3rem .5rem;text-align:center"><span class="bg ba">Mensal</span></td>
+                <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem">Horas Extras 200%</td>
+                <td style="padding:.28rem .4rem;text-align:center;color:var(--tx4)">—</td>
+                <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd)"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;background:rgba(0,212,255,.04);border-color:rgba(0,212,255,.18)" min="0" step="0.01" id="fhx200" readonly title="Calculado automaticamente" value="0"></td>
+                <td style="padding:.28rem .4rem;text-align:center;color:var(--tx4);font-size:.72rem">Auto</td>
+                <td style="padding:.28rem .4rem;text-align:center;color:var(--tx4);font-size:.72rem">—</td>
               </tr>
+              <!-- Horas Excepcionais -->
               <tr style="border-top:1px solid var(--bd)">
-                <td style="padding:.4rem .65rem;font-weight:600;color:var(--tx)">Bónus Antiguidade</td>
-                <td style="padding:.3rem .5rem"><input class="fi mono-val" id="fant" type="number" value="0" oninput="pc()" style="text-align:right"></td>
-                <td style="padding:.3rem .5rem;text-align:center;color:var(--tx4)">—</td>
-                <td style="padding:.3rem .5rem;text-align:center"><span class="bg ba">Mensal</span></td>
+                <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem">Horas Excepcionais</td>
+                <td style="padding:.28rem .4rem;text-align:center;color:var(--tx4)">—</td>
+                <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd)"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;background:rgba(0,212,255,.04);border-color:rgba(0,212,255,.18)" min="0" step="0.01" id="fhxexc" value="0" oninput="pc()"></td>
+                <td style="padding:.28rem .4rem"><select class="fi" style="font-size:.72rem;padding:.22rem .35rem" id="fhxexc-met" onchange="onMetChange('fhxexc')"><option value="">Não aplicável</option><option value="meses">Nr de meses</option><option value="total">Valor total</option></select></td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px" min="0" step="0.5" id="fhxexc-nm" value="" placeholder="—" oninput="onNmChange('fhxexc')" disabled style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px;background:var(--sf);color:var(--tx3)"></td>
               </tr>
+              <!-- Outros subsídios -->
               <tr style="border-top:1px solid var(--bd)" id="row-outras-rem">
-                <td style="padding:.4rem .65rem;font-weight:600;color:var(--tx)">Outros subsídios</td>
-                <td style="padding:.3rem .5rem"><input class="fi mono-val" id="fso" type="number" value="0" oninput="pc()" style="text-align:right"></td>
-                <td style="padding:.3rem .5rem;text-align:center;color:var(--tx4)">—</td>
-                <td style="padding:.3rem .5rem;text-align:center"><span class="bg ba">Mensal</span></td>
+                <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem">Outros subsídios</td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem" min="0" step="0.01" id="fso-fx" value="0" oninput="pc()"></td>
+                <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd)"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;background:rgba(0,212,255,.04);border-color:rgba(0,212,255,.18)" min="0" step="0.01" id="fso" value="0" oninput="pc()"></td>
+                <td style="padding:.28rem .4rem"><select class="fi" style="font-size:.72rem;padding:.22rem .35rem" id="fso-met" onchange="onMetChange('fso')"><option value="">Não aplicável</option><option value="meses">Nr de meses</option><option value="total">Valor total</option></select></td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px" min="0" step="0.5" id="fso-nm" value="" placeholder="—" oninput="onNmChange('fso')" disabled style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px;background:var(--sf);color:var(--tx3)"></td>
               </tr>
               <tbody id="extra-rem-rows"></tbody>
             </tbody>
           </table>
-          <div style="padding:.4rem .65rem;border-top:1px solid var(--bd);text-align:right;background:var(--sf2)">
-            <button class="btn btn-o btn-xs" onclick="addRemunCustom()">+ Adicionar novas remunerações</button>
+          <div style="padding:.38rem .65rem;border-top:1px solid var(--bd);text-align:right;background:var(--sf2)">
+            <button class="btn btn-o btn-xs" onclick="addRemunCustom()">+ Adicionar remuneração</button>
           </div>
         </div>
 
-        <div style="font-size:.78rem;font-weight:700;color:var(--tx);margin-bottom:.5rem">⏱️ Registar Horas Extra — mês actual</div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--tx);margin-bottom:.5rem;margin-top:.4rem">⏱️ Registar Horas Extra — mês actual</div>
         <div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap">
           <input class="fi" style="width:130px;flex:none" type="date" id="hx-data">
           <input class="fi" style="width:80px;flex:none" type="number" id="hx-horas" placeholder="Horas" step="0.5" min="0.5">
           <select class="fi" style="flex:1;min-width:160px" id="hx-tipo">
             <option value="150">Dia útil — até 2h (150%)</option>
             <option value="200">Dia útil — além 2h (200%)</option>
-            <option value="200">Descanso/feriado (200%)</option>
+            <option value="200fds">Descanso/feriado (200%)</option>
           </select>
           <button class="btn btn-bz btn-sm" onclick="addHxFunc()">+ Registar h.extra</button>
         </div>
@@ -1683,69 +1702,84 @@ select.fi option{background:var(--sf2);color:var(--tx)}
           <div class="cr ded"><span class="clb">IRPS (Lei 11/2025)</span><span class="cvl" id="pv-ip">—</span></div>
           <div class="cr ded"><span class="clb">INSS trab. 3% (base+antigu.)</span><span class="cvl" id="pv-in">—</span></div>
           <div class="cr liq"><span class="clb">Salário líquido estimado</span><span class="cvl" id="pv-liq">—</span></div>
-          <div class="cr cst"><span class="clb">INSS entidade 4% (base+antigu.)</span><span class="cvl" id="pv-ine">—</span></div>
+          <div class="cr cst"><span class="clb">INSS entidade 4%</span><span class="cvl" id="pv-ine">—</span></div>
           <div class="cr cst"><span class="clb">Custo total empresa</span><span class="cvl" id="pv-custo">—</span></div>
         </div>
       </div>
-      <!-- Tab 3 -->
+      <!-- Tab 3 — Deduções -->
       <div class="fntc" id="fp3">
-        <div class="al av">⚠️ Deduções mensais + registo de faltas (descontam no salário). Horas extra são registadas na aba Remunerações.</div>
+        <div class="al av" style="margin-bottom:.7rem">⚠️ <strong>IRPS e INSS</strong> são calculados automaticamente (não editáveis). As restantes deduções seguem a mesma lógica das remunerações: <strong>Fixo</strong> repete todos os meses; <strong>Temporário</strong> é zerado na mudança de mês, salvo se a Metodologia indicar repetição.</div>
 
         <div style="overflow-x:auto;border:1px solid var(--bd);border-radius:8px;margin-bottom:.8rem">
-          <table style="width:100%;border-collapse:collapse;font-size:.76rem">
-            <thead><tr style="background:var(--sf2)">
-              <th style="padding:.45rem .65rem;text-align:left;color:var(--tx3);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Janela de Deduções</th>
-              <th style="padding:.45rem .65rem;text-align:center;color:var(--tx3);font-size:.62rem;font-weight:700;text-transform:uppercase;width:120px">Fixo</th>
-              <th style="padding:.45rem .65rem;text-align:center;color:var(--tx3);font-size:.62rem;font-weight:700;text-transform:uppercase;width:120px">Temporário</th>
-              <th style="padding:.45rem .65rem;text-align:center;color:var(--tx3);font-size:.62rem;font-weight:700;text-transform:uppercase;width:110px">Frequência</th>
-            </tr></thead>
+          <table style="width:100%;border-collapse:collapse;font-size:.75rem">
+            <thead>
+              <tr style="background:var(--sf2)">
+                <th style="padding:.42rem .6rem;text-align:left;color:var(--tx3);font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em">Deduções</th>
+                <th style="padding:.42rem .55rem;text-align:center;color:var(--tx3);font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap">Fixo</th>
+                <th style="padding:.42rem .55rem .42rem 1.1rem;text-align:center;color:var(--tx3);font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;border-left:2px solid var(--bd2)">Temporário</th>
+                <th style="padding:.42rem .55rem;text-align:center;color:var(--tx3);font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap">Metodologia</th>
+                <th style="padding:.42rem .55rem;text-align:center;color:var(--tx3);font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap">Nr meses / Valor total</th>
+              </tr>
+            </thead>
             <tbody>
-              <tr style="border-top:1px solid var(--bd);background:var(--cyb)">
-                <td style="padding:.4rem .65rem;font-weight:600;color:var(--cy)">IRPS</td>
-                <td style="padding:.3rem .5rem;text-align:center;color:var(--tx4)">—</td>
-                <td style="padding:.3rem .5rem;text-align:center;color:var(--tx4)">—</td>
-                <td style="padding:.3rem .5rem;text-align:center"><span class="bg ba">Auto · Mensal</span></td>
+              <!-- IRPS — totalmente bloqueado -->
+              <tr style="border-top:1px solid var(--bd);background:rgba(0,212,255,.04)">
+                <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem" style="color:var(--cy)">IRPS <span style="font-weight:400;font-size:.68rem;color:var(--tx3)">(automático — Lei 11/2025)</span></td>
+                <td style="padding:.28rem .4rem;text-align:center;color:var(--tx3);font-size:.7rem;font-style:italic">bloqueado</td>
+                <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd);text-align:center;color:var(--tx3);font-size:.7rem;font-style:italic">bloqueado</td>
+                <td style="padding:.28rem .4rem;text-align:center;color:var(--tx3);font-size:.7rem;font-style:italic">—</td>
+                <td style="padding:.28rem .4rem;text-align:center;color:var(--tx3);font-size:.7rem;font-style:italic">—</td>
               </tr>
-              <tr style="border-top:1px solid var(--bd);background:var(--cyb)">
-                <td style="padding:.4rem .65rem;font-weight:600;color:var(--cy)">INSS</td>
-                <td style="padding:.3rem .5rem;text-align:center;color:var(--tx4)">—</td>
-                <td style="padding:.3rem .5rem;text-align:center;color:var(--tx4)">—</td>
-                <td style="padding:.3rem .5rem;text-align:center"><span class="bg ba">Auto · Mensal</span></td>
+              <!-- INSS — totalmente bloqueado -->
+              <tr style="border-top:1px solid var(--bd);background:rgba(0,212,255,.04)">
+                <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem" style="color:var(--cy)">INSS <span style="font-weight:400;font-size:.68rem;color:var(--tx3)">(3% — Lei 7/2023)</span></td>
+                <td style="padding:.28rem .4rem;text-align:center;color:var(--tx3);font-size:.7rem;font-style:italic">bloqueado</td>
+                <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd);text-align:center;color:var(--tx3);font-size:.7rem;font-style:italic">bloqueado</td>
+                <td style="padding:.28rem .4rem;text-align:center;color:var(--tx3);font-size:.7rem;font-style:italic">—</td>
+                <td style="padding:.28rem .4rem;text-align:center;color:var(--tx3);font-size:.7rem;font-style:italic">—</td>
               </tr>
+              <!-- Sindicato -->
               <tr style="border-top:1px solid var(--bd)">
-                <td style="padding:.4rem .65rem;font-weight:600;color:var(--tx)">Sindicato</td>
-                <td style="padding:.3rem .5rem"><input class="fi mono-val" id="fsind" type="number" value="0" style="text-align:right"></td>
-                <td style="padding:.3rem .5rem;text-align:center;color:var(--tx4)">—</td>
-                <td style="padding:.3rem .5rem;text-align:center"><span class="bg ba">Mensal</span></td>
+                <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem">Sindicato</td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem" min="0" step="0.01" id="fsind" value="0"></td>
+                <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd)"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;background:rgba(0,212,255,.04);border-color:rgba(0,212,255,.18)" min="0" step="0.01" id="fsind-tmp" value="0" oninput="pc()"></td>
+                <td style="padding:.28rem .4rem"><select class="fi" style="font-size:.72rem;padding:.22rem .35rem" id="fsind-met" onchange="onMetChange('fsind')"><option value="">Não aplicável</option><option value="meses">Nr de meses</option><option value="total">Valor total</option></select></td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px" min="0" step="0.5" id="fsind-nm" value="" placeholder="—" oninput="onNmChange('fsind')" disabled style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px;background:var(--sf);color:var(--tx3)"></td>
               </tr>
+              <!-- Empréstimos -->
               <tr style="border-top:1px solid var(--bd)">
-                <td style="padding:.4rem .65rem;font-weight:600;color:var(--tx)">Empréstimos</td>
-                <td style="padding:.3rem .5rem;text-align:center;color:var(--tx4)">—</td>
-                <td style="padding:.3rem .5rem"><input class="fi mono-val" id="fef" type="number" value="0" style="text-align:right"></td>
-                <td style="padding:.3rem .5rem;text-align:center"><span class="bg by">Variável</span></td>
+                <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem">Empréstimos</td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem" min="0" step="0.01" id="fef-fx" value="0"></td>
+                <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd)"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;background:rgba(0,212,255,.04);border-color:rgba(0,212,255,.18)" min="0" step="0.01" id="fef" value="0" oninput="pc()"></td>
+                <td style="padding:.28rem .4rem"><select class="fi" style="font-size:.72rem;padding:.22rem .35rem" id="fef-met" onchange="onMetChange('fef')"><option value="">Não aplicável</option><option value="meses">Nr de meses</option><option value="total">Valor total</option></select></td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px" min="0" step="0.5" id="fef-nm" value="" placeholder="—" oninput="onNmChange('fef')" disabled style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px;background:var(--sf);color:var(--tx3)"></td>
               </tr>
+              <!-- Adiantamento -->
               <tr style="border-top:1px solid var(--bd)">
-                <td style="padding:.4rem .65rem;font-weight:600;color:var(--tx)">Adiantamento</td>
-                <td style="padding:.3rem .5rem;text-align:center;color:var(--tx4)">—</td>
-                <td style="padding:.3rem .5rem"><input class="fi mono-val" id="faf" type="number" value="0" style="text-align:right"></td>
-                <td style="padding:.3rem .5rem;text-align:center"><span class="bg by">Variável</span></td>
+                <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem">Adiantamento</td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem" min="0" step="0.01" id="faf-fx" value="0"></td>
+                <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd)"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;background:rgba(0,212,255,.04);border-color:rgba(0,212,255,.18)" min="0" step="0.01" id="faf" value="0" oninput="pc()"></td>
+                <td style="padding:.28rem .4rem"><select class="fi" style="font-size:.72rem;padding:.22rem .35rem" id="faf-met" onchange="onMetChange('faf')"><option value="">Não aplicável</option><option value="meses">Nr de meses</option><option value="total">Valor total</option></select></td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px" min="0" step="0.5" id="faf-nm" value="" placeholder="—" oninput="onNmChange('faf')" disabled style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px;background:var(--sf);color:var(--tx3)"></td>
               </tr>
+              <!-- Outras deduções -->
               <tr style="border-top:1px solid var(--bd)" id="row-outras-ded">
-                <td style="padding:.4rem .65rem;font-weight:600;color:var(--tx)">Outras deduções</td>
-                <td style="padding:.3rem .5rem;text-align:center;color:var(--tx4)">—</td>
-                <td style="padding:.3rem .5rem"><input class="fi mono-val" id="fdf" type="number" value="0" style="text-align:right"></td>
-                <td style="padding:.3rem .5rem;text-align:center"><span class="bg by">Variável</span></td>
+                <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem">Outras deduções</td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem" min="0" step="0.01" id="fdf-fx" value="0"></td>
+                <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd)"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;background:rgba(0,212,255,.04);border-color:rgba(0,212,255,.18)" min="0" step="0.01" id="fdf" value="0" oninput="pc()"></td>
+                <td style="padding:.28rem .4rem"><select class="fi" style="font-size:.72rem;padding:.22rem .35rem" id="fdf-met" onchange="onMetChange('fdf')"><option value="">Não aplicável</option><option value="meses">Nr de meses</option><option value="total">Valor total</option></select></td>
+                <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px" min="0" step="0.5" id="fdf-nm" value="" placeholder="—" oninput="onNmChange('fdf')" disabled style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px;background:var(--sf);color:var(--tx3)"></td>
               </tr>
               <tbody id="extra-ded-rows"></tbody>
             </tbody>
           </table>
-          <div style="padding:.4rem .65rem;border-top:1px solid var(--bd);text-align:right;background:var(--sf2)">
-            <button class="btn btn-o btn-xs" onclick="addDeducaoCustom()">+ Adicionar novas deduções</button>
+          <div style="padding:.38rem .65rem;border-top:1px solid var(--bd);text-align:right;background:var(--sf2)">
+            <button class="btn btn-o btn-xs" onclick="addDeducaoCustom()">+ Adicionar dedução</button>
           </div>
         </div>
 
-        <div style="font-size:.7rem;color:var(--tx3);background:var(--sf2);padding:.55rem .7rem;border-radius:6px;border:1px solid var(--bd);margin-bottom:.8rem">
-          <strong style="color:var(--cy)">Cálculo automático:</strong> IRPS (Lei 11/2025 art. 65-A) · INSS 3% sobre salário base + bónus de antiguidade · Sub. alimentação tributado apenas no excedente ao salário mínimo do sector.
+        <div style="font-size:.7rem;color:var(--tx3);background:var(--sf2);padding:.5rem .7rem;border-radius:6px;border:1px solid var(--bd);margin-bottom:.8rem">
+          <strong style="color:var(--cy)">Cálculo automático:</strong> IRPS (Lei 11/2025 art. 65-A) · INSS 3% sobre salário base + bónus de antiguidade · Sub. alimentação: IRPS apenas sobre excedente ao salário mínimo do sector.
         </div>
 
         <div style="font-size:.78rem;font-weight:700;color:var(--tx);margin-bottom:.5rem">📅 Faltas — mês actual <span style="font-weight:400;color:var(--tx3);font-size:.68rem">(desconta no salário)</span></div>
@@ -1951,7 +1985,10 @@ select.fi option{background:var(--sf2);color:var(--tx)}
   <div class="mdb">
     <div class="al av">⚠️ Conforme a <strong>Lei n.º 13/2023 de 25 de Agosto</strong> — Lei do Trabalho de Moçambique.</div>
     <div class="fg">
-      <div class="fgp"><label class="fl">Funcionário *</label><select class="fi" id="rsc-f" onchange="calcRescisao()"><option value="">Seleccionar...</option></select></div>
+      <div class="fgp"><label class="fl">Funcionário * — pesquisar por nome ou N.º</label>
+  <input class="fi" type="text" id="rsc-search" placeholder="Digite nome ou EMP-XXXX para filtrar..." oninput="filtrarRscSelect()">
+  <select class="fi" id="rsc-f" onchange="calcRescisao()" style="margin-top:.35rem"><option value="">Seleccionar...</option></select>
+</div>
       <div class="fgp"><label class="fl">Data de desligamento *</label><input class="fi" type="date" id="rsc-data" onchange="calcRescisao()"></div>
       <div class="fgp"><label class="fl">Motivo da rescisão *</label>
         <select class="fi" id="rsc-motivo" onchange="calcRescisao()">
@@ -2373,13 +2410,42 @@ function simI(){
 }
 
 // ===== PREVISÃO NO MODAL =====
+// ================================================================
+// FREQUÊNCIA — interpreta se o valor do campo é "Total" (montante já
+// final a atribuir/descontar) ou "× Qtd" (valor unitário multiplicado
+// pelo número de vezes indicado pelo operador).
+// ================================================================
+function valorComFrequencia(campoId){
+  const valEl=document.getElementById(campoId);
+  const modoEl=document.getElementById(campoId+'-modo');
+  const freqEl=document.getElementById(campoId+'-freq');
+  const val=parseFloat(valEl?.value)||0;
+  if(!modoEl||!freqEl)return val; // campo sem opção de frequência — usa o valor directo
+  const modo=modoEl.value;
+  const freq=parseFloat(freqEl.value)||0;
+  if(modo==='qtd')return val*freq;
+  return val; // modo 'total' — valor já é o montante final
+}
+
+function calcFreqRem(campoId){
+  pc();
+}
+
+function calcFreqDed(campoId){
+  pc();
+  cf(); // recalcula a folha também, já que afecta deduções variáveis
+}
+
+
 function pc(){
   const sal=parseFloat(document.getElementById('fsal').value)||0;
   const dep=parseInt(document.getElementById('fdep').value)||0;
-  const sT=parseFloat(document.getElementById('fst').value)||0;
-  const sA=parseFloat(document.getElementById('fsa').value)||0;
-  const ant=parseFloat(document.getElementById('fant').value)||0;
-  const so=parseFloat(document.getElementById('fso').value)||0;
+  // Fixo + Temporário para cada subsídio
+  const sT=(parseFloat(document.getElementById('fst')?.value)||0)+(parseFloat(document.getElementById('fst-tmp')?.value)||0);
+  const sA=(parseFloat(document.getElementById('fsa')?.value)||0)+(parseFloat(document.getElementById('fsa-tmp')?.value)||0);
+  const ant=(parseFloat(document.getElementById('fant')?.value)||0)+(parseFloat(document.getElementById('fant-tmp')?.value)||0);
+  const soFx=parseFloat(document.getElementById('fso-fx')?.value)||0;
+  const so=soFx+(parseFloat(document.getElementById('fso')?.value)||0);
   const hxExc=parseFloat(document.getElementById('fhxexc')?.value)||0;
   const f=F[funcIdx];
   const hxVal=f?calcHorasExtra(f):0;
@@ -2588,6 +2654,27 @@ function abrirFuncNoModal(i){
   document.getElementById('fdf').value=f.dfix||0;
   const fsindEl=document.getElementById('fsind');if(fsindEl)fsindEl.value=f.sind||0;
   const fhxexcEl=document.getElementById('fhxexc');if(fhxexcEl)fhxexcEl.value=f.hxExc||0;
+  // Novos campos Fixo separados
+  const fsaEl=document.getElementById('fsa');if(fsaEl)fsaEl.value=f.subA||0;
+  const fsaTmpEl=document.getElementById('fsa-tmp');if(fsaTmpEl)fsaTmpEl.value=f.subATmp||0;
+  const fstEl=document.getElementById('fst');if(fstEl)fstEl.value=f.subT||0;
+  const fstTmpEl=document.getElementById('fst-tmp');if(fstTmpEl)fstTmpEl.value=f.subTTmp||0;
+  const fantEl=document.getElementById('fant');if(fantEl)fantEl.value=f.ant||0;
+  const fantTmpEl=document.getElementById('fant-tmp');if(fantTmpEl)fantTmpEl.value=f.antTmp||0;
+  const fsoFxEl=document.getElementById('fso-fx');if(fsoFxEl)fsoFxEl.value=f.subO||0;
+  const fsindTmpEl=document.getElementById('fsind-tmp');if(fsindTmpEl)fsindTmpEl.value=f.sindTmp||0;
+  const fefFxEl=document.getElementById('fef-fx');if(fefFxEl)fefFxEl.value=f.efixo||0;
+  const fafFxEl=document.getElementById('faf-fx');if(fafFxEl)fafFxEl.value=f.afixo||0;
+  const fdfFxEl=document.getElementById('fdf-fx');if(fdfFxEl)fdfFxEl.value=f.dfix||0;
+  // Metadados de metodologia
+  if(f.metadados){
+    Object.entries(f.metadados).forEach(([id,meta])=>{
+      const metEl=document.getElementById(id+'-met');
+      const nmEl=document.getElementById(id+'-nm');
+      if(metEl)metEl.value=meta.met||'';
+      if(nmEl){nmEl.value=meta.nm||'';nmEl.disabled=!meta.met||meta.met==='Não aplicável';}
+    });
+  }
   document.getElementById('fmi').value=f.metodI||'tabela';
   document.getElementById('fmn').value=f.metodN||'sim';
   document.getElementById('fbs').value=f.seg||0;
@@ -2715,7 +2802,7 @@ function cf(){
   if(!F.length){tb.innerHTML='<tr><td colspan="12"><div class="em"><div class="ei">📋</div><div class="et">Adicione funcionários</div></div></td></tr>';rFS(0,0,0);return;}
   let tB=0,tD=0,tL=0;
   tb.innerHTML=F.map(f=>{
-    const sub=f.subT+f.subA+(f.ant||0)+f.subO;
+    const sub=(f.subT||0)+(f.subTTmp||0)+(f.subA||0)+(f.subATmp||0)+(f.ant||0)+(f.antTmp||0)+f.subO;
     const br=f.salario+sub;
     const baseInss=f.salario+(f.ant||0);
     const inss=f.metodN==='nao'?0:baseInss*0.03;
@@ -2824,7 +2911,7 @@ function gr(){
   if(!nome){out.innerHTML='<div class="em"><div class="ei">🧾</div><div class="et">Seleccione um funcionário</div></div>';return;}
   const f=F.find(x=>x.nome===nome);
   if(!f){out.innerHTML='<div class="al av">⚠️ Funcionário não encontrado.</div>';return;}
-  const sub=f.subT+f.subA+(f.ant||0)+f.subO;
+  const sub=(f.subT||0)+(f.subTTmp||0)+(f.subA||0)+(f.subATmp||0)+(f.ant||0)+(f.antTmp||0)+f.subO;
   const br=f.salario+sub;
   const baseInss=f.salario+(f.ant||0);
   const inss=f.metodN==='nao'?0:baseInss*0.03;
@@ -2960,7 +3047,7 @@ function updKD(){
   }
   let tBr=0,tIp=0,tIn=0,tAd=0,tLiq=0;
   F.forEach(f=>{
-    const sub=f.subT+f.subA+(f.ant||0)+f.subO;
+    const sub=(f.subT||0)+(f.subTTmp||0)+(f.subA||0)+(f.subATmp||0)+(f.ant||0)+(f.antTmp||0)+f.subO;
     const hxVal=calcHorasExtra(f);
     const br=f.salario+sub+hxVal;
     const baseI=f.salario+(f.ant||0);
@@ -2985,7 +3072,7 @@ function rDB(){
   const tb=document.getElementById('db-tb');
   if(!F.length){tb.innerHTML='<tr><td colspan="8"><div class="em"><div class="ei">📋</div><div class="et">Sem folha processada</div></div></td></tr>';return;}
   tb.innerHTML=F.slice(0,8).map(f=>{
-    const sub=f.subT+f.subA+(f.ant||0)+f.subO;
+    const sub=(f.subT||0)+(f.subTTmp||0)+(f.subA||0)+(f.subATmp||0)+(f.ant||0)+(f.antTmp||0)+f.subO;
     const hxVal=calcHorasExtra(f);
     const br=f.salario+sub+hxVal;
     const baseI=f.salario+(f.ant||0);
@@ -3001,7 +3088,7 @@ function rRF(){
   const tb=document.getElementById('rf-tb');if(!tb)return;
   if(!F.length){tb.innerHTML='<tr><td colspan="11" style="text-align:center;padding:1.5rem;color:var(--tx3)">Processe a folha para ver o relatório</td></tr>';return;}
   tb.innerHTML=F.map(f=>{
-    const sub=f.subT+f.subA+(f.ant||0)+f.subO;const br=f.salario+sub;
+    const sub=(f.subT||0)+(f.subTTmp||0)+(f.subA||0)+(f.subATmp||0)+(f.ant||0)+(f.antTmp||0)+f.subO;const br=f.salario+sub;
     const baseI=f.salario+(f.ant||0);
     const ip=f.metodI==='isento'?0:cI(br,f.dep,f.subA);
     const inn=f.metodN==='nao'?0:baseI*0.03;
@@ -3264,7 +3351,7 @@ function gerarRelPersonalizado(idx){
   out.style.display='block';
   body.innerHTML=`<div class="tw"><table class="relt"><thead><tr><th>ID</th><th>Nome</th><th>Sal. Base</th><th>Bruto</th><th>IRPS</th><th>INSS</th><th>Líquido</th></tr></thead><tbody>${
     F.map(f=>{
-      const sub=f.subT+f.subA+(f.ant||0)+f.subO;
+      const sub=(f.subT||0)+(f.subTTmp||0)+(f.subA||0)+(f.subATmp||0)+(f.ant||0)+(f.antTmp||0)+f.subO;
       const br=f.salario+sub;
       const baseI=f.salario+(f.ant||0);
       const ip=cI(br,f.dep,f.subA);
@@ -3288,7 +3375,7 @@ function showRelTab(id){
   if(id==='rtp1'){
     let tB=0,tI=0,tN=0,tL=0;
     const rows=F.map(f=>{
-      const sub=f.subT+f.subA+(f.ant||0)+f.subO;const br=f.salario+sub;
+      const sub=(f.subT||0)+(f.subTTmp||0)+(f.subA||0)+(f.subATmp||0)+(f.ant||0)+(f.antTmp||0)+f.subO;const br=f.salario+sub;
       const baseI=f.salario+(f.ant||0);
       const ip=f.metodI==='isento'?0:cI(br,f.dep,f.subA);
       const inn=f.metodN==='nao'?0:baseI*0.03;
@@ -3310,7 +3397,7 @@ function showRelTab(id){
   } else if(id==='rtp4'){
     let tI=0;
     const rows=F.map(f=>{
-      const sub=f.subT+f.subA+(f.ant||0)+f.subO;const br=f.salario+sub;
+      const sub=(f.subT||0)+(f.subTTmp||0)+(f.subA||0)+(f.subATmp||0)+(f.ant||0)+(f.antTmp||0)+f.subO;const br=f.salario+sub;
       const ip=f.metodI==='isento'?0:cI(br,f.dep,f.subA);
       tI+=ip;
       return `<tr><td style="font-weight:600">${f.nome}</td><td>${f.nuit}</td><td class="mn">${fmt(br)}</td><td>${escI(br)}</td><td>${f.dep}</td><td class="mn ng">-${fmt(ip)}</td></tr>`;
@@ -3319,7 +3406,7 @@ function showRelTab(id){
   } else if(id==='rtp6'){
     let tC=0;
     const rows=F.map(f=>{
-      const sub=f.subT+f.subA+(f.ant||0)+f.subO;const br=f.salario+sub;
+      const sub=(f.subT||0)+(f.subTTmp||0)+(f.subA||0)+(f.subATmp||0)+(f.ant||0)+(f.antTmp||0)+f.subO;const br=f.salario+sub;
       const baseI=f.salario+(f.ant||0);
       const ine=f.metodN==='nao'?0:baseI*0.04;
       const custo=br+ine;tC+=custo;
@@ -3629,19 +3716,49 @@ function abrirNovaFolha(){
 }
 
 function confirmarNovaFolha(){
-  const mes=document.getElementById('nf-mes');
-  const ano=document.getElementById('nf-ano');
-  const tipo=document.getElementById('nf-tipo');
-  if(!mes||!ano)return;
+  const mesEl=document.getElementById('nf-mes');
+  const anoEl=document.getElementById('nf-ano');
+  const tipoEl=document.getElementById('nf-tipo');
+  if(!mesEl||!anoEl)return;
   const mns=['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  const periodo=tipo.value==='Mensal normal'?(mns[parseInt(mes.value)]+' '+ano.value):(tipo.value+' — '+ano.value);
-  document.getElementById('folha-titulo').textContent='Folha salarial — '+periodo;
-  document.getElementById('folha-periodo-sel').textContent=periodo;
+  const mesNum=parseInt(mesEl.value)||1;
+  const anoNum=anoEl.value||new Date().getFullYear();
+  const tipo=tipoEl?tipoEl.value:'Mensal normal';
+  const periodo=tipo==='Mensal normal'?(mns[mesNum]+' '+anoNum):(tipo+' — '+anoNum);
+
+  // Actualizar título da folha
+  const titEl=document.getElementById('folha-titulo');
+  const perEl=document.getElementById('folha-periodo-sel');
+  if(titEl)titEl.textContent='Folha salarial — '+periodo;
+  if(perEl)perEl.textContent=periodo;
+
+  // Limpar temporários de todos os funcionários
+  F.forEach(f=>limparTemporariosNoMesFuncionario(f));
+
+  // Reset estado da folha
   folhaEstado='rascunho';
   setEstadoFolha('rascunho');
+
+  // Resetar horas extra e faltas na ficha aberta (se houver)
+  const fp3h=document.getElementById('fp3-hx-lista');
+  const fp3f=document.getElementById('fp3-faltas-lista');
+  if(fp3h)fp3h.textContent='Sem horas extra registadas.';
+  if(fp3f)fp3f.textContent='Sem faltas registadas.';
+
+  // Limpar campos temporários visíveis na ficha do funcionário activo
+  [...CAMPOS_TMP_ALL].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&!el.readOnly)el.value='0';
+  });
+  const hx150=document.getElementById('fhx150');
+  const hx200=document.getElementById('fhx200');
+  if(hx150)hx150.value='0';
+  if(hx200)hx200.value='0';
+
   fm('m-nova-folha');
   cf();
-  st('Nova folha criada: '+periodo,'ok');
+  pc();
+  st('Nova folha criada: '+periodo+' — campos temporários limpos','ok');
 }
 
 function fazerBackup(){
@@ -3816,6 +3933,103 @@ function addLinhaDed(){
   tbody.appendChild(tr);
 }
 
+// ===== METODOLOGIA: activar/desactivar campo Nr/Valor =====
+function onMetChange(id){
+  const metEl=document.getElementById(id+'-met');
+  const nmEl=document.getElementById(id+'-nm');
+  if(!metEl||!nmEl)return;
+  const val=metEl.value;
+  if(val===''||val==='total'){ // "Não aplicável" ou "Valor total"
+    nmEl.disabled=(val==='');
+    nmEl.style.background=val===''?'var(--sf)':'';
+    nmEl.style.color=val===''?'var(--tx3)':'';
+    if(val==='')nmEl.value='';
+  } else {
+    // "Nr de meses" — habilitar campo
+    nmEl.disabled=false;
+    nmEl.style.background='';
+    nmEl.style.color='';
+  }
+  // Guardar metadados no objecto do funcionário
+  if(F[funcIdx]){
+    if(!F[funcIdx].metadados)F[funcIdx].metadados={};
+    F[funcIdx].metadados[id]={met:val,nm:nmEl.value};
+  }
+}
+
+function onNmChange(id){
+  const nmEl=document.getElementById(id+'-nm');
+  if(!nmEl)return;
+  if(F[funcIdx]){
+    if(!F[funcIdx].metadados)F[funcIdx].metadados={};
+    const metEl=document.getElementById(id+'-met');
+    F[funcIdx].metadados[id]={met:metEl?metEl.value:'',nm:nmEl.value};
+  }
+}
+
+// ================================================================
+// MUDANÇA DE MÊS — lógica correcta:
+// - Campos Fixo: mantêm-se sempre
+// - Campos Temporário: zeram, SALVO se Metodologia+Nr/Valor indicarem repetição
+// Ids de campos temporários das remunerações e deduções:
+// ================================================================
+const CAMPOS_TMP_REM = ['fsa-tmp','fst-tmp','fant-tmp','fhxexc','fso'];
+const CAMPOS_TMP_DED = ['fsind-tmp','fef','faf','fdf'];
+const CAMPOS_TMP_ALL = [...CAMPOS_TMP_REM, ...CAMPOS_TMP_DED];
+// IDs base para aceder ao par (campo, met, nm)
+const IDS_BASE_REM = ['fsa','fst','fant','fhxexc','fso'];
+const IDS_BASE_DED = ['fsind','fef','faf','fdf'];
+const IDS_BASE_ALL = [...IDS_BASE_REM,...IDS_BASE_DED];
+
+function limparTemporariosNoMesFuncionario(f){
+  // Para cada campo temporário, verificar se deve manter com base na metodologia
+  if(!f)return;
+  if(!f.metadados)f.metadados={};
+  IDS_BASE_ALL.forEach(id=>{
+    const meta=f.metadados[id]||{met:'',nm:''};
+    const met=meta.met||'';
+    const nm=parseFloat(meta.nm)||0;
+    const tmpKey=id.endsWith('-tmp')?id:id+'-tmp';
+    // Campos hx são directamente temporários sem par -tmp
+    const campoTmp=['fhxexc','fso','fhx150','fhx200'].includes(id)?id:id+'-tmp';
+
+    if(met===''||met==='Não aplicável'||(met==='meses'&&nm<=0)||(met==='total'&&nm<=0)){
+      // Zerar temporário no objecto
+      if(id==='fhxexc')f.hxExc=0;
+      else if(id==='fso')f.subO=0;
+      else if(id==='fsa')f.subATmp=0;
+      else if(id==='fst')f.subTTmp=0;
+      else if(id==='fant')f.antTmp=0;
+      else if(id==='fsind')f.sindTmp=0;
+      else if(id==='fef')f.efixo=0;
+      else if(id==='faf')f.afixo=0;
+      else if(id==='fdf')f.dfix=0;
+      // Limpar horas extra também
+      if(id==='fhxexc'){f.hxs=[];f.hxExc=0;}
+    } else if(met==='meses'&&nm>0){
+      // Decrementar contador de meses
+      meta.nm=String(Math.max(0,nm-1));
+      if(parseFloat(meta.nm)<=0){
+        // Esgotou — zerar na próxima mudança
+        meta.met='';meta.nm='';
+      }
+      f.metadados[id]=meta;
+    }
+    // modo "total" — manter até alteração manual (não zera automático)
+  });
+  // Zerar horas extra (variáveis de hx calculadas)
+  f.hxs=f.hxs||[];
+  // As hx150/hx200 são recalculadas em pc() — zerar o array de horas
+  if(!f.metadados['hx']||!f.metadados['hx'].met){
+    f.hxs=[];
+  }
+}
+
+// ================================================================
+// CONFIRMAR NOVA FOLHA — corrigida para mudar o mês correctamente
+// e limpar temporários de todos os funcionários
+// ================================================================
+
 // ===== VARIÁVEIS GLOBAIS ADICIONAIS =====
 let DIVISOR_DIAS=22; // 22 dias úteis ou 30 calendário
 
@@ -3936,6 +4150,18 @@ const LICENCAS_ESPECIAIS={
 // ================================================================
 // RESCISÃO — cálculo de verbas
 // ================================================================
+function filtrarRscSelect(){
+  const q=(document.getElementById('rsc-search')?.value||'').toLowerCase().trim();
+  const sel=document.getElementById('rsc-f');
+  if(!sel)return;
+  const cur=sel.value;
+  const lista=q?F.filter(f=>f.nome.toLowerCase().includes(q)||f.id.toLowerCase().includes(q)):F;
+  sel.innerHTML='<option value="">Seleccionar funcionário...</option>'+
+    lista.map(f=>`<option value="${f.nome}">${f.id} — ${f.nome} (${f.cargo})</option>`).join('');
+  if(cur&&lista.some(f=>f.nome===cur))sel.value=cur;
+  if(lista.length===1){sel.value=lista[0].nome;calcRescisao();}
+}
+
 function calcRescisao(){
   const nome=document.getElementById('rsc-f').value;
   const data=document.getElementById('rsc-data').value;
@@ -4085,7 +4311,7 @@ function showRelTabExtra(id){
     let rows='';
     let tBr=0,tIp=0,tIn=0,tL=0;
     funcs.forEach(f=>{
-      const sub=f.subT+f.subA+(f.ant||0)+f.subO;
+      const sub=(f.subT||0)+(f.subTTmp||0)+(f.subA||0)+(f.subATmp||0)+(f.ant||0)+(f.antTmp||0)+f.subO;
       const br=f.salario+sub;
       const baseI=f.salario+(f.ant||0);
       const ip=f.metodI==='isento'?0:cI(br,f.dep,f.subA);
@@ -4317,7 +4543,7 @@ function showRelTab(id){
   if(id==='rtp1'){
     let tB=0,tI=0,tN=0,tL=0;
     const rows=funcs.map(f=>{
-      const sub=f.subT+f.subA+(f.ant||0)+f.subO;
+      const sub=(f.subT||0)+(f.subTTmp||0)+(f.subA||0)+(f.subATmp||0)+(f.ant||0)+(f.antTmp||0)+f.subO;
       const hxVal=calcHorasExtra(f);
       const br=f.salario+sub+hxVal;
       const baseI=f.salario+(f.ant||0);
@@ -4390,7 +4616,7 @@ function showRelTab(id){
   else if(id==='rtp4'){
     let tI=0;
     const rows=funcs.map(f=>{
-      const sub=f.subT+f.subA+(f.ant||0)+f.subO;
+      const sub=(f.subT||0)+(f.subTTmp||0)+(f.subA||0)+(f.subATmp||0)+(f.ant||0)+(f.antTmp||0)+f.subO;
       const br=f.salario+sub;
       const ip=f.metodI==='isento'?0:cI(br,f.dep,f.subA);
       tI+=ip;
@@ -4419,7 +4645,7 @@ function showRelTab(id){
   else if(id==='rtp6'){
     let tC=0;
     const rows=funcs.map(f=>{
-      const sub=f.subT+f.subA+(f.ant||0)+f.subO;
+      const sub=(f.subT||0)+(f.subTTmp||0)+(f.subA||0)+(f.subATmp||0)+(f.ant||0)+(f.antTmp||0)+f.subO;
       const br=f.salario+sub;
       const baseI=f.salario+(f.ant||0);
       const ine=f.metodN==='nao'?0:baseI*0.04;
@@ -4660,16 +4886,23 @@ function addF(){
     subT:parseFloat(document.getElementById('fst').value)||0,
     subA:parseFloat(document.getElementById('fsa').value)||0,
     ant:parseFloat(document.getElementById('fant').value)||0,
-    subO:parseFloat(document.getElementById('fso').value)||0,
+    subA:(parseFloat(document.getElementById('fsa')?.value)||0),
+    subATmp:(parseFloat(document.getElementById('fsa-tmp')?.value)||0),
+    subT:(parseFloat(document.getElementById('fst')?.value)||0),
+    subTTmp:(parseFloat(document.getElementById('fst-tmp')?.value)||0),
+    ant:(parseFloat(document.getElementById('fant')?.value)||0),
+    antTmp:(parseFloat(document.getElementById('fant-tmp')?.value)||0),
+    subO:(parseFloat(document.getElementById('fso-fx')?.value)||0)+(parseFloat(document.getElementById('fso')?.value)||0),
     banco:document.getElementById('fbco').value,
     conta:document.getElementById('fcta').value||'—',
     metodI:document.getElementById('fmi').value||'tabela',
     metodN:document.getElementById('fmn').value||'sim',
-    afixo:parseFloat(document.getElementById('faf').value)||0,
-    efixo:parseFloat(document.getElementById('fef').value)||0,
-    dfix:parseFloat(document.getElementById('fdf').value)||0,
-    sind:parseFloat(document.getElementById('fsind')?.value)||0,
+    afixo:(parseFloat(document.getElementById('faf-fx')?.value)||0)+(parseFloat(document.getElementById('faf')?.value)||0),
+    efixo:(parseFloat(document.getElementById('fef-fx')?.value)||0)+(parseFloat(document.getElementById('fef')?.value)||0),
+    dfix:(parseFloat(document.getElementById('fdf-fx')?.value)||0)+(parseFloat(document.getElementById('fdf')?.value)||0),
+    sind:(parseFloat(document.getElementById('fsind')?.value)||0)+(parseFloat(document.getElementById('fsind-tmp')?.value)||0),
     hxExc:parseFloat(document.getElementById('fhxexc')?.value)||0,
+    metadados:{},
     seg:parseFloat(document.getElementById('fbs').value)||0,
     edu:parseFloat(document.getElementById('fbe').value)||0,
     pens:parseFloat(document.getElementById('fbp').value)||0,
@@ -4723,7 +4956,7 @@ function cf(){
   }
   let tB=0,tD=0,tL=0;
   tb.innerHTML=F.map(f=>{
-    const sub=f.subT+f.subA+(f.ant||0)+f.subO;
+    const sub=(f.subT||0)+(f.subTTmp||0)+(f.subA||0)+(f.subATmp||0)+(f.ant||0)+(f.antTmp||0)+f.subO;
     const hxVal=calcHorasExtra(f);
     const br=f.salario+sub+hxVal;
     const baseInss=f.salario+(f.ant||0);
@@ -4803,7 +5036,7 @@ function exportCSV(){
   if(!F.length){st('Sem dados para exportar','er');return;}
   let csv='\uFEFFID,Funcionário,Cargo,Sal.Base,Antigu.,Subsídios,Bruto,IRPS,INSS Trab.,INSS Entid.,Líquido\n';
   F.forEach(f=>{
-    const sub=f.subT+f.subA+(f.ant||0)+f.subO;const br=f.salario+sub;
+    const sub=(f.subT||0)+(f.subTTmp||0)+(f.subA||0)+(f.subATmp||0)+(f.ant||0)+(f.antTmp||0)+f.subO;const br=f.salario+sub;
     const baseI=f.salario+(f.ant||0);
     const ip=f.metodI==='isento'?0:cI(br,f.dep,f.subA);
     const inn=f.metodN==='nao'?0:baseI*0.03;
