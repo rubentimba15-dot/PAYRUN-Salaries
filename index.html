@@ -562,19 +562,25 @@ select.fi option{background:var(--sf2);color:var(--tx)}
 
 /* ===== MODAIS ===== */
 .mo{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.7);
-  backdrop-filter:blur(4px);
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:transparent;
+  backdrop-filter:none;
   z-index:500;display:none;
-  align-items:center;justify-content:center;padding:1rem;
+  align-items:flex-start;justify-content:center;
+  padding:4rem 1rem 1rem;
+  pointer-events:none;
+  overflow-y:auto;
 }
 .mo.open{display:flex}
 .md{
   background:var(--sf);
-  border:1px solid var(--bd);
+  border:1px solid var(--cy);
   border-radius:12px;
-  width:100%;max-width:660px;max-height:91vh;overflow-y:auto;
-  box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 1px rgba(0,212,255,.05);
+  width:100%;max-width:660px;max-height:85vh;overflow-y:auto;
+  box-shadow:0 8px 36px rgba(0,0,0,.6),0 0 0 1px rgba(0,212,255,.12);
+  pointer-events:all;
+  position:relative;
 }
 .mdl{max-width:860px}
 .mdh{
