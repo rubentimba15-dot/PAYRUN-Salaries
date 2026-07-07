@@ -714,7 +714,8 @@ select.fi option{background:var(--sf2);color:var(--tx)}
 
   <div class="ns">Gestão de Pessoal</div>
   <div class="ni" onclick="nv('funcionarios',this)"><div class="ico">👥</div>Funcionários</div>
-  <div class="ni" onclick="nv('subsidios',this)"><div class="ico">💰</div>Subsídios</div>
+  <div class="ni" onclick="nv('remuneracoes',this)"><div class="ico">💰</div>Remunerações</div>
+  <div class="ni" onclick="nv('descontos',this)"><div class="ico">➖</div>Descontos</div>
   <div class="ni" onclick="nv('adiantamentos',this)"><div class="ico">💳</div>Adiantamentos</div>
   <div class="ni" onclick="nv('faltas',this)"><div class="ico">📅</div>Faltas e Férias</div>
   <div class="ni" onclick="nv('horasextra',this)"><div class="ico">⏱️</div>Horas Extra</div>
@@ -746,6 +747,11 @@ select.fi option{background:var(--sf2);color:var(--tx)}
 <div class="ct">
 <!-- DASHBOARD -->
 <div class="pag active" id="ps-dashboard">
+  <!-- Período activo em destaque -->
+  <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem;padding:.5rem .9rem;background:var(--cyb);border:1px solid rgba(0,212,255,.2);border-radius:8px;width:fit-content">
+    <span style="font-size:.7rem;color:var(--tx3);font-weight:600">MÊS DE PROCESSAMENTO:</span>
+    <span id="db-mes-actual" style="font-size:.92rem;font-weight:700;color:var(--cy);font-family:'JetBrains Mono',monospace;letter-spacing:.04em">—</span>
+  </div>
   <div class="kg5">
     <div class="kc kgb"><div class="kl">Funcionários</div><div class="kv" id="k-nf">0</div><div class="ks">Quadro activo</div></div>
     <div class="kc kab"><div class="kl">Massa Salarial Bruta</div><div class="kv" id="k-br">MZN 0</div><div class="ks">Base + subsídios + h.extra</div></div>
@@ -829,7 +835,7 @@ select.fi option{background:var(--sf2);color:var(--tx)}
     <div class="kg">
       <div class="kc"><div class="kl">Funcionários</div><div class="kv" id="f-nf">0</div></div>
       <div class="kc"><div class="kl">Total Bruto</div><div class="kv" id="f-br">MZN 0</div></div>
-      <div class="kc"><div class="kl">Total Deduções</div><div class="kv" id="f-ded">MZN 0</div></div>
+      <div class="kc"><div class="kl">Total Descontos</div><div class="kv" id="f-ded">MZN 0</div></div>
       <div class="kc"><div class="kl">Total Líquido</div><div class="kv" id="f-liq">MZN 0</div></div>
     </div>
     <div class="tw"><div class="th">
@@ -1010,6 +1016,34 @@ select.fi option{background:var(--sf2);color:var(--tx)}
 </div>
 
 <!-- IRPS -->
+<!-- PÁGINA: REMUNERAÇÕES (categorias globais) -->
+<div class="pag" id="ps-remuneracoes">
+  <div class="tw">
+    <div class="th">
+      <div class="tht">💰 Remunerações — Categorias do Sistema</div>
+      <div class="ta"><button class="btn btn-bz btn-sm" onclick="novaCatRem()">+ Nova remuneração</button></div>
+    </div>
+    <div class="al ai" style="margin:.6rem .8rem .2rem">
+      ℹ️ Código único <strong>R1, R2, R3...</strong> — usado nas fórmulas de cálculo. Categorias de sistema não podem ser eliminadas.
+    </div>
+    <div id="cats-rem-list" style="margin:.5rem 0"></div>
+  </div>
+</div>
+
+<!-- PÁGINA: DESCONTOS (categorias globais) -->
+<div class="pag" id="ps-descontos">
+  <div class="tw">
+    <div class="th">
+      <div class="tht">➖ Descontos — Categorias do Sistema</div>
+      <div class="ta"><button class="btn btn-bz btn-sm" onclick="novaCatDesc()">+ Novo desconto</button></div>
+    </div>
+    <div class="al ai" style="margin:.6rem .8rem .2rem">
+      ℹ️ Código único <strong>D1, D2, D3...</strong> — IRPS (D1) e INSS (D2) são de sistema e não removíveis.
+    </div>
+    <div id="cats-desc-list" style="margin:.5rem 0"></div>
+  </div>
+</div>
+
 <div class="pag" id="ps-irps">
   <div class="al ao">✓ <strong>Lei n.º 11/2025, de 29 Dezembro</strong> — Tabela art. 65-A actualizada. Vigência: 1 Janeiro 2026.</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.05rem">
@@ -1041,7 +1075,7 @@ select.fi option{background:var(--sf2);color:var(--tx)}
         <div class="fgp"><label class="fl">Bónus / Antiquidade (MZN)</label><input class="fi" type="number" id="sim-ant" value="0" placeholder="0" oninput="simI()"></div>
         <div class="fgp"><label class="fl">Outros subsídios (MZN)</label><input class="fi" type="number" id="sim-outro" value="0" placeholder="0" oninput="simI()"></div>
       </div>
-      <div style="font-size:.74rem;font-weight:700;color:var(--czdd);margin:.5rem 0 .3rem">− Deduções adicionais (não fiscais)</div>
+      <div style="font-size:.74rem;font-weight:700;color:var(--czdd);margin:.5rem 0 .3rem">− Descontos adicionais (não fiscais)</div>
       <div class="fg">
         <div class="fgp"><label class="fl">Empréstimo / Adiantamento (MZN)</label><input class="fi" type="number" id="sim-emp" value="0" placeholder="0" oninput="simI()"></div>
         <div class="fgp"><label class="fl">Sindicato / Pensão alim. (MZN)</label><input class="fi" type="number" id="sim-sind" value="0" placeholder="0" oninput="simI()"></div>
@@ -1130,7 +1164,7 @@ select.fi option{background:var(--sf2);color:var(--tx)}
       <div class="rel-card-tag" style="background:var(--azp);color:var(--az)">Salarial</div>
       <div class="rel-card-icon">📋</div>
       <div class="rel-card-title">Lista Completa de Salários</div>
-      <div class="rel-card-desc">Todos os colaboradores com dados pessoais, remunerações, deduções e salário líquido.</div>
+      <div class="rel-card-desc">Todos os colaboradores com dados pessoais, remunerações, descontos e salário líquido.</div>
     </div>
     <div class="rel-card" onclick="showRelTab('rtp2')">
       <div class="rel-card-tag" style="background:var(--amp);color:var(--am)">Análise</div>
@@ -1233,19 +1267,22 @@ select.fi option{background:var(--sf2);color:var(--tx)}
     </div>
   </div>
 
-  <!-- Área de output do relatório seleccionado -->
-  <div id="rel-output" style="display:none;background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:1.2rem;margin-top:1rem">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:.5rem">
-      <div style="font-size:.88rem;font-weight:700;color:var(--czdd)" id="rel-output-title">—</div>
-      <div style="display:flex;gap:.38rem;flex-wrap:wrap">
-        <button class="btn btn-o btn-sm" onclick="exportRelCSV()">⬇️ CSV/Excel</button>
-        <button class="btn btn-o btn-sm" onclick="exportRelPDF()">📄 PDF</button>
-        <button class="btn btn-bz btn-sm" onclick="window.print()">🖨️ Imprimir</button>
-        <button class="btn btn-o btn-sm" onclick="document.getElementById('rel-output').style.display='none'">✕ Fechar</button>
+  <!-- Botão de acesso ao último relatório gerado -->
+  <div id="rel-output-link" style="display:none;margin-top:1rem">
+    <div style="background:var(--gnp);border:1px solid rgba(0,255,136,.2);border-radius:8px;padding:.8rem 1rem;display:flex;justify-content:space-between;align-items:center;gap:.8rem">
+      <div>
+        <div style="font-size:.8rem;font-weight:700;color:var(--gn)" id="rel-output-title">—</div>
+        <div style="font-size:.68rem;color:var(--tx3);margin-top:.15rem">Relatório gerado — abre numa janela separada</div>
+      </div>
+      <div style="display:flex;gap:.38rem">
+        <button class="btn btn-s btn-sm" onclick="abrirRelatorioJanela()">🖥️ Abrir relatório</button>
+        <button class="btn btn-o btn-sm" onclick="exportRelCSV()">⬇️ CSV</button>
+        <button class="btn btn-o btn-sm" onclick="document.getElementById('rel-output-link').style.display='none'">✕</button>
       </div>
     </div>
-    <div id="rel-output-body"></div>
   </div>
+  <!-- Buffer oculto do relatório (usado para abrir em nova janela) -->
+  <div id="rel-output-body" style="display:none"></div>
 </div>
 
 <!-- EXPORTAR -->
@@ -1412,7 +1449,7 @@ select.fi option{background:var(--sf2);color:var(--tx)}
             <option value="irps">IRPS</option>
             <option value="inss">INSS</option>
             <option value="subsidio">Subsídio</option>
-            <option value="deducao">Dedução</option>
+            <option value="desconto">Desconto</option>
             <option value="bonus">Bónus / Prémio</option>
             <option value="custo">Custo Empresa</option>
           </select>
@@ -1427,7 +1464,7 @@ select.fi option{background:var(--sf2);color:var(--tx)}
           <div class="formula-card activa">
             <div class="formula-name">IRPS — Tabela Art. 65-A (Lei 11/2025) <span class="bg bv" style="font-size:.55rem">Activa</span></div>
             <div class="formula-expr">TI[escalao].valorFixo + (salarioBruto - limInf) * TI[escalao].coef</div>
-            <div class="formula-desc">Lei n.º 11/2025, art. 65-A — tabela de retenção na fonte com deduções por dependentes</div>
+            <div class="formula-desc">Lei n.º 11/2025, art. 65-A — tabela de retenção na fonte com descontos por dependentes</div>
           </div>
           <div class="formula-card activa">
             <div class="formula-name">INSS Trabalhador — 3% (Lei 7/2023) <span class="bg bv" style="font-size:.55rem">Activa</span></div>
@@ -1450,7 +1487,7 @@ select.fi option{background:var(--sf2);color:var(--tx)}
   </div>
 
   <div class="tc" id="cfg3">
-    <div class="al ai">ℹ️ Ligue cada remuneração ou dedução a uma fórmula de cálculo. Só as ligações activas são aplicadas automaticamente na folha.</div>
+    <div class="al ai">ℹ️ Ligue cada remuneração ou desconto a uma fórmula de cálculo. Só as ligações activas são aplicadas automaticamente na folha.</div>
     <div style="font-size:.77rem;font-weight:700;color:var(--czdd);margin-bottom:.6rem">Ligar a Métodos de Cálculo</div>
     <div id="ligar-lista">
       <div class="ligar-item">
@@ -1550,7 +1587,7 @@ select.fi option{background:var(--sf2);color:var(--tx)}
       <div class="fnt">
         <div class="fntb active" onclick="sft(this,'fp1')">👤 Dados Pessoais</div>
         <div class="fntb" onclick="sft(this,'fp2')">💰 Remunerações</div>
-        <div class="fntb" onclick="sft(this,'fp3')">➖ Deduções</div>
+        <div class="fntb" onclick="sft(this,'fp3')">➖ Descontos</div>
         <div class="fntb" onclick="sft(this,'fp4')">📁 RH</div>
         <div class="fntb" onclick="sft(this,'fp5')">🔗 Ligar a Métodos</div>
       </div>
@@ -1592,8 +1629,6 @@ select.fi option{background:var(--sf2);color:var(--tx)}
       </div>
       <!-- Tab 2 -->
       <div class="fntc" id="fp2">
-        <div class="al ai" style="margin-bottom:.7rem">ℹ️ <strong>Fixo</strong> — pago todos os meses até alteração manual. <strong>Temporário</strong> — válido apenas para o mês actual; é zerado na mudança de mês, a não ser que a <em>Metodologia</em> e o <em>Nr/Valor</em> estipulem repetição. O resultado de métodos de cálculo activos reflecte-se automaticamente em <strong>Temporário</strong>. O total considerado no processamento é <strong>Fixo + Temporário</strong>.</div>
-
         <div class="fgp" style="max-width:220px;margin-bottom:.7rem"><label class="fl">N.º dependentes (para IRPS)</label><select class="fi" id="fdep" onchange="pc()"><option value="0">0 dependentes</option><option value="1">1 dependente</option><option value="2">2 dependentes</option><option value="3">3 dependentes</option><option value="4">4 ou mais</option></select></div>
 
         <div style="overflow-x:auto;border:1px solid var(--bd);border-radius:8px;margin-bottom:.6rem">
@@ -1676,7 +1711,7 @@ select.fi option{background:var(--sf2);color:var(--tx)}
             </tbody>
           </table>
           <div style="padding:.38rem .65rem;border-top:1px solid var(--bd);text-align:right;background:var(--sf2)">
-            <button class="btn btn-o btn-xs" onclick="addRemunCustom()">+ Adicionar remuneração</button>
+            <button class="btn btn-bz btn-xs" onclick="abrirSelectorRemuneracoes()">+ Adicionar remuneração</button>
           </div>
         </div>
 
@@ -1706,15 +1741,13 @@ select.fi option{background:var(--sf2);color:var(--tx)}
           <div class="cr cst"><span class="clb">Custo total empresa</span><span class="cvl" id="pv-custo">—</span></div>
         </div>
       </div>
-      <!-- Tab 3 — Deduções -->
+      <!-- Tab 3 — Descontos -->
       <div class="fntc" id="fp3">
-        <div class="al av" style="margin-bottom:.7rem">⚠️ <strong>IRPS e INSS</strong> são calculados automaticamente (não editáveis). As restantes deduções seguem a mesma lógica das remunerações: <strong>Fixo</strong> repete todos os meses; <strong>Temporário</strong> é zerado na mudança de mês, salvo se a Metodologia indicar repetição.</div>
-
         <div style="overflow-x:auto;border:1px solid var(--bd);border-radius:8px;margin-bottom:.8rem">
           <table style="width:100%;border-collapse:collapse;font-size:.75rem">
             <thead>
               <tr style="background:var(--sf2)">
-                <th style="padding:.42rem .6rem;text-align:left;color:var(--tx3);font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em">Deduções</th>
+                <th style="padding:.42rem .6rem;text-align:left;color:var(--tx3);font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em">Descontos</th>
                 <th style="padding:.42rem .55rem;text-align:center;color:var(--tx3);font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap">Fixo</th>
                 <th style="padding:.42rem .55rem .42rem 1.1rem;text-align:center;color:var(--tx3);font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;border-left:2px solid var(--bd2)">Temporário</th>
                 <th style="padding:.42rem .55rem;text-align:center;color:var(--tx3);font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap">Metodologia</th>
@@ -1762,19 +1795,19 @@ select.fi option{background:var(--sf2);color:var(--tx)}
                 <td style="padding:.28rem .4rem"><select class="fi" style="font-size:.72rem;padding:.22rem .35rem" id="faf-met" onchange="onMetChange('faf')"><option value="">Não aplicável</option><option value="meses">Nr de meses</option><option value="total">Valor total</option></select></td>
                 <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px" min="0" step="0.5" id="faf-nm" value="" placeholder="—" oninput="onNmChange('faf')" disabled style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px;background:var(--sf);color:var(--tx3)"></td>
               </tr>
-              <!-- Outras deduções -->
-              <tr style="border-top:1px solid var(--bd)" id="row-outras-ded">
-                <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem">Outras deduções</td>
+              <!-- Outras descontos -->
+              <tr style="border-top:1px solid var(--bd)" id="row-outros-desc">
+                <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem">Outras descontos</td>
                 <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem" min="0" step="0.01" id="fdf-fx" value="0"></td>
                 <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd)"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;background:rgba(0,212,255,.04);border-color:rgba(0,212,255,.18)" min="0" step="0.01" id="fdf" value="0" oninput="pc()"></td>
                 <td style="padding:.28rem .4rem"><select class="fi" style="font-size:.72rem;padding:.22rem .35rem" id="fdf-met" onchange="onMetChange('fdf')"><option value="">Não aplicável</option><option value="meses">Nr de meses</option><option value="total">Valor total</option></select></td>
                 <td style="padding:.28rem .4rem"><input class="fi" type="number" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px" min="0" step="0.5" id="fdf-nm" value="" placeholder="—" oninput="onNmChange('fdf')" disabled style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px;background:var(--sf);color:var(--tx3)"></td>
               </tr>
-              <tbody id="extra-ded-rows"></tbody>
+              <tbody id="extra-desc-rows"></tbody>
             </tbody>
           </table>
           <div style="padding:.38rem .65rem;border-top:1px solid var(--bd);text-align:right;background:var(--sf2)">
-            <button class="btn btn-o btn-xs" onclick="addDeducaoCustom()">+ Adicionar dedução</button>
+            <button class="btn btn-bz btn-xs" onclick="abrirSelectorDescontos()">+ Adicionar desconto</button>
           </div>
         </div>
 
@@ -1794,7 +1827,6 @@ select.fi option{background:var(--sf2);color:var(--tx)}
       </div>
       <!-- Tab 4 — RH -->
       <div class="fntc" id="fp4">
-        <div class="al ai">ℹ️ Informação de RH: contrato, férias gozadas e a gozar.</div>
         <div style="font-size:.78rem;font-weight:700;color:var(--czdd);margin-bottom:.5rem">Contrato de trabalho</div>
         <div class="fg">
           <div class="fgp"><label class="fl">Tipo de contrato</label><select class="fi" id="fco2"><option>Prazo indeterminado</option><option>Prazo determinado</option><option>Prestação de serviços</option><option>Estágio profissional</option></select></div>
@@ -1819,7 +1851,7 @@ select.fi option{background:var(--sf2);color:var(--tx)}
       </div>
       <!-- Tab 5 — Ligar a Métodos de Cálculo -->
       <div class="fntc" id="fp5">
-        <div class="al abz">🔗 Ligue cada remuneração e dedução ao método de cálculo. O resultado aparece automaticamente na ficha do funcionário.</div>
+        <div class="al abz">🔗 Ligue cada remuneração e desconto ao método de cálculo. O resultado aparece automaticamente na ficha do funcionário.</div>
 
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
           <div style="font-size:.78rem;font-weight:700;color:var(--czdd)">💰 Remunerações</div>
@@ -1889,11 +1921,11 @@ select.fi option{background:var(--sf2);color:var(--tx)}
         </div>
 
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
-          <div style="font-size:.78rem;font-weight:700;color:var(--czdd)">➖ Deduções</div>
-          <button class="btn btn-o btn-xs" onclick="addLinhaDed()">+ Adicionar dedução</button>
+          <div style="font-size:.78rem;font-weight:700;color:var(--czdd)">➖ Descontos</div>
+          <button class="btn btn-o btn-xs" onclick="addLinhaDed()">+ Adicionar desconto</button>
         </div>
         <div style="overflow-x:auto;margin-bottom:.8rem">
-          <table style="width:100%;border-collapse:collapse;font-size:.74rem" id="tb-lk-ded">
+          <table style="width:100%;border-collapse:collapse;font-size:.74rem" id="tb-lk-desc">
             <thead><tr style="background:var(--vm);color:#fff">
               <th style="padding:.35rem .6rem;text-align:left">Designação</th>
               <th style="padding:.35rem .6rem;text-align:left">Tipo</th>
@@ -1902,7 +1934,7 @@ select.fi option{background:var(--sf2);color:var(--tx)}
               <th style="padding:.35rem .6rem;text-align:center">Activo</th>
               <th style="padding:.35rem .6rem"></th>
             </tr></thead>
-            <tbody id="lk-ded-body">
+            <tbody id="lk-desc-body">
               <tr style="border-bottom:1px solid var(--bd)">
                 <td style="padding:.35rem .6rem;font-weight:600">IRPS</td>
                 <td style="padding:.35rem .6rem"><span class="bg br">Fiscal</span></td>
@@ -1946,7 +1978,7 @@ select.fi option{background:var(--sf2);color:var(--tx)}
             </tbody>
           </table>
         </div>
-        <div class="fgp"><label class="fl">Justificação / Notas</label><textarea class="fi" rows="2" placeholder="Isenções, condições especiais, deduções por ordem judicial..."></textarea></div>
+        <div class="fgp"><label class="fl">Justificação / Notas</label><textarea class="fi" rows="2" placeholder="Isenções, condições especiais, descontos por ordem judicial..."></textarea></div>
         <div style="margin-top:.6rem;text-align:right"><button class="btn btn-s btn-sm" onclick="aplicarMetodosCalculo()">⚡ Aplicar e recalcular</button></div>
       </div>
     </div>
@@ -2295,7 +2327,7 @@ let F=[],AD=[],CT=[],AV=[],FO=[],HX=[],HIST=[],AF=[],FORMULAS=[],RELPERS=[];
 let IDC=1000,funcIdx=0;
 const SALMIN_SECTOR=5447;
 
-const T={dashboard:'Dashboard',folha:'Folha de Salários',historico:'Histórico',recibo:'Recibos — dentro da Folha',funcionarios:'Funcionários',subsidios:'Subsídios',adiantamentos:'Adiantamentos',faltas:'Faltas e Férias',horasextra:'Horas Extra',alteracoesfuturas:'Alterações Futuras',irps:'Tabela IRPS — Lei 11/2025',inss:'INSS',relatorios:'Relatórios',exportar:'Exportar',contratos:'Contratos',desempenho:'Desempenho',formacao:'Formação',empresa:'Empresa',configuracoes:'Configurações'};
+const T={dashboard:'Dashboard',folha:'Folha de Salários',historico:'Histórico',recibo:'Recibos — dentro da Folha',funcionarios:'Funcionários',remuneracoes:'Remunerações — Categorias do Sistema',descontos:'Descontos — Categorias do Sistema',subsidios:'Subsídios',adiantamentos:'Adiantamentos',faltas:'Faltas e Férias',horasextra:'Horas Extra',alteracoesfuturas:'Alterações Futuras',irps:'Tabela IRPS — Lei 11/2025',inss:'INSS',relatorios:'Relatórios',exportar:'Exportar',contratos:'Contratos',desempenho:'Desempenho',formacao:'Formação',empresa:'Empresa',configuracoes:'Configurações'};
 const S={dashboard:'Resumo do período actual',folha:'Processamento salarial — Junho 2025',historico:'Arquivo de folhas confirmadas',recibo:'Emissão de recibos de vencimento',funcionarios:'Gestão do quadro de pessoal',subsidios:'Configuração de subsídios e base de incidência',adiantamentos:'Adiantamentos e empréstimos',faltas:'Faltas, férias e licenças',horasextra:'Trabalho suplementar — Lei n.º 23/2007',alteracoesfuturas:'Registe e confirme alterações a aplicar em meses futuros',irps:'Tabela actualizada — vigência 1 Jan 2026',inss:'Contribuições INSS — base: salário base + bónus de antiguidade',relatorios:'Mapas, diferenças e relatórios fiscais',exportar:'Exportação para Excel e PDF',contratos:'Contratos de trabalho',desempenho:'Avaliação de desempenho',formacao:'Formação profissional',empresa:'Dados da entidade empregadora',configuracoes:'Fórmulas de cálculo, ligações e parâmetros'};
 
 // ===== NAVEGAÇÃO =====
@@ -2308,6 +2340,15 @@ function nv(sec,el){
   document.getElementById('tt').textContent=T[sec]||sec;
   document.getElementById('ts').textContent=S[sec]||'';
   window.scrollTo(0,0);
+  // Inicializar páginas especiais
+  if(sec==='remuneracoes'){setTimeout(()=>renderCatsRem(),50);}
+  if(sec==='descontos'){setTimeout(()=>renderCatsDesc(),50);}
+  // Actualizar mês no dashboard
+  if(sec==='dashboard'){
+    const titulo=document.getElementById('folha-titulo');
+    const dbMes=document.getElementById('db-mes-actual');
+    if(dbMes&&titulo)dbMes.textContent=(titulo.textContent||'').replace('Folha salarial — ','').trim()||'—';
+  }
 }
 function am(id){document.getElementById(id).classList.add('open');updSel();}
 function fm(id){document.getElementById(id).classList.remove('open');}
@@ -2433,7 +2474,7 @@ function calcFreqRem(campoId){
 
 function calcFreqDed(campoId){
   pc();
-  cf(); // recalcula a folha também, já que afecta deduções variáveis
+  cf(); // recalcula a folha também, já que afecta descontos variáveis
 }
 
 
@@ -2624,6 +2665,7 @@ function abrirFuncNoModal(i){
   funcIdx=i;
   // Preencher campos
   document.getElementById('fn').value=f.nome||'';
+  const fidEl=document.getElementById('fid');if(fidEl)fidEl.value=f.id||'';
   document.getElementById('fn2').value=f.nuit||'';
   document.getElementById('fbi').value=f.bi||'';
   document.getElementById('fca').value=f.cargo||'';
@@ -2754,12 +2796,12 @@ function addRemunCustom(){
   tbody.appendChild(tr);
 }
 
-function addDeducaoCustom(){
-  const nome=prompt('Designação da nova dedução:');
+function adddescontoCustom(){
+  const nome=prompt('Designação da nova desconto:');
   if(!nome)return;
   extraDedCount++;
   const id='fextra_ded_'+extraDedCount;
-  const tbody=document.getElementById('extra-ded-rows');
+  const tbody=document.getElementById('extra-desc-rows');
   const tr=document.createElement('tr');
   tr.style.borderTop='1px solid var(--bd)';
   tr.innerHTML=`
@@ -3345,10 +3387,9 @@ function gerarRelPersonalizado(idx){
   if(!F.length){st('Sem funcionários para gerar relatório','er');return;}
   const r=idx!==undefined?RELPERS[idx]:null;
   const nome=r?r.nome:'Relatório Personalizado';
-  const out=document.getElementById('rel-output');
+  const out=null; // relatórios em nova janela
   const body=document.getElementById('rel-output-body');
   document.getElementById('rel-output-title').textContent=nome;
-  out.style.display='block';
   body.innerHTML=`<div class="tw"><table class="relt"><thead><tr><th>ID</th><th>Nome</th><th>Sal. Base</th><th>Bruto</th><th>IRPS</th><th>INSS</th><th>Líquido</th></tr></thead><tbody>${
     F.map(f=>{
       const sub=(f.subT||0)+(f.subTTmp||0)+(f.subA||0)+(f.subATmp||0)+(f.ant||0)+(f.antTmp||0)+f.subO;
@@ -3360,17 +3401,16 @@ function gerarRelPersonalizado(idx){
       return `<tr><td><span class="fid">${f.id}</span></td><td style="font-weight:600">${f.nome}</td><td class="mn">${fmt(f.salario)}</td><td class="mn">${fmt(br)}</td><td class="mn ng">-${fmt(ip)}</td><td class="mn ng">-${fmt(inn)}</td><td class="mn pos">${fmt(liq)}</td></tr>`;
     }).join('')
   }</tbody></table></div>`;
-  out.scrollIntoView({behavior:'smooth'});
+  guardarRelatorio(document.getElementById('rel-output-title')?.textContent||'Relatório', body.innerHTML);
 }
 
 // ===== RELATÓRIOS CAIXAS =====
 function showRelTab(id){
-  const out=document.getElementById('rel-output');
+  const out=null; // relatórios em nova janela
   const body=document.getElementById('rel-output-body');
   const titles={rtp1:'Lista Completa de Salários',rtp2:'Variações Mensais por Colaborador',rtp3:'Relatório INSS',rtp4:'Relatório IRPS',rtp5:'Relatório de Benefícios',rtp6:'Custo Total para a Empresa',rtp7:'Relatório de Headcount',rtp8:'Custo de Férias e Subsídios Legais',rtp9:'Encriptação Bancária Moçambicana',rtp10:'Ordens de Pagamento',rtp11:'Comparativo Anual de Salários',rtp12:'Alertas e Anomalias',rtp13:'Relatório de Alterações Futuras',rtp14:'Modelo 1 — IRPS (ATM)',rtp15:'Resumo Anual (Declaração AT)',rtp16:'Relatório de Formação e Desempenho'};
   document.getElementById('rel-output-title').textContent=titles[id]||'Relatório';
-  out.style.display='block';
-  if(!F.length){body.innerHTML='<div class="al av">⚠️ Adicione funcionários para gerar este relatório.</div>';out.scrollIntoView({behavior:'smooth'});return;}
+  if(!F.length){body.innerHTML='<div class="al av">⚠️ Adicione funcionários para gerar este relatório.</div>';guardarRelatorio(document.getElementById('rel-output-title')?.textContent||'Relatório', body.innerHTML);return;}
 
   if(id==='rtp1'){
     let tB=0,tI=0,tN=0,tL=0;
@@ -3428,12 +3468,12 @@ function showRelTab(id){
     body.innerHTML=`<div class="al ai">ℹ️ 13.º, 14.º e sub. férias tributados autonomamente — não englobados no mês de pagamento.</div><div class="tw"><table class="relt"><thead><tr><th>Funcionário</th><th>Sal. Base</th><th>13.º Mês</th><th>IRPS 13.º</th><th>Sub. Férias</th><th>IRPS Férias</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   } else if(id==='rtp13'){
     const tipoL={salario:'Actualiz. Salarial',subsidio:'Subsídio',desconto:'Desconto',cargo:'Cargo',dependentes:'Dependentes',contrato:'Contrato',banco:'Dados Bancários',outro:'Outro'};
-    if(!AF.length){body.innerHTML='<div class="al ai">ℹ️ Sem alterações futuras registadas.</div>';out.scrollIntoView({behavior:'smooth'});return;}
+    if(!AF.length){body.innerHTML='<div class="al ai">ℹ️ Sem alterações futuras registadas.</div>';guardarRelatorio(document.getElementById('rel-output-title')?.textContent||'Relatório', body.innerHTML);return;}
     body.innerHTML=`<div class="tw"><table class="relt"><thead><tr><th>Alvo</th><th>Mês</th><th>Tipo</th><th>Descrição</th><th>Valor</th><th>Estado</th></tr></thead><tbody>${AF.map(a=>`<tr><td style="font-weight:600">${a.scope==='todos'?'Todos':a.scope==='grupo'?a.grupo:a.func}</td><td>${a.mes}</td><td>${tipoL[a.tipo]||a.tipo}</td><td>${a.desc}</td><td class="mn">${a.val?fmt(a.val):'—'}</td><td><span class="bg ${a.aplicado?'bv':a.confirmado?'ba':'by'}">${a.aplicado?'Aplicado':a.confirmado?'Confirmado':'Pendente'}</span></td></tr>`).join('')}</tbody></table></div>`;
   } else {
     body.innerHTML=`<div class="al ai">ℹ️ Relatório "${titles[id]||id}" — disponível após processamento de dados. Use o botão Imprimir para exportar.</div>`;
   }
-  out.scrollIntoView({behavior:'smooth'});
+  guardarRelatorio(document.getElementById('rel-output-title')?.textContent||'Relatório', body.innerHTML);
 }
 
 // ===== RELATÓRIO COMPLETO (compatibilidade) =====
@@ -3870,7 +3910,7 @@ function aplicarMetodosCalculo(){
   if(fmi)f.metodI=fmi.value;
   if(fmn)f.metodN=fmn.value;
 
-  // Calcular e reflectir automaticamente nos campos de remunerações/deduções
+  // Calcular e reflectir automaticamente nos campos de remunerações/descontos
   const sal=f.salario||0;
   const ant=f.ant||0;
   const baseInss=sal+ant;
@@ -3879,7 +3919,7 @@ function aplicarMetodosCalculo(){
   const irps=f.metodI==='isento'?0:cI(br,f.dep||0,f.subA||0);
   const inss=f.metodN==='nao'?0:baseInss*0.03;
 
-  // Actualizar células de valor calculado na tabela de deduções (fp5)
+  // Actualizar células de valor calculado na tabela de descontos (fp5)
   const iIRPS=document.getElementById('lk-val-irps');
   const iINSS=document.getElementById('lk-val-inss');
   if(iIRPS)iIRPS.textContent=irps>0?fmt(irps)+' MZN':'Isento';
@@ -3918,8 +3958,8 @@ function addLinhaRem(){
 }
 
 function addLinhaDed(){
-  const tbody=document.getElementById('lk-ded-body');if(!tbody)return;
-  const nome=prompt('Designação da nova dedução:');
+  const tbody=document.getElementById('lk-desc-body');if(!tbody)return;
+  const nome=prompt('Designação da nova desconto:');
   if(!nome)return;
   const tr=document.createElement('tr');
   tr.style.borderBottom='1px solid var(--bd)';
@@ -3971,7 +4011,7 @@ function onNmChange(id){
 // MUDANÇA DE MÊS — lógica correcta:
 // - Campos Fixo: mantêm-se sempre
 // - Campos Temporário: zeram, SALVO se Metodologia+Nr/Valor indicarem repetição
-// Ids de campos temporários das remunerações e deduções:
+// Ids de campos temporários das remunerações e descontos:
 // ================================================================
 const CAMPOS_TMP_REM = ['fsa-tmp','fst-tmp','fant-tmp','fhxexc','fso'];
 const CAMPOS_TMP_DED = ['fsind-tmp','fef','faf','fdf'];
@@ -4050,10 +4090,10 @@ function validarFuncionario(){
   const tel=document.getElementById('ftel').value.trim();
   const conta=document.getElementById('fcta').value.trim();
   const inssN=document.getElementById('fins').value.trim();
-  const editId=document.getElementById('fid').value; // se edição, ignorar o próprio
+  const editId=(document.getElementById('fid').value||'').trim(); // ID do funcionário em edição — vazio se novo
 
   F.forEach(f=>{
-    if(f.id===editId) return; // ignora o próprio na edição
+    if(editId&&f.id===editId) return; // ignora o próprio na edição
     if(nuit&&f.nuit===nuit) erros.push('NUIT "'+nuit+'" já está registado em '+f.nome);
     if(bi&&f.bi===bi) erros.push('BI "'+bi+'" já está registado em '+f.nome);
     if(tel&&f.tel===tel) erros.push('Telefone "'+tel+'" já está registado em '+f.nome);
@@ -4299,15 +4339,14 @@ function exportRelPDF(){
 // RELATÓRIO PERSONALIZADO E IMPORTAÇÃO
 // ================================================================
 function showRelTabExtra(id){
-  const out=document.getElementById('rel-output');
+  const out=null; // relatórios em nova janela
   const body=document.getElementById('rel-output-body');
   const title=document.getElementById('rel-output-title');
-  out.style.display='block';
 
   if(id==='rtp-custom'){
     title.textContent='⭐ Relatório Personalizado';
     const funcs=filtrarFuncs();
-    if(!funcs.length){body.innerHTML='<div class="al av">⚠️ Sem funcionários para gerar relatório com os filtros actuais.</div>';out.scrollIntoView({behavior:'smooth'});return;}
+    if(!funcs.length){body.innerHTML='<div class="al av">⚠️ Sem funcionários para gerar relatório com os filtros actuais.</div>';guardarRelatorio(document.getElementById('rel-output-title')?.textContent||'Relatório', body.innerHTML);return;}
     let rows='';
     let tBr=0,tIp=0,tIn=0,tL=0;
     funcs.forEach(f=>{
@@ -4342,7 +4381,7 @@ function showRelTabExtra(id){
         <strong>Formato esperado (colunas):</strong> Nome | Cargo | Departamento | Salário Base | Sub. Transporte | Sub. Alimentação | NUIT | BI | Telefone | Email | Data Admissão | Tipo Contrato
       </div>`;
   }
-  out.scrollIntoView({behavior:'smooth'});
+  guardarRelatorio(document.getElementById('rel-output-title')?.textContent||'Relatório', body.innerHTML);
 }
 
 function lerFicheiroImport(input){
@@ -4505,7 +4544,7 @@ function showRelTab(id){
   // Delegar extras
   if(id==='rtp-custom'||id==='rtp-import'){showRelTabExtra(id);return;}
 
-  const out=document.getElementById('rel-output');
+  const out=null; // relatórios abrem em nova janela via guardarRelatorio()
   const body=document.getElementById('rel-output-body');
   const titles={rtp1:'Lista Completa de Salários',rtp2:'Variações Mensais por Colaborador',
     rtp3:'Relatório INSS',rtp4:'Relatório IRPS',rtp5:'Relatório de Benefícios',
@@ -4516,8 +4555,6 @@ function showRelTab(id){
     rtp14:'Modelo 1 — IRPS (ATM)',rtp15:'Resumo Anual (Declaração AT)',
     rtp16:'Relatório de Formação e Desempenho'};
   document.getElementById('rel-output-title').textContent=titles[id]||'Relatório';
-  out.style.display='block';
-
   // Actualizar filtro de departamentos
   const dsel=document.getElementById('rpt-dept');
   if(dsel&&F.length){
@@ -4530,7 +4567,7 @@ function showRelTab(id){
 
   if(!funcs.length){
     body.innerHTML='<div class="al av">⚠️ Sem funcionários'+(Object.values(window._filtRel||{}).some(v=>v)?' com os filtros actuais':' registados')+'. Adicione funcionários e processe a folha.</div>';
-    out.scrollIntoView({behavior:'smooth'});return;
+    guardarRelatorio(document.getElementById('rel-output-title')?.textContent||'Relatório', body.innerHTML);return;
   }
 
   const thStyle='padding:.4rem .7rem;text-align:left;font-size:.63rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase';
@@ -4579,38 +4616,101 @@ function showRelTab(id){
   }
 
   else if(id==='rtp3'){
-    let tT=0,tE=0;
+    // Mapa INSS conforme formato SISSMO (Guia do Contribuinte v4.2)
+    // Base de incidência: salário base + bónus antiguidade (Lei n.º 7/2023 + publicação RSM Moçambique)
+    // Campos obrigatórios SISSMO: N.º INSS | Dias | Valor remuneração | Comissões/Bónus | Sub.Férias | Evento | Data
+    const periodo=document.getElementById('folha-titulo')?.textContent||'—';
+    const empresa=document.getElementById('en-nome')?.value||'Empresa';
+    const nuit=document.getElementById('en-nuit')?.value||'—';
+    let tBase=0,tTrab=0,tEntid=0,tComis=0;
     const rows=funcs.map(f=>{
-      const baseI=f.salario+(f.ant||0);
-      const trab=f.metodN==='nao'?0:baseI*0.03;
-      const entid=f.metodN==='nao'?0:baseI*0.04;
-      tT+=trab;tE+=entid;
-      return `<tr><td style="${tdStyle};font-family:monospace;color:var(--bz);font-weight:700">${f.id}</td>
+      const baseInss=(f.salario||0)+(f.ant||0);
+      const comisBonus=(f.antTmp||0); // Bónus variáveis (distintos da antiguidade fixa)
+      const subFerias=0; // Subsídio de férias — declarado quando processado separadamente
+      const trab=f.metodN==='nao'?0:baseInss*0.03;
+      const entid=f.metodN==='nao'?0:baseInss*0.04;
+      // Faltas: calcular dias remunerados
+      const faltasInj=(f.faltas||[]).filter(x=>x.tipo==='Injustificada').length;
+      const diasRem=Math.max(0,30-faltasInj);
+      // Evento SISSMO: determinar o mais relevante do mês
+      const evento=faltasInj>0?'10 — Falta':(f.contrato==='determinado'&&f.cval?'':'');
+      tBase+=baseInss;tTrab+=trab;tEntid+=entid;tComis+=comisBonus;
+      return `<tr>
+        <td style="${tdStyle};font-family:monospace;font-size:.68rem;color:var(--cy);font-weight:700">${f.inssNum||'—'}</td>
         <td style="${tdStyle};font-weight:600">${f.nome}</td>
-        <td style="${tdStyle}">${f.nuit||'—'}</td>
-        <td style="${tdStyle}">${f.inssNum||'—'}</td>
-        <td style="${tdR}">${fmt(baseI)}</td>
+        <td style="${tdStyle};font-size:.68rem">${f.nuit||'—'}</td>
+        <td style="${tdR};font-weight:700">${diasRem}</td>
+        <td style="${tdR}">${fmt(baseInss)}</td>
+        <td style="${tdR}">${comisBonus>0?fmt(comisBonus):'0,00'}</td>
+        <td style="${tdR}">0,00</td>
         <td style="${tdRed}">-${fmt(trab)}</td>
         <td style="${tdR};color:var(--am)">${fmt(entid)}</td>
-        <td style="${tdR};font-weight:700">${fmt(trab+entid)}</td></tr>`;
+        <td style="${tdStyle};font-size:.68rem;color:var(--tx3)">${evento||'—'}</td>
+      </tr>`;
     }).join('');
-    body.innerHTML=`<div class="al ai" style="margin-bottom:.6rem">ℹ️ Mapa INSS — Base: salário base + bónus de antiguidade (Lei n.º 7/2023)</div>
-      <table style="width:100%;border-collapse:collapse">
-      <thead style="background:var(--czdd);color:#fff"><tr>
-        <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Nome</th>
-        <th style="${thStyle}">NUIT</th><th style="${thStyle}">N.º INSS</th>
-        <th style="${thStyle};text-align:right">Base INSS</th>
-        <th style="${thStyle};text-align:right">Trab. 3%</th>
-        <th style="${thStyle};text-align:right">Entid. 4%</th>
-        <th style="${thStyle};text-align:right">Total</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-      <tfoot style="background:var(--bzb);border-top:2px solid var(--bz)"><tr>
-        <td colspan="5" style="${tfStyle}">TOTAL INSS</td>
-        <td style="${tfStyle};text-align:right;color:var(--vm)">-${fmt(tT)}</td>
-        <td style="${tfStyle};text-align:right;color:var(--am)">${fmt(tE)}</td>
-        <td style="${tfStyle};text-align:right">${fmt(tT+tE)}</td>
-      </tr></tfoot></table>`;
+
+    body.innerHTML=`
+      <!-- Cabeçalho SISSMO -->
+      <div style="border:2px solid #003399;border-radius:6px;overflow:hidden;font-family:Arial,sans-serif;font-size:.75rem;margin-bottom:1rem" id="inss-printable">
+        <div style="background:#003399;color:#fff;padding:.5rem .9rem;display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-size:.9rem;font-weight:700">DECLARAÇÃO DE REMUNERAÇÕES — INSS</div>
+            <div style="font-size:.7rem;margin-top:.1rem">Sistema SISSMO — Instituto Nacional de Segurança Social de Moçambique</div>
+          </div>
+          <div style="text-align:right;font-size:.75rem">
+            <div>Referência: <strong>${periodo}</strong></div>
+            <div>Entidade: <strong>${empresa}</strong></div>
+            <div>NUIT: <strong>${nuit}</strong></div>
+          </div>
+        </div>
+        <div style="padding:.4rem .9rem;background:#E8EDF8;border-bottom:1px solid #C0C8E0;font-size:.68rem;color:#003399">
+          ⓘ Base de incidência INSS: <strong>salário base + bónus de antiguidade apenas</strong> · Lei n.º 7/2023 · Publicação RSM Moçambique · Taxas: trabalhador 3% + entidade 4% = 7% total · Mês tem sempre 30 dias (FAQ 20, Guia SISSMO v4.2)
+        </div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:.72rem">
+            <thead>
+              <tr style="background:#003399;color:#fff">
+                <th style="padding:.38rem .55rem;text-align:left">N.º INSS</th>
+                <th style="padding:.38rem .55rem;text-align:left">Nome do Beneficiário</th>
+                <th style="padding:.38rem .55rem;text-align:left;font-size:.65rem">NUIT</th>
+                <th style="padding:.38rem .55rem;text-align:right">Dias</th>
+                <th style="padding:.38rem .55rem;text-align:right">Remuneração (MZN)</th>
+                <th style="padding:.38rem .55rem;text-align:right">Comiss./Bónus</th>
+                <th style="padding:.38rem .55rem;text-align:right">Sub.Férias</th>
+                <th style="padding:.38rem .55rem;text-align:right;color:#FFB3B3">Trab. 3%</th>
+                <th style="padding:.38rem .55rem;text-align:right;color:#FFE0A0">Entid. 4%</th>
+                <th style="padding:.38rem .55rem;text-align:left;font-size:.65rem">Evento</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+            <tfoot>
+              <tr style="background:#003399;color:#fff;font-weight:700">
+                <td colspan="3" style="padding:.4rem .55rem">TOTAIS — ${funcs.length} beneficiário(s)</td>
+                <td style="padding:.4rem .55rem;text-align:right">—</td>
+                <td style="padding:.4rem .55rem;text-align:right;font-family:monospace">${fmt(tBase)}</td>
+                <td style="padding:.4rem .55rem;text-align:right;font-family:monospace">${fmt(tComis)}</td>
+                <td style="padding:.4rem .55rem;text-align:right">0,00</td>
+                <td style="padding:.4rem .55rem;text-align:right;font-family:monospace;color:#FFB3B3">-${fmt(tTrab)}</td>
+                <td style="padding:.4rem .55rem;text-align:right;font-family:monospace;color:#FFE0A0">${fmt(tEntid)}</td>
+                <td></td>
+              </tr>
+              <tr style="background:#1a1f4e;color:#fff">
+                <td colspan="6" style="padding:.4rem .55rem;font-weight:700">TOTAL A PAGAR AO INSS (Entidade 4%)</td>
+                <td colspan="4" style="padding:.4rem .55rem;text-align:right;font-family:monospace;font-size:1rem;font-weight:700;color:#FFE0A0">${fmt(tEntid)} MZN</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div style="padding:.5rem .9rem;background:#F5F7FF;font-size:.65rem;color:#666;border-top:1px solid #C0C8E0">
+          Fonte legal: Lei n.º 7/2023 de 3 de Agosto · Guia do Contribuinte SISSMO v4.2 (www.inss.gov.mz) · Formato de ficheiro: NNNNNNNNNMMAAAA.txt (UTF-8, separador ";")
+        </div>
+      </div>
+      <div style="display:flex;gap:.5rem;margin-top:.5rem">
+        <button class="btn btn-bz btn-sm" onclick="imprimirSoINSS()">🖨️ Imprimir só a folha INSS</button>
+        <button class="btn btn-o btn-sm" onclick="exportINSSFicheiro()">⬇️ Exportar ficheiro SISSMO (.txt)</button>
+      </div>`;
   }
 
   else if(id==='rtp4'){
@@ -4706,7 +4806,7 @@ function showRelTab(id){
       }
       if(f.salario<getSalMinSect()) alertas.push({id:f.id,nome:f.nome,tipo:'Salário abaixo do mínimo do sector (MZN '+fmt(f.salario)+')',grav:'Alta'});
     });
-    if(!alertas.length){body.innerHTML='<div class="al ao">✓ Sem anomalias detectadas.</div>';out.scrollIntoView({behavior:'smooth'});return;}
+    if(!alertas.length){body.innerHTML='<div class="al ao">✓ Sem anomalias detectadas.</div>';guardarRelatorio(document.getElementById('rel-output-title')?.textContent||'Relatório', body.innerHTML);return;}
     body.innerHTML=`<table style="width:100%;border-collapse:collapse">
       <thead style="background:var(--czdd);color:#fff"><tr>
         <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Nome</th>
@@ -4844,7 +4944,7 @@ function showRelTab(id){
   else {
     body.innerHTML=`<div class="al ai">ℹ️ Relatório "${titles[id]||id}" — disponível após processamento de dados. Use Exportar → CSV ou Imprimir.</div>`;
   }
-  out.scrollIntoView({behavior:'smooth'});
+  guardarRelatorio(document.getElementById('rel-output-title')?.textContent||'Relatório', body.innerHTML);
 }
 
 // ================================================================
@@ -5031,6 +5131,100 @@ function enviarRemindersEmail(){
   st('Reminders enviados: '+enviados+' emails','ok');
 }
 
+// ===== ABRIR RELATÓRIO EM NOVA JANELA =====
+let _ultimoRelHTML = '';
+let _ultimoRelTitulo = '';
+
+function guardarRelatorio(titulo, html){
+  _ultimoRelTitulo = titulo;
+  _ultimoRelHTML = html;
+  const linkDiv = document.getElementById('rel-output-link');
+  const titleEl = document.getElementById('rel-output-title');
+  if(linkDiv) linkDiv.style.display = 'block';
+  if(titleEl) titleEl.textContent = titulo;
+  linkDiv.scrollIntoView({behavior:'smooth'});
+}
+
+function abrirRelatorioJanela(){
+  if(!_ultimoRelHTML){st('Nenhum relatório gerado ainda','er');return;}
+  const win = window.open('','_blank','width=1100,height=800,scrollbars=yes');
+  if(!win){st('Popup bloqueado — autorize popups para este site','er');return;}
+  win.document.write(`<!DOCTYPE html><html lang="pt"><head>
+    <meta charset="utf-8">
+    <title>${_ultimoRelTitulo}</title>
+    <style>
+      body{font-family:Arial,sans-serif;font-size:13px;color:#1a1a1a;margin:0;padding:1.5rem}
+      h1{font-size:1.1rem;color:#0F1B2B;margin-bottom:.5rem}
+      table{width:100%;border-collapse:collapse;margin-top:.8rem}
+      th{background:#0F1B2B;color:#fff;padding:.38rem .6rem;font-size:.7rem;text-align:left}
+      td{padding:.38rem .6rem;border-bottom:1px solid #e0e4ea;font-size:.78rem}
+      tfoot td{background:#0F1B2B;color:#fff;font-weight:700;padding:.4rem .6rem}
+      .btns{display:flex;gap:.5rem;margin-bottom:1rem;print:none}
+      button{padding:.38rem .9rem;border:none;border-radius:5px;cursor:pointer;font-size:.8rem}
+      .btn-p{background:#0F1B2B;color:#fff}
+      .btn-o{background:#eee;color:#333}
+      @media print{.btns{display:none}}
+    </style>
+  </head><body>
+    <div class="btns">
+      <button class="btn-p" onclick="window.print()">🖨️ Imprimir</button>
+      <button class="btn-o" onclick="window.close()">Fechar</button>
+    </div>
+    ${_ultimoRelHTML}
+  </body></html>`);
+  win.document.close();
+}
+
+// ===== IMPRIMIR SÓ A FOLHA INSS =====
+function imprimirSoINSS(){
+  const el = document.getElementById('inss-printable');
+  if(!el){st('Gere primeiro o mapa INSS','er');return;}
+  const win = window.open('','_blank','width=1100,height=800,scrollbars=yes');
+  if(!win){st('Popup bloqueado — autorize popups','er');return;}
+  win.document.write(`<!DOCTYPE html><html lang="pt"><head>
+    <meta charset="utf-8">
+    <title>Mapa INSS — ${document.getElementById('folha-titulo')?.textContent||''}</title>
+    <style>
+      body{font-family:Arial,sans-serif;font-size:12px;margin:1cm}
+      table{width:100%;border-collapse:collapse}
+      th{background:#003399;color:#fff;padding:.3rem .5rem;font-size:.65rem}
+      td{padding:.28rem .5rem;border-bottom:1px solid #dde;font-size:.73rem}
+      @media print{body{margin:.5cm}}
+    </style>
+  </head><body>
+    ${el.outerHTML}
+    <script>window.onload=function(){window.print();}<\/script>
+  </body></html>`);
+  win.document.close();
+}
+
+// ===== EXPORTAR FICHEIRO SISSMO (.txt) =====
+function exportINSSFicheiro(){
+  // Formato SISSMO: campos separados por ";" conforme Guia do Contribuinte v4.2
+  // NISS_BENEFICIARIO;NUMERO_DIAS;VALOR_REMUNERACAO;VALOR_COMIS_BONUS;VALOR_SUB_FERIAS;TIPO_EVENTO;DT_EVENTO
+  const periodo = (document.getElementById('folha-titulo')?.textContent||'').replace('Folha salarial — ','');
+  const empresa = document.getElementById('en-nome')?.value||'';
+  const nuit = document.getElementById('en-nuit')?.value||'';
+  let txt = '// SISSMO - Declaracao de Remuneracoes\n';
+  txt += '// Entidade: '+empresa+' | NUIT: '+nuit+' | Periodo: '+periodo+'\n';
+  txt += 'NISS_BENEFICIARIO;NUMERO_DIAS;VALOR_REMUNERACAO;VALOR_COMIS_BONUS;VALOR_SUB_FERIAS;TIPO_EVENTO;DT_EVENTO\n';
+  F.forEach(f=>{
+    const baseInss = (f.salario||0)+(f.ant||0);
+    const comis = (f.antTmp||0);
+    const faltasInj = (f.faltas||[]).filter(x=>x.tipo==='Injustificada').length;
+    const dias = Math.max(0,30-faltasInj);
+    const niss = f.inssNum||'000000000';
+    txt += `${niss};${dias};${baseInss.toFixed(2)};${comis.toFixed(2)};0.00;;\n`;
+  });
+  const blob = new Blob([txt],{type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const hoje = new Date().toISOString().split('T')[0];
+  a.download = 'SISSMO_'+hoje.replace(/-/g,'')+'.txt';
+  a.click();
+  st('Ficheiro SISSMO exportado','ok');
+}
+
 // ===== EXPORTAR CSV =====
 function exportCSV(){
   if(!F.length){st('Sem dados para exportar','er');return;}
@@ -5104,6 +5298,10 @@ function selecFuncPesquisa(idx){
 
 // ===== SELECTS =====
 function updSel(){
+  // Mês no dashboard
+  const titulo=document.getElementById('folha-titulo');
+  const dbMes=document.getElementById('db-mes-actual');
+  if(dbMes&&titulo)dbMes.textContent=(titulo.textContent||'').replace('Folha salarial — ','').trim()||'—';
   // Departamentos no modal de pesquisa
   const dsel=document.getElementById('mf-srch-dept');
   if(dsel){
@@ -5126,7 +5324,11 @@ function updKAD(){
   const tBr=F.reduce((s,f)=>s+(f.salario+f.subT+f.subA+(f.ant||0)+f.subO),0);
 }
 
-function att(){rF();cf();rDB();updKD();updKAD();document.getElementById('b-folha').textContent=F.length;updSel();updBadgeAF();}
+function att(){
+  // Actualizar mês no dashboard
+  const titulo=document.getElementById('folha-titulo');
+  const dbMes=document.getElementById('db-mes-actual');
+  if(dbMes&&titulo)dbMes.textContent=(titulo.textContent||'').replace('Folha salarial — ','').trim()||'—';rF();cf();rDB();updKD();updKAD();document.getElementById('b-folha').textContent=F.length;updSel();updBadgeAF();}
 
 // ===== UTILS =====
 function fmt(n){return(parseFloat(n)||0).toLocaleString('pt-MZ',{minimumFractionDigits:2,maximumFractionDigits:2});}
@@ -5247,6 +5449,266 @@ function carregarAmostra(){
 
 // ===== INICIALIZAÇÃO =====
 carregarAmostra();
+
+// ===== CATEGORIAS GLOBAIS DE REMUNERAÇÕES E DESCONTOS =====
+// Codificação: R1..Rn = remunerações, D1..Dn = descontos
+// Estas são a "biblioteca" do sistema — criadas em Configurações → Remunerações/Descontos
+// e usadas nas fichas dos funcionários e nas fórmulas de cálculo.
+
+let CATS_REM = [
+  {cod:'R1', nome:'Salário Base', tipo:'fixo', descricao:'Remuneração base mensal do colaborador', sistema:true},
+  {cod:'R2', nome:'Horas Extra 150%', tipo:'variavel', descricao:'Horas extra em dia útil — taxa de 150%', sistema:true},
+  {cod:'R3', nome:'Horas Extra 200%', tipo:'variavel', descricao:'Horas extra em dia útil (além 2h) ou feriado — taxa de 200%', sistema:true},
+  {cod:'R4', nome:'Horas Excepcionais', tipo:'variavel', descricao:'Horas excepcionais autorizadas por despacho', sistema:true},
+  {cod:'R5', nome:'Adicional Nocturno', tipo:'variavel', descricao:'Suplemento por trabalho nocturno', sistema:true},
+  {cod:'R6', nome:'Subsídio de Alimentação', tipo:'fixo', descricao:'Subsídio mensal de alimentação', sistema:true},
+  {cod:'R7', nome:'Subsídio de Transporte', tipo:'fixo', descricao:'Subsídio mensal de transporte', sistema:true},
+  {cod:'R8', nome:'Bónus de Antiguidade', tipo:'fixo', descricao:'Bónus por anos de serviço (sujeito a INSS)', sistema:true},
+  {cod:'R9', nome:'Subsídio de Habitação', tipo:'fixo', descricao:'Subsídio de habitação mensal', sistema:true},
+  {cod:'R10', nome:'13.º Mês', tipo:'especial', descricao:'Décimo terceiro mês — tributação autónoma', sistema:true},
+  {cod:'R11', nome:'Subsídio de Férias', tipo:'especial', descricao:'Subsídio de férias — tributação autónoma', sistema:true},
+  {cod:'R12', nome:'14.º Mês', tipo:'especial', descricao:'Décimo quarto mês (quando aplicável)', sistema:true},
+];
+
+let CATS_DESC = [
+  {cod:'D1', nome:'IRPS', tipo:'fiscal', descricao:'Imposto sobre o Rendimento de Pessoas Singulares — Lei n.º 11/2025 art. 65-A', sistema:true, bloqueado:true},
+  {cod:'D2', nome:'INSS Trabalhador', tipo:'social', descricao:'Contribuição INSS trabalhador — 3% sobre salário base + bónus antiguidade (Lei n.º 7/2023)', sistema:true, bloqueado:true},
+  {cod:'D3', nome:'Sindicato', tipo:'outro', descricao:'Quota sindical mensal', sistema:false, bloqueado:false},
+  {cod:'D4', nome:'Empréstimo', tipo:'outro', descricao:'Prestação mensal de empréstimo da empresa', sistema:false, bloqueado:false},
+  {cod:'D5', nome:'Adiantamento de Salário', tipo:'outro', descricao:'Desconto de adiantamento concedido', sistema:false, bloqueado:false},
+  {cod:'D6', nome:'Pensão Alimentar', tipo:'legal', descricao:'Desconto por ordem judicial de pensão alimentar', sistema:false, bloqueado:false},
+  {cod:'D7', nome:'Seguro de Saúde', tipo:'beneficio', descricao:'Desconto do prémio de seguro de saúde do colaborador', sistema:false, bloqueado:false},
+  {cod:'D8', nome:'Fundo de Pensão', tipo:'beneficio', descricao:'Contribuição mensal para fundo de pensão', sistema:false, bloqueado:false},
+];
+
+let nextCodRem = 13; // próximo código R disponível
+let nextCodDesc = 9; // próximo código D disponível
+
+function novaCatRem(){
+  const nome=prompt('Designação da nova remuneração:');
+  if(!nome||!nome.trim())return;
+  const cod='R'+nextCodRem++;
+  CATS_REM.push({cod,nome:nome.trim(),tipo:'variavel',descricao:'',sistema:false,bloqueado:false});
+  renderCatsRem();
+  renderCatsDesc();
+  st(cod+' — '+nome+' criado','ok');
+}
+
+function novaCatDesc(){
+  const nome=prompt('Designação do novo desconto:');
+  if(!nome||!nome.trim())return;
+  const cod='D'+nextCodDesc++;
+  CATS_DESC.push({cod,nome:nome.trim(),tipo:'outro',descricao:'',sistema:false,bloqueado:false});
+  renderCatsDesc();
+  renderCatsRem();
+  st(cod+' — '+nome+' criado','ok');
+}
+
+function renderCatsRem(){
+  const div=document.getElementById('cats-rem-list');
+  if(!div)return;
+  div.innerHTML=CATS_REM.map(r=>`
+    <div style="display:flex;align-items:center;gap:.5rem;padding:.42rem .6rem;border-bottom:1px solid var(--bd)">
+      <span style="font-family:monospace;font-size:.72rem;font-weight:700;color:var(--cy);background:var(--cyb);padding:.1rem .38rem;border-radius:3px;min-width:2.8rem;text-align:center">${r.cod}</span>
+      <div style="flex:1">
+        <div style="font-size:.8rem;font-weight:600;color:var(--tx)">${r.nome}</div>
+        <div style="font-size:.65rem;color:var(--tx3)">${r.descricao||'—'}</div>
+      </div>
+      <span class="bg ${r.tipo==='fixo'?'ba':r.tipo==='especial'?'bp':'by'}" style="font-size:.58rem">${r.tipo}</span>
+      ${!r.sistema?`<button class="btn btn-o btn-xs" onclick="editCatRem('${r.cod}')">✏️</button><button class="btn btn-d btn-xs" onclick="delCatRem('${r.cod}')">✕</button>`:'<span style="font-size:.62rem;color:var(--tx4)">sistema</span>'}
+    </div>`).join('');
+}
+
+function renderCatsDesc(){
+  const div=document.getElementById('cats-desc-list');
+  if(!div)return;
+  div.innerHTML=CATS_DESC.map(d=>`
+    <div style="display:flex;align-items:center;gap:.5rem;padding:.42rem .6rem;border-bottom:1px solid var(--bd)">
+      <span style="font-family:monospace;font-size:.72rem;font-weight:700;color:var(--rd);background:var(--rdp);padding:.1rem .38rem;border-radius:3px;min-width:2.8rem;text-align:center">${d.cod}</span>
+      <div style="flex:1">
+        <div style="font-size:.8rem;font-weight:600;color:var(--tx)">${d.nome}</div>
+        <div style="font-size:.65rem;color:var(--tx3)">${d.descricao||'—'}</div>
+      </div>
+      <span class="bg ${d.tipo==='fiscal'?'br':d.tipo==='social'?'ba':d.tipo==='legal'?'bp':'bc'}" style="font-size:.58rem">${d.tipo}</span>
+      ${!d.sistema?`<button class="btn btn-o btn-xs" onclick="editCatDesc('${d.cod}')">✏️</button><button class="btn btn-d btn-xs" onclick="delCatDesc('${d.cod}')">✕</button>`:'<span style="font-size:.62rem;color:var(--tx4)">sistema</span>'}
+    </div>`).join('');
+}
+
+function editCatRem(cod){
+  const cat=CATS_REM.find(r=>r.cod===cod);
+  if(!cat)return;
+  const novo=prompt('Nova designação para '+cod+':',cat.nome);
+  if(novo&&novo.trim()){cat.nome=novo.trim();renderCatsRem();st(cod+' actualizado','ok');}
+}
+
+function editCatDesc(cod){
+  const cat=CATS_DESC.find(d=>d.cod===cod);
+  if(!cat)return;
+  const novo=prompt('Nova designação para '+cod+':',cat.nome);
+  if(novo&&novo.trim()){cat.nome=novo.trim();renderCatsDesc();st(cod+' actualizado','ok');}
+}
+
+function delCatRem(cod){
+  const idx=CATS_REM.findIndex(r=>r.cod===cod);
+  if(idx>-1){const n=CATS_REM[idx].nome;CATS_REM.splice(idx,1);renderCatsRem();st(n+' removido','ok');}
+}
+
+function delCatDesc(cod){
+  const idx=CATS_DESC.findIndex(d=>d.cod===cod);
+  if(idx>-1){const n=CATS_DESC[idx].nome;CATS_DESC.splice(idx,1);renderCatsDesc();st(n+' removido','ok');}
+}
+
+// ================================================================
+// SELECTORS — para abrir na ficha do funcionário
+// ================================================================
+function abrirSelectorRemuneracoes(){
+  const modal=document.getElementById('m-sel-rem');
+  if(!modal)return;
+  const lista=document.getElementById('sel-rem-lista');
+  if(lista){
+    lista.innerHTML=CATS_REM.map(r=>`
+      <button class="btn btn-o" style="display:flex;align-items:center;gap:.6rem;width:100%;text-align:left;padding:.5rem .8rem;margin-bottom:.3rem" onclick="addRemFromCat('${r.cod}')">
+        <span style="font-family:monospace;font-size:.72rem;font-weight:700;color:var(--cy);background:var(--cyb);padding:.1rem .38rem;border-radius:3px;min-width:2.8rem;text-align:center">${r.cod}</span>
+        <div><div style="font-size:.82rem;font-weight:600">${r.nome}</div><div style="font-size:.65rem;color:var(--tx3)">${r.descricao||''}</div></div>
+      </button>`).join('');
+  }
+  modal.classList.add('open');
+}
+
+function abrirSelectorDescontos(){
+  const modal=document.getElementById('m-sel-desc');
+  if(!modal)return;
+  const lista=document.getElementById('sel-desc-lista');
+  if(lista){
+    lista.innerHTML=CATS_DESC.map(d=>`
+      <button class="btn btn-o" style="display:flex;align-items:center;gap:.6rem;width:100%;text-align:left;padding:.5rem .8rem;margin-bottom:.3rem" onclick="addDescFromCat('${d.cod}')">
+        <span style="font-family:monospace;font-size:.72rem;font-weight:700;color:var(--rd);background:var(--rdp);padding:.1rem .38rem;border-radius:3px;min-width:2.8rem;text-align:center">${d.cod}</span>
+        <div><div style="font-size:.82rem;font-weight:600">${d.nome}</div><div style="font-size:.65rem;color:var(--tx3)">${d.descricao||''}</div></div>
+      </button>`).join('');
+  }
+  modal.classList.add('open');
+}
+
+function addRemFromCat(cod){
+  const cat=CATS_REM.find(r=>r.cod===cod);
+  if(!cat){fm('m-sel-rem');return;}
+  // Adicionar linha à tabela extra de remunerações da ficha
+  const tbody=document.getElementById('extra-rem-rows');
+  if(!tbody){fm('m-sel-rem');return;}
+  // Verificar se já existe
+  if(document.getElementById('rem-row-'+cod)){
+    st(cat.cod+' — '+cat.nome+' já está adicionado','er');
+    fm('m-sel-rem');return;
+  }
+  const tr=document.createElement('tr');
+  tr.id='rem-row-'+cod;
+  tr.style.borderTop='1px solid var(--bd)';
+  const isBloqueado=cat.sistema&&(cod==='R1'); // salário base é fixo e não removível aqui
+  tr.innerHTML=`
+    <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem">
+      <span style="font-family:monospace;font-size:.65rem;color:var(--cy);margin-right:.35rem">${cat.cod}</span>${cat.nome}
+    </td>
+    <td style="padding:.28rem .4rem"><input class="fi" type="number" id="rem-fx-${cod}" value="0" min="0" step="0.01" oninput="pc()" style="text-align:right;font-size:.74rem;padding:.25rem .4rem"></td>
+    <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd)"><input class="fi" type="number" id="rem-tmp-${cod}" value="0" min="0" step="0.01" oninput="pc()" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;background:rgba(0,212,255,.04);border-color:rgba(0,212,255,.18)"></td>
+    <td style="padding:.28rem .4rem"><select class="fi" id="rem-met-${cod}" style="font-size:.72rem;padding:.22rem .35rem" onchange="onMetChange('rem-${cod}')"><option value="">Não aplicável</option><option value="meses">Nr de meses</option><option value="total">Valor total</option></select></td>
+    <td style="padding:.28rem .4rem"><input class="fi" type="number" id="rem-nm-${cod}" value="" placeholder="—" disabled style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px;background:var(--sf);color:var(--tx3)"></td>
+    <td style="padding:.28rem .4rem;text-align:center"><button class="btn btn-d btn-xs" onclick="document.getElementById('rem-row-${cod}').remove();pc()">✕</button></td>`;
+  tbody.appendChild(tr);
+  fm('m-sel-rem');
+  st(cat.cod+' — '+cat.nome+' adicionado à ficha','ok');
+}
+
+function addDescFromCat(cod){
+  const cat=CATS_DESC.find(d=>d.cod===cod);
+  if(!cat){fm('m-sel-desc');return;}
+  const tbody=document.getElementById('extra-desc-rows');
+  if(!tbody){fm('m-sel-desc');return;}
+  if(document.getElementById('desc-row-'+cod)){
+    st(cat.cod+' — '+cat.nome+' já está adicionado','er');
+    fm('m-sel-desc');return;
+  }
+  const tr=document.createElement('tr');
+  tr.id='desc-row-'+cod;
+  tr.style.borderTop='1px solid var(--bd)';
+  tr.innerHTML=`
+    <td style="padding:.35rem .6rem;font-weight:600;color:var(--tx);font-size:.75rem">
+      <span style="font-family:monospace;font-size:.65rem;color:var(--rd);margin-right:.35rem">${cat.cod}</span>${cat.nome}
+    </td>
+    <td style="padding:.28rem .4rem"><input class="fi" type="number" id="desc-fx-${cod}" value="0" min="0" step="0.01" style="text-align:right;font-size:.74rem;padding:.25rem .4rem"></td>
+    <td style="padding:.28rem .4rem .28rem .9rem;border-left:2px solid var(--bd)"><input class="fi" type="number" id="desc-tmp-${cod}" value="0" min="0" step="0.01" style="text-align:right;font-size:.74rem;padding:.25rem .4rem;background:rgba(0,212,255,.04);border-color:rgba(0,212,255,.18)"></td>
+    <td style="padding:.28rem .4rem"><select class="fi" id="desc-met-${cod}" style="font-size:.72rem;padding:.22rem .35rem" onchange="onMetChange('desc-${cod}')"><option value="">Não aplicável</option><option value="meses">Nr de meses</option><option value="total">Valor total</option></select></td>
+    <td style="padding:.28rem .4rem"><input class="fi" type="number" id="desc-nm-${cod}" value="" placeholder="—" disabled style="text-align:right;font-size:.74rem;padding:.25rem .4rem;width:80px;background:var(--sf);color:var(--tx3)"></td>
+    <td style="padding:.28rem .4rem;text-align:center"><button class="btn btn-d btn-xs" onclick="document.getElementById('desc-row-${cod}').remove()">✕</button></td>`;
+  tbody.appendChild(tr);
+  fm('m-sel-desc');
+  st(cat.cod+' — '+cat.nome+' adicionado aos descontos','ok');
+}
+
+// ================================================================
+// FÓRMULAS — suporte a código R1..Rn, D1..Dn
+// ================================================================
+function filtrarSel(q,tipo){
+  const term=q.toLowerCase().trim();
+  const lista=document.getElementById('sel-'+tipo+'-lista');
+  if(!lista)return;
+  const cats=tipo==='rem'?CATS_REM:CATS_DESC;
+  const col=tipo==='rem'?'var(--cy)':'var(--rd)';
+  const bgcol=tipo==='rem'?'var(--cyb)':'var(--rdp)';
+  const fn=tipo==='rem'?'addRemFromCat':'addDescFromCat';
+  const filtradas=term?cats.filter(c=>c.nome.toLowerCase().includes(term)||c.cod.toLowerCase().includes(term)):cats;
+  lista.innerHTML=filtradas.map(c=>`
+    <button class="btn btn-o" style="display:flex;align-items:center;gap:.6rem;width:100%;text-align:left;padding:.5rem .8rem;margin-bottom:.3rem" onclick="${fn}('${c.cod}')">
+      <span style="font-family:monospace;font-size:.72rem;font-weight:700;color:${col};background:${bgcol};padding:.1rem .38rem;border-radius:3px;min-width:2.8rem;text-align:center">${c.cod}</span>
+      <div><div style="font-size:.82rem;font-weight:600">${c.nome}</div><div style="font-size:.65rem;color:var(--tx3)">${c.descricao||''}</div></div>
+    </button>`).join('');
+}
+
+function interpretarCodigoFormula(texto){
+  // Substituir R1, R2... e D1, D2... pelas designações reais
+  return texto.replace(/([RD])(\d+)/g,(match,tipo,num)=>{
+    const cod=tipo+num;
+    const cat=tipo==='R'?CATS_REM.find(r=>r.cod===cod):CATS_DESC.find(d=>d.cod===cod);
+    return cat?`[${cod}:${cat.nome}]`:match;
+  });
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded',()=>{
+  renderCatsRem();
+  renderCatsDesc();
+  // Actualizar mês no dashboard ao iniciar
+  const titulo=document.getElementById('folha-titulo');
+  const dbMes=document.getElementById('db-mes-actual');
+  if(dbMes&&titulo)dbMes.textContent=titulo.textContent.replace('Folha salarial — ','').trim()||'Junho 2025';
+});
+
 </script>
+
+<!-- MODAL SELECTOR REMUNERAÇÕES -->
+<div class="mo" id="m-sel-rem">
+  <div class="md" style="max-width:520px"><div class="mdh">
+    <div class="mdt">💰 Seleccionar Remuneração</div>
+    <button class="mdc" onclick="fm('m-sel-rem')">✕</button>
+  </div>
+  <div class="mdb">
+    <div style="font-size:.72rem;color:var(--tx3);margin-bottom:.6rem">Seleccione a remuneração a adicionar à ficha deste funcionário. Para criar novas, aceda a <strong>Configurações → Remunerações</strong>.</div>
+    <input class="fi" type="text" placeholder="Filtrar por designação ou código..." style="margin-bottom:.6rem" oninput="filtrarSel(this.value,'rem')">
+    <div id="sel-rem-lista" style="max-height:340px;overflow-y:auto"></div>
+  </div></div>
+</div>
+
+<!-- MODAL SELECTOR DESCONTOS -->
+<div class="mo" id="m-sel-desc">
+  <div class="md" style="max-width:520px"><div class="mdh">
+    <div class="mdt">➖ Seleccionar Desconto</div>
+    <button class="mdc" onclick="fm('m-sel-desc')">✕</button>
+  </div>
+  <div class="mdb">
+    <div style="font-size:.72rem;color:var(--tx3);margin-bottom:.6rem">Seleccione o desconto a adicionar à ficha deste funcionário. Para criar novos, aceda a <strong>Configurações → Descontos</strong>.</div>
+    <input class="fi" type="text" placeholder="Filtrar por designação ou código..." style="margin-bottom:.6rem" oninput="filtrarSel(this.value,'desc')">
+    <div id="sel-desc-lista" style="max-height:340px;overflow-y:auto"></div>
+  </div></div>
+</div>
+
 </body>
 </html>
