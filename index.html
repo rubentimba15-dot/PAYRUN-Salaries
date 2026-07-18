@@ -304,6 +304,7 @@ select.fi option{background:var(--sf)}
         <button class="btn btn-o" style="text-align:left;width:100%" onclick="nv('relatorios',null)">📄 Gerar relatórios</button>
         <button class="btn btn-o" style="text-align:left;width:100%" onclick="nv('alteracoesfuturas',null)">🔔 Alterações futuras</button>
         <button class="btn btn-o" style="text-align:left;width:100%" onclick="nv('historico',null)">🗂️ Ver histórico</button>
+        <button class="btn btn-o" style="text-align:left;width:100%;color:var(--vm);border-color:var(--vmp)" onclick="abrirRescisao()">⚠️ Rescisão de contrato</button>
       </div>
     </div>
     <div class="fs" style="margin:0"><div class="fst">📅 Calendário fiscal</div>
@@ -3146,6 +3147,24 @@ const LICENCAS_ESPECIAIS={
 // ================================================================
 // RESCISÃO — cálculo de verbas
 // ================================================================
+function abrirRescisao(){
+  am('m-rescisao');
+  const resEl=document.getElementById('rsc-resultado');
+  if(resEl)resEl.style.display='none';
+}
+
+function filtrarRscSelect(){
+  const q=(document.getElementById('rsc-search')?.value||'').toLowerCase().trim();
+  const sel=document.getElementById('rsc-f');
+  if(!sel)return;
+  const cur=sel.value;
+  const lista=q?F.filter(f=>f.nome.toLowerCase().includes(q)||f.id.toLowerCase().includes(q)):F;
+  sel.innerHTML='<option value="">Seleccionar funcionário...</option>'+
+    lista.map(f=>`<option value="${f.nome}">${f.id} — ${f.nome} (${f.cargo})</option>`).join('');
+  if(cur&&lista.some(f=>f.nome===cur))sel.value=cur;
+  if(lista.length===1){sel.value=lista[0].nome;calcRescisao();}
+}
+
 function calcRescisao(){
   const nome=document.getElementById('rsc-f').value;
   const data=document.getElementById('rsc-data').value;
@@ -4112,7 +4131,7 @@ function updSel(){
     dsel.innerHTML='<option value="">Departamento...</option>'+depts.map(d=>`<option ${d===cur?'selected':''}>${d}</option>`).join('');
   }
   
-  ['rc-f','ad-f','em-f','ct-f','av-f','hx-f','fl-f','af-f'].forEach(id=>{
+  ['rc-f','ad-f','em-f','ct-f','av-f','hx-f','fl-f','af-f','rsc-f'].forEach(id=>{
     const s=document.getElementById(id);if(!s)return;
     const v=s.value;
     s.innerHTML='<option value="">Seleccionar...</option>'+F.map(f=>`<option value="${f.nome}">${f.nome} (${f.id})</option>`).join('');
@@ -4604,6 +4623,60 @@ document.addEventListener('DOMContentLoaded',()=>{
   <div class="mdf">
     <button class="btn btn-o" onclick="fm('m-edit-cat')">Cancelar</button>
     <button class="btn btn-bz" onclick="guardarEditCat()">💾 Guardar</button>
+  </div></div>
+</div>
+
+
+<!-- MODAL RESCISÃO DE CONTRATO -->
+<div class="mo" id="m-rescisao">
+  <div class="md mdl"><div class="mdh">
+    <div class="mdt">⚠️ Rescisão de Contrato de Trabalho</div>
+    <button class="mdc" onclick="fm('m-rescisao')">✕</button>
+  </div>
+  <div class="mdb">
+    <div class="al av">⚠️ Conforme a <strong>Lei n.º 13/2023 de 25 de Agosto</strong> — Lei do Trabalho de Moçambique.</div>
+    <div class="fgp"><label class="fl">Funcionário * — pesquisar por nome ou N.º</label>
+      <input class="fi" type="text" id="rsc-search" placeholder="Digite nome ou EMP-XXXX para filtrar..." oninput="filtrarRscSelect()">
+      <select class="fi" id="rsc-f" onchange="calcRescisao()" style="margin-top:.35rem"><option value="">Seleccionar...</option></select>
+    </div>
+    <div class="fg">
+      <div class="fgp"><label class="fl">Data de desligamento *</label><input class="fi" type="date" id="rsc-data" onchange="calcRescisao()"></div>
+      <div class="fgp"><label class="fl">Motivo da rescisão *</label>
+        <select class="fi" id="rsc-motivo" onchange="calcRescisao()">
+          <option value="">Seleccionar motivo...</option>
+          <option value="restruturacao">Reestruturação / Extinção do posto</option>
+          <option value="sem_justa_causa">Despedimento sem justa causa</option>
+          <option value="justa_causa">Despedimento com justa causa (processo disciplinar)</option>
+          <option value="iniciativa_trab">Iniciativa do trabalhador (demissão)</option>
+          <option value="fim_contrato">Fim do contrato a prazo</option>
+          <option value="mutuo_acordo">Mútuo acordo</option>
+        </select>
+      </div>
+      <div class="fgp"><label class="fl">Pré-aviso concedido?</label>
+        <select class="fi" id="rsc-preaviso" onchange="calcRescisao()">
+          <option value="sim">Sim — pré-aviso foi dado</option>
+          <option value="nao">Não — indemnização substitutiva</option>
+        </select>
+      </div>
+    </div>
+    <div id="rsc-resultado" style="display:none;margin-top:.8rem">
+      <div style="font-size:.78rem;font-weight:700;color:var(--tx);margin-bottom:.5rem;padding-bottom:.4rem;border-bottom:1px solid var(--bd)">Verbas rescisórias calculadas</div>
+      <div class="cb">
+        <div class="cr"><span class="clb">Salário base proporcional</span><span class="cvl" id="rsc-sal-prop">—</span></div>
+        <div class="cr"><span class="clb">Subsídios proporcionais</span><span class="cvl" id="rsc-sub-prop">—</span></div>
+        <div class="cr"><span class="clb">Férias adquiridas e não gozadas</span><span class="cvl" id="rsc-ferias">—</span></div>
+        <div class="cr"><span class="clb">Sub. férias s/ gozar</span><span class="cvl" id="rsc-sub-ferias">—</span></div>
+        <div class="cr" id="rsc-preaviso-row"><span class="clb">Pré-aviso (indemnização substitutiva)</span><span class="cvl" id="rsc-preaviso-val">—</span></div>
+        <div class="cr" id="rsc-indem-row"><span class="clb">Indemnização <small style="color:var(--tx3)">(não sujeita a IRPS/INSS)</small></span><span class="cvl" id="rsc-indem">—</span></div>
+        <div class="cr liq"><span class="clb">Total a receber</span><span class="cvl" id="rsc-total">—</span></div>
+      </div>
+      <div id="rsc-nota" class="al ai" style="margin-top:.5rem;font-size:.7rem"></div>
+    </div>
+  </div>
+  <div class="mdf">
+    <button class="btn btn-o" onclick="fm('m-rescisao')">Cancelar</button>
+    <button class="btn btn-o btn-sm" onclick="exportRelCSV&&exportRelCSV()">⬇️ Exportar</button>
+    <button class="btn btn-d" onclick="confRescisao()">✓ Confirmar rescisão</button>
   </div></div>
 </div>
 
