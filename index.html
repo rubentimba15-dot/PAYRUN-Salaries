@@ -8,40 +8,46 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#1A2740;--bg2:#1E2D48;--sf:#243354;--sf2:#2A3A5E;--sf3:#304268;
-  --bd:#3A5080;--bd2:#4A609A;
+  --bg:#0F2B2B;--bg2:#123333;--sf:#173D3D;--sf2:#1D4848;--sf3:#245656;
+  --bd:#2E6363;--bd2:#3D7A7A;
   --cy:#4A9EFF;--cyl:#6BB4FF;--cyd:#2B7EE0;--cyp:rgba(74,158,255,.12);--cyb:rgba(74,158,255,.07);
-  --gn:#2ECC8A;--gnl:#52D9A0;--gnd:#1EA870;--gnp:rgba(46,204,138,.12);
+  --gn:#10B981;--gnl:#34D399;--gnd:#059669;--gnp:rgba(16,185,129,.12);
   --am:#F0A030;--aml:#F5B850;--amd:#C07820;--amp:rgba(240,160,48,.12);
-  --rd:#E05060;--rdl:#E87080;--rdd:#B83040;--rdp:rgba(224,80,96,.12);
+  --rd:#EF4444;--rdl:#F87171;--rdd:#DC2626;--rdp:rgba(239,68,68,.12);
   --pu:#8B6FD8;--pul:#A48FE8;--pup:rgba(139,111,216,.12);
   --bl:#5B9BD5;--blp:rgba(91,155,213,.12);
-  --tx:#FFFFFF;--tx2:#C8D4E8;--tx3:#8A9BBC;--tx4:#5A6B8A;
-  --bz:#F0A030;--bzl:#F5B850;--bzp:rgba(240,160,48,.14);--bzb:rgba(240,160,48,.07);
-  --vd:#2ECC8A;--vdl:#52D9A0;--vdp:rgba(46,204,138,.12);
-  --vm:#E05060;--vml:#E87080;--vmp:rgba(224,80,96,.12);
+  --tx:#FFFFFF;--tx2:#C6E4E0;--tx3:#7FADA5;--tx4:#4F7A73;
+  --bz:#006666;--bzl:#009999;--bzp:rgba(0,102,102,.14);--bzb:rgba(0,102,102,.07);
+  --vd:#10B981;--vdl:#34D399;--vdp:rgba(16,185,129,.12);
+  --vm:#EF4444;--vml:#F87171;--vmp:rgba(239,68,68,.12);
   --az:#4A9EFF;--azl:#6BB4FF;--azp:rgba(74,158,255,.12);
   --rx:#8B6FD8;--rxl:#A48FE8;--rxp:rgba(139,111,216,.12);
   --cz:#8A9BBC;--czl:#5A6B8A;--czd:#C8D4E8;--czdd:#FFFFFF;
-  --sf-old:#243354;--bd-old:#3A5080;--wh:#243354;
+  --sf-old:#173D3D;--bd-old:#2E6363;--wh:#173D3D;
+  --gold:#00A896;
 }
+.login-screen{position:fixed;inset:0;background:linear-gradient(160deg,var(--bg) 0%,var(--bg2) 100%);display:flex;align-items:center;justify-content:center;z-index:10000;font-family:'Inter',sans-serif}
+.login-box{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:2.2rem 2.4rem;width:320px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.login-logo{font-family:'IBM Plex Mono',monospace;font-size:1.3rem;font-weight:700;letter-spacing:.06em;text-align:center}
+.login-sub{font-size:.68rem;color:var(--tx3);text-align:center;margin-top:.3rem}
+.login-err{font-size:.72rem;color:var(--rd);margin-top:.6rem;text-align:center}
 html{scroll-behavior:smooth}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;min-height:100vh}
 .app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
 .sb{background:var(--czdd);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
 .sb-logo{padding:1.3rem 1.2rem .85rem;border-bottom:1px solid rgba(255,255,255,.07)}
 .lm{font-family:'IBM Plex Mono',monospace;font-size:1.05rem;font-weight:600;color:#fff;letter-spacing:.06em}
-.lm span{color:#C9A84C}
+.lm span{color:var(--gold)}
 .ls{font-size:.62rem;color:rgba(255,255,255,.32);margin-top:.18rem}
-.sb-emp{padding:.62rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(201,168,76,.07)}
+.sb-emp{padding:.62rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(0,168,150,.07)}
 .en{font-size:.77rem;font-weight:600;color:rgba(255,255,255,.82);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .eu{font-size:.62rem;color:rgba(255,255,255,.32);margin-top:.1rem}
 .ns{padding:.65rem 1rem .18rem;font-size:.59rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.22)}
 .ni{display:flex;align-items:center;gap:.58rem;padding:.52rem 1.2rem;cursor:pointer;transition:all .14s;font-size:.78rem;color:rgba(255,255,255,.52);border-left:2px solid transparent}
 .ni:hover{background:rgba(255,255,255,.04);color:rgba(255,255,255,.82)}
-.ni.active{background:rgba(201,168,76,.11);color:#C9A84C;border-left-color:#C9A84C}
+.ni.active{background:rgba(0,168,150,.11);color:var(--gold);border-left-color:var(--gold)}
 .ni .ico{font-size:.88rem;width:16px;text-align:center;flex-shrink:0}
-.nb{margin-left:auto;background:#C9A84C;color:var(--czdd);font-size:.56rem;font-weight:700;padding:.1rem .38rem;border-radius:2px;min-width:16px;text-align:center}
+.nb{margin-left:auto;background:var(--gold);color:var(--czdd);font-size:.56rem;font-weight:700;padding:.1rem .38rem;border-radius:2px;min-width:16px;text-align:center}
 .sb-ft{margin-top:auto;padding:.82rem 1.2rem;border-top:1px solid rgba(255,255,255,.05)}
 .sfu{font-size:.75rem;font-weight:600;color:rgba(255,255,255,.72)}
 .sfr{font-size:.62rem;color:rgba(255,255,255,.28);margin-top:.1rem}
@@ -119,7 +125,7 @@ select.fi option{background:var(--sf)}
 .av{background:var(--amp);border:1px solid #FDE68A;color:var(--am)}
 .ao{background:var(--vdp);border:1px solid #A7F3D0;color:var(--vd)}
 .abz{background:var(--bzp);border:1px solid #E5C87A;color:var(--bz)}
-.stars{display:flex;gap:2px}.star{font-size:.92rem;cursor:pointer;color:var(--czl);transition:color .1s}.star.on{color:#C9A84C}
+.stars{display:flex;gap:2px}.star{font-size:.92rem;cursor:pointer;color:var(--czl);transition:color .1s}.star.on{color:var(--gold)}
 .fid{font-family:'IBM Plex Mono',monospace;font-size:.67rem;color:var(--bz);background:var(--bzp);padding:.12rem .42rem;border-radius:2px;border:1px solid var(--bzp);font-weight:700;letter-spacing:.06em}
 .hc{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:.88rem;margin-bottom:.52rem;display:flex;justify-content:space-between;align-items:center;transition:border-color .2s;box-shadow:0 1px 2px rgba(0,0,0,.03)}
 .hc:hover{border-color:var(--bz)}
@@ -187,12 +193,12 @@ select.fi option{background:var(--sf)}
 .ei{font-size:1.9rem;margin-bottom:.7rem;opacity:.33}
 .et{font-size:.82rem;font-weight:600;color:var(--cz);margin-bottom:.27rem}
 .ed{font-size:.72rem;line-height:1.6}
-.toast{position:fixed;bottom:1.35rem;right:1.35rem;background:var(--czdd);color:#fff;padding:.7rem 1.05rem;border-radius:5px;border-left:3px solid #C9A84C;font-size:.77rem;transform:translateY(80px);opacity:0;transition:all .3s;z-index:9999;max-width:295px;line-height:1.4}
+.toast{position:fixed;bottom:1.35rem;right:1.35rem;background:var(--czdd);color:#fff;padding:.7rem 1.05rem;border-radius:5px;border-left:3px solid var(--gold);font-size:.77rem;transform:translateY(80px);opacity:0;transition:all .3s;z-index:9999;max-width:295px;line-height:1.4}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.er{border-left-color:var(--vm)}.toast.ok{border-left-color:var(--vd)}
 /* --- FICHA FUNCIONÁRIO: HEADER FIXO --- */
 .fich-header{background:linear-gradient(135deg,var(--czdd) 0%,#1e3a5f 100%);border-radius:8px;padding:1rem 1.35rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between}
-.fich-id{font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:#C9A84C;font-weight:700;letter-spacing:.1em;background:rgba(201,168,76,.15);padding:.25rem .6rem;border-radius:3px;border:1px solid rgba(201,168,76,.3)}
+.fich-id{font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--gold);font-weight:700;letter-spacing:.1em;background:rgba(0,168,150,.15);padding:.25rem .6rem;border-radius:3px;border:1px solid rgba(0,168,150,.3)}
 .fich-nome{font-size:1.1rem;font-weight:700;color:#fff;margin-top:.25rem}
 .fich-cargo{font-size:.72rem;color:rgba(255,255,255,.55);margin-top:.12rem}
 .fich-nav{display:flex;gap:.5rem}
@@ -241,7 +247,23 @@ select.fi option{background:var(--sf)}
 </style>
 </head>
 <body>
-<div class="app">
+
+<div id="login-screen" class="login-screen">
+  <div class="login-box">
+    <div class="login-logo"><span class="lm" style="color:var(--tx)">PAY<span style="color:var(--bzl)">RUN</span></span></div>
+    <div class="login-sub">Gestão Salarial e RH · Moçambique</div>
+    <div class="fgp" style="margin-top:1.4rem"><label class="fl">Utilizador</label>
+      <input class="fi" id="login-user" type="text" placeholder="Utilizador" autocomplete="username">
+    </div>
+    <div class="fgp"><label class="fl">Palavra-passe</label>
+      <input class="fi" id="login-pass" type="password" placeholder="Palavra-passe" autocomplete="current-password">
+    </div>
+    <div id="login-err" class="login-err" style="display:none">Utilizador ou palavra-passe incorrectos.</div>
+    <button class="btn btn-bz" style="width:100%;margin-top:.6rem;padding:.6rem" onclick="tentarLogin()">Entrar</button>
+  </div>
+</div>
+
+<div class="app" id="app-root" style="display:none">
 <aside class="sb">
   <div class="sb-logo"><div class="lm">PAY<span>RUN</span></div><div class="ls">Gestão Salarial e RH · Moçambique v4.0</div></div>
   <div class="sb-emp"><div class="en" id="sb-emp">Empresa Demo, Lda.</div><div class="eu" id="sb-nuit">NUIT: 400123456</div></div>
@@ -349,8 +371,8 @@ select.fi option{background:var(--sf)}
         <div class="fich-cargo" id="fich-cargo-show">—</div>
       </div>
       <div class="fich-nav">
-        <button class="btn btn-o btn-xs" onclick="editFunc()" style="color:#C9A84C;border-color:rgba(201,168,76,.4)">✏️ Editar</button>
-        <button class="btn btn-o btn-xs" onclick="nv('recibo',null)" style="color:#C9A84C;border-color:rgba(201,168,76,.4)">🧾 Recibo</button>
+        <button class="btn btn-o btn-xs" onclick="editFunc()" style="color:var(--gold);border-color:rgba(0,168,150,.4)">✏️ Editar</button>
+        <button class="btn btn-o btn-xs" onclick="nv('recibo',null)" style="color:var(--gold);border-color:rgba(0,168,150,.4)">🧾 Recibo</button>
       </div>
     </div>
     <div class="tabs">
@@ -1453,6 +1475,30 @@ select.fi option{background:var(--sf)}
 </div></div></div>
 
 <script>
+
+// ===== AUTENTICAÇÃO (gate de acesso simples — ver aviso de segurança) =====
+const PR_USER='Payrun', PR_PASS='1309';
+function tentarLogin(){
+  const u=document.getElementById('login-user').value.trim();
+  const p=document.getElementById('login-pass').value;
+  if(u===PR_USER && p===PR_PASS){
+    try{ localStorage.setItem('payrunAuth','1'); }catch(e){}
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app-root').style.display='';
+  } else {
+    document.getElementById('login-err').style.display='block';
+  }
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('login-pass').addEventListener('keydown',e=>{ if(e.key==='Enter') tentarLogin(); });
+  document.getElementById('login-user').addEventListener('keydown',e=>{ if(e.key==='Enter') tentarLogin(); });
+  let jaAutenticado=false;
+  try{ jaAutenticado = localStorage.getItem('payrunAuth')==='1'; }catch(e){}
+  if(jaAutenticado){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app-root').style.display='';
+  }
+});
 
 // ===== ESTADO =====
 let F=[],AD=[],CT=[],AV=[],FO=[],HX=[],HIST=[],AF=[],FORMULAS=[],RELPERS=[];
