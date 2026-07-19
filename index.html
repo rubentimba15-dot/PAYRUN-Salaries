@@ -26,11 +26,6 @@
   --sf-old:#173D3D;--bd-old:#2E6363;--wh:#173D3D;
   --gold:#00A896;
 }
-.login-screen{position:fixed;inset:0;background:linear-gradient(160deg,var(--bg) 0%,var(--bg2) 100%);display:flex;align-items:center;justify-content:center;z-index:10000;font-family:'Inter',sans-serif}
-.login-box{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:2.2rem 2.4rem;width:320px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
-.login-logo{font-family:'IBM Plex Mono',monospace;font-size:1.3rem;font-weight:700;letter-spacing:.06em;text-align:center}
-.login-sub{font-size:.68rem;color:var(--tx3);text-align:center;margin-top:.3rem}
-.login-err{font-size:.72rem;color:var(--rd);margin-top:.6rem;text-align:center}
 html{scroll-behavior:smooth}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;min-height:100vh}
 .app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
@@ -247,23 +242,7 @@ select.fi option{background:var(--sf)}
 </style>
 </head>
 <body>
-
-<div id="login-screen" class="login-screen">
-  <div class="login-box">
-    <div class="login-logo"><span class="lm" style="color:var(--tx)">PAY<span style="color:var(--bzl)">RUN</span></span></div>
-    <div class="login-sub">Gestão Salarial e RH · Moçambique</div>
-    <div class="fgp" style="margin-top:1.4rem"><label class="fl">Utilizador</label>
-      <input class="fi" id="login-user" type="text" placeholder="Utilizador" autocomplete="username">
-    </div>
-    <div class="fgp"><label class="fl">Palavra-passe</label>
-      <input class="fi" id="login-pass" type="password" placeholder="Palavra-passe" autocomplete="current-password">
-    </div>
-    <div id="login-err" class="login-err" style="display:none">Utilizador ou palavra-passe incorrectos.</div>
-    <button class="btn btn-bz" style="width:100%;margin-top:.6rem;padding:.6rem" onclick="tentarLogin()">Entrar</button>
-  </div>
-</div>
-
-<div class="app" id="app-root" style="display:none">
+<div class="app">
 <aside class="sb">
   <div class="sb-logo"><div class="lm">PAY<span>RUN</span></div><div class="ls">Gestão Salarial e RH · Moçambique v4.0</div></div>
   <div class="sb-emp"><div class="en" id="sb-emp">Empresa Demo, Lda.</div><div class="eu" id="sb-nuit">NUIT: 400123456</div></div>
@@ -1475,30 +1454,6 @@ select.fi option{background:var(--sf)}
 </div></div></div>
 
 <script>
-
-// ===== AUTENTICAÇÃO (gate de acesso simples — ver aviso de segurança) =====
-const PR_USER='Payrun', PR_PASS='1309';
-function tentarLogin(){
-  const u=document.getElementById('login-user').value.trim();
-  const p=document.getElementById('login-pass').value;
-  if(u===PR_USER && p===PR_PASS){
-    try{ localStorage.setItem('payrunAuth','1'); }catch(e){}
-    document.getElementById('login-screen').style.display='none';
-    document.getElementById('app-root').style.display='';
-  } else {
-    document.getElementById('login-err').style.display='block';
-  }
-}
-document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('login-pass').addEventListener('keydown',e=>{ if(e.key==='Enter') tentarLogin(); });
-  document.getElementById('login-user').addEventListener('keydown',e=>{ if(e.key==='Enter') tentarLogin(); });
-  let jaAutenticado=false;
-  try{ jaAutenticado = localStorage.getItem('payrunAuth')==='1'; }catch(e){}
-  if(jaAutenticado){
-    document.getElementById('login-screen').style.display='none';
-    document.getElementById('app-root').style.display='';
-  }
-});
 
 // ===== ESTADO =====
 let F=[],AD=[],CT=[],AV=[],FO=[],HX=[],HIST=[],AF=[],FORMULAS=[],RELPERS=[];
@@ -3441,31 +3396,25 @@ async function enviarAI(){
   msgs.scrollTop=msgs.scrollHeight;
 
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    const resp=await fetch('/api/ai',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
+      credentials:'same-origin',
       body:JSON.stringify({
-        model:'claude-sonnet-4-6',
-        max_tokens:1000,
-        system:`Você é "A La Ruben", assistente especializado em RH e payroll para Moçambique.
-Responde sempre em Português de Portugal (não Brasil).
-Especialidades: IRPS (Lei 11/2025), INSS (Lei 7/2023), Lei do Trabalho 13/2023, processamento salarial, rescisões, férias, faltas.
-Contexto actual do sistema PAYRUN:
-- Funcionários registados: ${F.length}
-- Empresa: ${document.getElementById('en-nome')?.value||'—'}
-- Salário mínimo do sector: MZN ${getSalMinSect()}
-Responde de forma concisa, prática e orientada para Moçambique.`,
-        messages:[{role:'user',content:texto}]
+        texto,
+        numFuncionarios:F.length,
+        empresa:document.getElementById('en-nome')?.value||'—',
+        salMin:getSalMinSect()
       })
     });
     const data=await resp.json();
-    const resposta=data.content?.[0]?.text||'Não foi possível obter resposta. Verifique a API key em Configurações.';
+    const resposta=data.resposta||data.error||'Não foi possível obter resposta.';
     document.getElementById(typingId)?.remove();
     const respostaFmt=resposta.replace(/\n/g,'<br>');
     msgs.innerHTML+=`<div style="background:var(--bzp);border:1px solid var(--bzp);border-radius:6px;padding:.6rem .8rem;max-width:85%"><strong style="color:var(--bz)">A La Ruben:</strong> ${respostaFmt}</div>`;
   } catch(e){
     document.getElementById(typingId)?.remove();
-    msgs.innerHTML+=`<div style="background:var(--vmp);border-radius:6px;padding:.6rem .8rem;max-width:85%;color:var(--vm)"><strong>Erro:</strong> Não foi possível ligar à AI. Configure a API key em Configurações → Integração AI. A La Ruben usa Claude (Anthropic) — gratuito até 25.000 tokens/mês no plano Free.</div>`;
+    msgs.innerHTML+=`<div style="background:var(--vmp);border-radius:6px;padding:.6rem .8rem;max-width:85%;color:var(--vm)"><strong>Erro:</strong> Não foi possível ligar ao assistente. Tente novamente dentro de momentos.</div>`;
   }
   msgs.scrollTop=msgs.scrollHeight;
 }
