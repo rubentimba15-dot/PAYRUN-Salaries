@@ -1,0 +1,7 @@
+worker.js
+wrangler.jsonc
+LEIA-ME.md
+README.md
+functions/
+.git/
+.wrangler/
