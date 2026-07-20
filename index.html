@@ -8,51 +8,51 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#0F2B2B;--bg2:#123333;--sf:#173D3D;--sf2:#1D4848;--sf3:#245656;
-  --bd:#2E6363;--bd2:#3D7A7A;
-  --cy:#4A9EFF;--cyl:#6BB4FF;--cyd:#2B7EE0;--cyp:rgba(74,158,255,.12);--cyb:rgba(74,158,255,.07);
-  --gn:#10B981;--gnl:#34D399;--gnd:#059669;--gnp:rgba(16,185,129,.12);
-  --am:#F0A030;--aml:#F5B850;--amd:#C07820;--amp:rgba(240,160,48,.12);
-  --rd:#EF4444;--rdl:#F87171;--rdd:#DC2626;--rdp:rgba(239,68,68,.12);
-  --pu:#8B6FD8;--pul:#A48FE8;--pup:rgba(139,111,216,.12);
-  --bl:#5B9BD5;--blp:rgba(91,155,213,.12);
-  --tx:#FFFFFF;--tx2:#C6E4E0;--tx3:#7FADA5;--tx4:#4F7A73;
-  --bz:#006666;--bzl:#009999;--bzp:rgba(0,102,102,.14);--bzb:rgba(0,102,102,.07);
-  --vd:#10B981;--vdl:#34D399;--vdp:rgba(16,185,129,.12);
-  --vm:#EF4444;--vml:#F87171;--vmp:rgba(239,68,68,.12);
-  --az:#4A9EFF;--azl:#6BB4FF;--azp:rgba(74,158,255,.12);
-  --rx:#8B6FD8;--rxl:#A48FE8;--rxp:rgba(139,111,216,.12);
-  --cz:#8A9BBC;--czl:#5A6B8A;--czd:#C8D4E8;--czdd:#FFFFFF;
-  --sf-old:#173D3D;--bd-old:#2E6363;--wh:#173D3D;
+  --bg:#FFFFFF;--bg2:#F7F8F8;--sf:#FFFFFF;--sf2:#F7F9F8;--sf3:#F0F3F2;
+  --bd:#E4E9E8;--bd2:#D3DCDA;
+  --cy:#4A9EFF;--cyl:#6BB4FF;--cyd:#2B7EE0;--cyp:rgba(74,158,255,.10);--cyb:rgba(74,158,255,.06);
+  --gn:#10B981;--gnl:#34D399;--gnd:#059669;--gnp:rgba(16,185,129,.10);
+  --am:#F0A030;--aml:#F5B850;--amd:#C07820;--amp:rgba(240,160,48,.10);
+  --rd:#EF4444;--rdl:#F87171;--rdd:#DC2626;--rdp:rgba(239,68,68,.10);
+  --pu:#8B6FD8;--pul:#A48FE8;--pup:rgba(139,111,216,.10);
+  --bl:#5B9BD5;--blp:rgba(91,155,213,.10);
+  --tx:#111827;--tx2:#374151;--tx3:#6B7280;--tx4:#9CA3AF;
+  --bz:#006666;--bzl:#009999;--bzp:rgba(0,102,102,.10);--bzb:rgba(0,102,102,.06);
+  --vd:#10B981;--vdl:#34D399;--vdp:rgba(16,185,129,.10);
+  --vm:#EF4444;--vml:#F87171;--vmp:rgba(239,68,68,.10);
+  --az:#4A9EFF;--azl:#6BB4FF;--azp:rgba(74,158,255,.10);
+  --rx:#8B6FD8;--rxl:#A48FE8;--rxp:rgba(139,111,216,.10);
+  --cz:#6B7280;--czl:#374151;--czd:#D1D5DB;--czdd:#0F2C2A;
+  --sbbg:#F3F5F4;--dk:#123333;
   --gold:#00A896;
 }
 html{scroll-behavior:smooth}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;min-height:100vh}
 .app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
-.sb{background:var(--czdd);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
-.sb-logo{padding:1.3rem 1.2rem .85rem;border-bottom:1px solid rgba(255,255,255,.07)}
-.lm{font-family:'IBM Plex Mono',monospace;font-size:1.05rem;font-weight:600;color:#fff;letter-spacing:.06em}
+.sb{background:var(--sbbg);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--bd)}
+.sb-logo{padding:1.3rem 1.2rem .85rem;border-bottom:1px solid rgba(15,44,42,.10)}
+.lm{font-family:'IBM Plex Mono',monospace;font-size:1.05rem;font-weight:600;color:var(--tx);letter-spacing:.06em}
 .lm span{color:var(--gold)}
-.ls{font-size:.62rem;color:rgba(255,255,255,.32);margin-top:.18rem}
-.sb-emp{padding:.62rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(0,168,150,.07)}
-.en{font-size:.77rem;font-weight:600;color:rgba(255,255,255,.82);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.eu{font-size:.62rem;color:rgba(255,255,255,.32);margin-top:.1rem}
-.ns{padding:.65rem 1rem .18rem;font-size:.59rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.22)}
-.ni{display:flex;align-items:center;gap:.58rem;padding:.52rem 1.2rem;cursor:pointer;transition:all .14s;font-size:.78rem;color:rgba(255,255,255,.52);border-left:2px solid transparent}
-.ni:hover{background:rgba(255,255,255,.04);color:rgba(255,255,255,.82)}
+.ls{font-size:.62rem;color:rgba(15,44,42,.55);margin-top:.18rem}
+.sb-emp{padding:.62rem 1.2rem;border-bottom:1px solid rgba(15,44,42,.08);background:rgba(0,168,150,.07)}
+.en{font-size:.77rem;font-weight:600;color:rgba(15,44,42,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.eu{font-size:.62rem;color:rgba(15,44,42,.55);margin-top:.1rem}
+.ns{padding:.65rem 1rem .18rem;font-size:.59rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(15,44,42,.45)}
+.ni{display:flex;align-items:center;gap:.58rem;padding:.52rem 1.2rem;cursor:pointer;transition:all .14s;font-size:.78rem;color:rgba(15,44,42,.62);border-left:2px solid transparent}
+.ni:hover{background:rgba(15,44,42,.06);color:rgba(15,44,42,.92)}
 .ni.active{background:rgba(0,168,150,.11);color:var(--gold);border-left-color:var(--gold)}
 .ni .ico{font-size:.88rem;width:16px;text-align:center;flex-shrink:0}
-.nb{margin-left:auto;background:var(--gold);color:var(--czdd);font-size:.56rem;font-weight:700;padding:.1rem .38rem;border-radius:2px;min-width:16px;text-align:center}
-.sb-ft{margin-top:auto;padding:.82rem 1.2rem;border-top:1px solid rgba(255,255,255,.05)}
-.sfu{font-size:.75rem;font-weight:600;color:rgba(255,255,255,.72)}
-.sfr{font-size:.62rem;color:rgba(255,255,255,.28);margin-top:.1rem}
+.nb{margin-left:auto;background:var(--gold);color:#fff;font-size:.56rem;font-weight:700;padding:.1rem .38rem;border-radius:2px;min-width:16px;text-align:center}
+.sb-ft{margin-top:auto;padding:.82rem 1.2rem;border-top:1px solid rgba(15,44,42,.08)}
+.sfu{font-size:.75rem;font-weight:600;color:rgba(15,44,42,.75)}
+.sfr{font-size:.62rem;color:rgba(15,44,42,.5);margin-top:.1rem}
 .main{display:flex;flex-direction:column;overflow:hidden}
 .topbar{background:var(--sf);border-bottom:1px solid var(--bd);padding:.65rem 1.8rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .tt{font-size:.9rem;font-weight:700;color:var(--czdd)}
 .ts{font-size:.67rem;color:var(--tx3);margin-top:.07rem}
 .tr{display:flex;gap:.62rem;align-items:center}
 .btn{padding:.44rem .92rem;border-radius:4px;font-size:.77rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Inter',sans-serif}
-.btn-p{background:var(--czdd);color:#fff}.btn-p:hover{background:#1a222e}
+.btn-p{background:var(--dk);color:#fff}.btn-p:hover{background:#1a222e}
 .btn-bz{background:var(--bz);color:#fff}.btn-bz:hover{background:var(--bzl)}
 .btn-o{background:transparent;color:var(--cz);border:1px solid var(--bd)}.btn-o:hover{border-color:var(--cz);color:var(--czdd)}
 .btn-s{background:var(--vd);color:#fff}.btn-s:hover{background:var(--vdl)}
@@ -155,7 +155,7 @@ select.fi option{background:var(--sf)}
 .mim{font-size:.66rem;color:var(--tx3);background:var(--bzp);padding:.1rem .38rem;border-radius:2px}
 .mid{font-size:.76rem;color:var(--tx2);line-height:1.5}
 .relt{width:100%;border-collapse:collapse;font-size:.74rem}
-.relt th{background:var(--czdd);color:#fff;padding:.46rem .7rem;font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;text-align:left}
+.relt th{background:var(--dk);color:#fff;padding:.46rem .7rem;font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;text-align:left}
 .relt td{padding:.44rem .7rem;border-bottom:1px solid var(--bd);color:var(--tx2)}
 .relt tr:last-child td{border-bottom:none}
 .relt tr.tr td{background:var(--bzb);font-weight:700;color:var(--czdd);border-top:2px solid var(--bz)}
@@ -188,11 +188,11 @@ select.fi option{background:var(--sf)}
 .ei{font-size:1.9rem;margin-bottom:.7rem;opacity:.33}
 .et{font-size:.82rem;font-weight:600;color:var(--cz);margin-bottom:.27rem}
 .ed{font-size:.72rem;line-height:1.6}
-.toast{position:fixed;bottom:1.35rem;right:1.35rem;background:var(--czdd);color:#fff;padding:.7rem 1.05rem;border-radius:5px;border-left:3px solid var(--gold);font-size:.77rem;transform:translateY(80px);opacity:0;transition:all .3s;z-index:9999;max-width:295px;line-height:1.4}
+.toast{position:fixed;bottom:1.35rem;right:1.35rem;background:var(--dk);color:#fff;padding:.7rem 1.05rem;border-radius:5px;border-left:3px solid var(--gold);font-size:.77rem;transform:translateY(80px);opacity:0;transition:all .3s;z-index:9999;max-width:295px;line-height:1.4}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.er{border-left-color:var(--vm)}.toast.ok{border-left-color:var(--vd)}
 /* --- FICHA FUNCIONÁRIO: HEADER FIXO --- */
-.fich-header{background:linear-gradient(135deg,var(--czdd) 0%,#1e3a5f 100%);border-radius:8px;padding:1rem 1.35rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between}
+.fich-header{background:linear-gradient(135deg,var(--bz) 0%,#0F2B2B 100%);border-radius:8px;padding:1rem 1.35rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between}
 .fich-id{font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--gold);font-weight:700;letter-spacing:.1em;background:rgba(0,168,150,.15);padding:.25rem .6rem;border-radius:3px;border:1px solid rgba(0,168,150,.3)}
 .fich-nome{font-size:1.1rem;font-weight:700;color:#fff;margin-top:.25rem}
 .fich-cargo{font-size:.72rem;color:rgba(255,255,255,.55);margin-top:.12rem}
@@ -3559,7 +3559,7 @@ function showRelTab(id){
         <td style="${tdGreen}">${fmt(liq)}</td></tr>`;
     }).join('');
     body.innerHTML=`<table style="width:100%;border-collapse:collapse">
-      <thead style="background:var(--czdd);color:#fff"><tr>
+      <thead style="background:var(--dk);color:#fff"><tr>
         <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Nome</th><th style="${thStyle}">Cargo</th>
         <th style="${thStyle}">Dep.</th><th style="${thStyle};text-align:right">Sal.Base</th>
         <th style="${thStyle};text-align:right">Subsídios</th><th style="${thStyle};text-align:right">H.Extra</th>
@@ -3594,7 +3594,7 @@ function showRelTab(id){
     }).join('');
     body.innerHTML=`<div class="al ai" style="margin-bottom:.6rem">ℹ️ Mapa INSS — Base: salário base + bónus de antiguidade (Lei n.º 7/2023)</div>
       <table style="width:100%;border-collapse:collapse">
-      <thead style="background:var(--czdd);color:#fff"><tr>
+      <thead style="background:var(--dk);color:#fff"><tr>
         <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Nome</th>
         <th style="${thStyle}">NUIT</th><th style="${thStyle}">N.º INSS</th>
         <th style="${thStyle};text-align:right">Base INSS</th>
@@ -3627,7 +3627,7 @@ function showRelTab(id){
         <td style="${tdRed}">-${fmt(ip)}</td></tr>`;
     }).join('');
     body.innerHTML=`<table style="width:100%;border-collapse:collapse">
-      <thead style="background:var(--czdd);color:#fff"><tr>
+      <thead style="background:var(--dk);color:#fff"><tr>
         <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Nome</th>
         <th style="${thStyle}">NUIT</th><th style="${thStyle};text-align:right">Bruto</th>
         <th style="${thStyle}">Escalão</th><th style="${thStyle};text-align:center">Dep.</th>
@@ -3656,7 +3656,7 @@ function showRelTab(id){
         <td style="${tdR};font-weight:700;color:var(--czdd)">${fmt(custo)}</td></tr>`;
     }).join('');
     body.innerHTML=`<table style="width:100%;border-collapse:collapse">
-      <thead style="background:var(--czdd);color:#fff"><tr>
+      <thead style="background:var(--dk);color:#fff"><tr>
         <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Nome</th><th style="${thStyle}">Cargo</th>
         <th style="${thStyle};text-align:right">Bruto</th>
         <th style="${thStyle};text-align:right">INSS Entid. 4%</th>
@@ -3673,7 +3673,7 @@ function showRelTab(id){
     const depts={};
     funcs.forEach(f=>{depts[f.dept]=(depts[f.dept]||0)+1;});
     body.innerHTML=`<table style="width:100%;border-collapse:collapse">
-      <thead style="background:var(--czdd);color:#fff"><tr>
+      <thead style="background:var(--dk);color:#fff"><tr>
         <th style="${thStyle}">Departamento</th>
         <th style="${thStyle};text-align:right">N.º Colaboradores</th>
         <th style="${thStyle};text-align:right">% do Total</th>
@@ -3706,7 +3706,7 @@ function showRelTab(id){
     });
     if(!alertas.length){body.innerHTML='<div class="al ao">✓ Sem anomalias detectadas.</div>';out.scrollIntoView({behavior:'smooth'});return;}
     body.innerHTML=`<table style="width:100%;border-collapse:collapse">
-      <thead style="background:var(--czdd);color:#fff"><tr>
+      <thead style="background:var(--dk);color:#fff"><tr>
         <th style="${thStyle}">N.º Func.</th><th style="${thStyle}">Nome</th>
         <th style="${thStyle}">Anomalia detectada</th><th style="${thStyle}">Gravidade</th>
       </tr></thead>
