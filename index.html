@@ -191,6 +191,21 @@ select.fi option{background:var(--sf)}
 .toast{position:fixed;bottom:1.35rem;right:1.35rem;background:var(--dk);color:#fff;padding:.7rem 1.05rem;border-radius:5px;border-left:3px solid var(--gold);font-size:.77rem;transform:translateY(80px);opacity:0;transition:all .3s;z-index:9999;max-width:295px;line-height:1.4}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.er{border-left-color:var(--vm)}.toast.ok{border-left-color:var(--vd)}
+/* --- A LA RUBEN: BOTÃO FLUTUANTE E PAINEL DE CONVERSA --- */
+.ai-fab{position:fixed;bottom:1.4rem;right:1.4rem;width:52px;height:52px;border-radius:50%;background:var(--bz);color:#fff;border:none;font-size:1.4rem;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.25);z-index:9998;display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.ai-fab:hover{background:var(--bzl);transform:scale(1.06)}
+.ai-panel{position:fixed;bottom:5.1rem;right:1.4rem;width:340px;max-width:calc(100vw - 2rem);height:460px;max-height:calc(100vh - 7rem);background:var(--sf);border:1px solid var(--bd);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.22);display:none;flex-direction:column;overflow:hidden;z-index:9998}
+.ai-panel.open{display:flex}
+.ai-panel-hd{background:var(--bz);color:#fff;padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center;font-size:.85rem;font-weight:700}
+.ai-panel-hd button{background:none;border:none;color:#fff;font-size:1.1rem;cursor:pointer;line-height:1;opacity:.85}
+.ai-panel-hd button:hover{opacity:1}
+#ai-msgs{flex:1;overflow-y:auto;padding:.85rem;display:flex;flex-direction:column;gap:.55rem;font-size:.78rem;line-height:1.45}
+.ai-panel-ft{border-top:1px solid var(--bd);padding:.6rem;display:flex;gap:.45rem}
+#ai-input{flex:1;border:1px solid var(--bd);border-radius:5px;padding:.5rem .65rem;font-size:.78rem;font-family:'Inter',sans-serif;color:var(--tx)}
+#ai-input:focus{outline:none;border-color:var(--bz)}
+.ai-send{background:var(--bz);color:#fff;border:none;border-radius:5px;padding:0 .9rem;cursor:pointer;font-size:.8rem}
+.ai-send:hover{background:var(--bzl)}
+@media(max-width:480px){.ai-panel{right:.6rem;bottom:4.6rem;width:calc(100vw - 1.2rem)}.ai-fab{right:.6rem}}
 /* --- FICHA FUNCIONÁRIO: HEADER FIXO --- */
 .fich-header{background:linear-gradient(135deg,var(--bz) 0%,#0F2B2B 100%);border-radius:8px;padding:1rem 1.35rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between}
 .fich-id{font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--gold);font-weight:700;letter-spacing:.1em;background:rgba(0,168,150,.15);padding:.25rem .6rem;border-radius:3px;border:1px solid rgba(0,168,150,.3)}
@@ -3379,6 +3394,9 @@ function confirmarImport(){
 // ================================================================
 // AI ASSISTENTE "A La Ruben"
 // ================================================================
+function toggleAI(){
+  document.getElementById('ai-panel').classList.toggle('open');
+}
 async function enviarAI(){
   const input=document.getElementById('ai-input');
   const msgs=document.getElementById('ai-msgs');
@@ -4673,6 +4691,19 @@ document.addEventListener('DOMContentLoaded',()=>{
     <button class="btn btn-o btn-sm" onclick="exportRelCSV&&exportRelCSV()">⬇️ Exportar</button>
     <button class="btn btn-d" onclick="confRescisao()">✓ Confirmar rescisão</button>
   </div></div>
+</div>
+
+<button class="ai-fab" id="ai-fab" onclick="toggleAI()" title="A La Ruben — assistente de RH e payroll">💬</button>
+<div class="ai-panel" id="ai-panel">
+  <div class="ai-panel-hd">
+    <span>🤖 A La Ruben</span>
+    <button onclick="toggleAI()">✕</button>
+  </div>
+  <div id="ai-msgs"><div style="background:var(--sf2);border-radius:6px;padding:.6rem .8rem;color:var(--tx2)">Olá! Sou o A La Ruben — pergunte-me sobre IRPS, INSS, processamento salarial ou qualquer dúvida de RH para Moçambique.</div></div>
+  <div class="ai-panel-ft">
+    <input id="ai-input" type="text" placeholder="Escreva a sua pergunta..." onkeydown="if(event.key==='Enter')enviarAI()">
+    <button class="ai-send" onclick="enviarAI()">Enviar</button>
+  </div>
 </div>
 
 </body>
